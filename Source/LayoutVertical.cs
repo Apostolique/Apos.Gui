@@ -6,7 +6,7 @@ namespace AposGui {
     /// <summary>
     /// Goal: Stacks components on top of each others.
     /// </summary>
-    class LayoutVertical : Layout {
+    public class LayoutVertical : Layout {
         public LayoutVertical() { }
         public override void RecomputeChildren(List<Component> childs) {
             //Tell each children their position and size.

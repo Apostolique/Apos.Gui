@@ -5,7 +5,7 @@ namespace AposGui {
     /// <summary>
     /// Goal: Adds padding around a component.
     /// </summary>
-    class Border : Component {
+    public class Border : Component {
         public Border() : this(new Component()) { }
         public Border(Component iC) : this(iC, 0, 0, 0, 0) { }
         public Border(Component iC, int iMarginLeft, int iMarginTop, int iMarginRight, int iMarginBottom) {

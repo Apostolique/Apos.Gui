@@ -8,7 +8,7 @@ namespace AposGui {
     ///       Handles everything from how something is drawn,
     ///       to how to handle inputs.
     /// </summary>
-    class Component {
+    public class Component {
         public Component() {
             Position = new Point(0, 0);
             Width = 100;

@@ -7,7 +7,7 @@ namespace AposGui {
     /// <summary>
     /// Goal: Stacks components on top of each others and centers them inside the panel.
     /// </summary>
-    class LayoutVerticalCenter : Layout {
+    public class LayoutVerticalCenter : Layout {
         public LayoutVerticalCenter() { }
         protected int _oldWidth;
         protected int _oldHeigth;

@@ -5,7 +5,7 @@ namespace AposGui {
     /// <summary>
     /// Goal: Container that can hold Components.
     /// </summary>
-    class PanelVerticalScroll : Panel {
+    public class PanelVerticalScroll : Panel {
         public PanelVerticalScroll() { }
         public override bool UpdateInput() {
             bool used = base.UpdateInput();

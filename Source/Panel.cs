@@ -8,7 +8,7 @@ namespace AposGui {
     /// <summary>
     /// Goal: Container that can hold Components.
     /// </summary>
-    class Panel : Component {
+    public class Panel : Component {
         public Panel() {
             children = new List<Component>();
             Layout = new Layout();

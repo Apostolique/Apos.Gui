@@ -7,7 +7,7 @@ namespace AposGui {
     /// <summary>
     /// Goal: A text component.
     /// </summary>
-    class Label : Component {
+    public class Label : Component {
         public Label(BitmapFont iFont) : this(iFont, "Text Missing") { }
         public Label(BitmapFont iFont, string iText) {
             _font = iFont;

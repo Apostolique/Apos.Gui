@@ -4,7 +4,7 @@ namespace AposGui {
     /// <summary>
     /// Goal: Handles how components are positioned inside a panel.
     /// </summary>
-    class Layout {
+    public class Layout {
         public Layout() { }
         public virtual Panel Panel {
             get;

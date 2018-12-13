@@ -8,7 +8,7 @@ namespace AposGui {
     /// <summary>
     /// Goal: A button component that handles actions.
     /// </summary>
-    class Button : Component {
+    public class Button : Component {
         public Button() : this(new Component()) { }
         public Button(Component iItem) {
             Item = iItem;

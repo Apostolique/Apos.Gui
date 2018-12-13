@@ -5,7 +5,7 @@ using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 
 namespace AposGui {
-    class LabelDynamic : Label {
+    public class LabelDynamic : Label {
         public LabelDynamic(BitmapFont iFont) : base(iFont) {
             _text = delegate() {
                 return "Text Missing";
