@@ -2,15 +2,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AposGui
-{
+namespace AposGui {
     /// <summary>
     /// Goal: The core of a user interface.
     ///       Handles everything from how something is drawn,
     ///       to how to handle inputs.
     /// </summary>
-    class Component
-    {
+    class Component {
         public Component() {
             Position = new Point(0, 0);
             Width = 100;
@@ -20,13 +18,16 @@ namespace AposGui
             _clippingRect = Maybe<Rectangle>.Nothing;
         }
         public virtual Point Position {
-            get; set;
+            get;
+            set;
         }
         public virtual int Width {
-            get; set;
+            get;
+            set;
         }
         public virtual int Height {
-            get; set;
+            get;
+            set;
         }
         public virtual int PrefWidth => Width;
         public virtual int PrefHeight => Height;
@@ -48,13 +49,16 @@ namespace AposGui
             }
         }
         public virtual Component Parent {
-            get; set;
+            get;
+            set;
         }
         public virtual bool IsFocusable {
-            get; set;
+            get;
+            set;
         }
         public virtual bool HasFocus {
-            get; set;
+            get;
+            set;
         }
         public virtual Component GetPrevious() {
             if (Parent != null) {
@@ -102,26 +106,25 @@ namespace AposGui
             return new Rectangle(left, top, clipWidth, clipHeight);
         }
         public Rectangle ClipSourceRectangle(Rectangle sourceRectangle, Rectangle destinationRectangle, Rectangle clippingRectangle) {
-            float left = (float)(clippingRectangle.Left - destinationRectangle.Left);
-            float right = (float)(destinationRectangle.Right - clippingRectangle.Right);
-            float top = (float)(clippingRectangle.Top - destinationRectangle.Top);
-            float bottom = (float)(destinationRectangle.Bottom - clippingRectangle.Bottom);
-            float x =  left > 0 ? left : 0;
+            float left = (float) (clippingRectangle.Left - destinationRectangle.Left);
+            float right = (float) (destinationRectangle.Right - clippingRectangle.Right);
+            float top = (float) (clippingRectangle.Top - destinationRectangle.Top);
+            float bottom = (float) (destinationRectangle.Bottom - clippingRectangle.Bottom);
+            float x = left > 0 ? left : 0;
             float y = top > 0 ? top : 0;
             float w = (right > 0 ? right : 0) + x;
             float h = (bottom > 0 ? bottom : 0) + y;
 
-            float scaleX = (float)destinationRectangle.Width / sourceRectangle.Width;
-            float scaleY = (float)destinationRectangle.Height / sourceRectangle.Height;
+            float scaleX = (float) destinationRectangle.Width / sourceRectangle.Width;
+            float scaleY = (float) destinationRectangle.Height / sourceRectangle.Height;
             x /= scaleX;
             y /= scaleY;
             w /= scaleX;
             h /= scaleY;
 
-            return new Rectangle((int)(sourceRectangle.X + x), (int)(sourceRectangle.Y + y), (int)(sourceRectangle.Width - w), (int)(sourceRectangle.Height - h));
+            return new Rectangle((int) (sourceRectangle.X + x), (int) (sourceRectangle.Y + y), (int) (sourceRectangle.Width - w), (int) (sourceRectangle.Height - h));
         }
-        public Rectangle ClipDestinationRectangle(Rectangle destinationRectangle, Rectangle clippingRectangle)
-        {
+        public Rectangle ClipDestinationRectangle(Rectangle destinationRectangle, Rectangle clippingRectangle) {
             var left = clippingRectangle.Left < destinationRectangle.Left ? destinationRectangle.Left : clippingRectangle.Left;
             var top = clippingRectangle.Top < destinationRectangle.Top ? destinationRectangle.Top : clippingRectangle.Top;
             var bottom = clippingRectangle.Bottom < destinationRectangle.Bottom ? clippingRectangle.Bottom : destinationRectangle.Bottom;
@@ -136,15 +139,12 @@ namespace AposGui
             Rectangle r = ClippingRect;
             return r.Left < v.X && r.Right > v.X && r.Top < v.Y && r.Bottom > v.Y;
         }
-        public virtual void UpdateSetup() {
-        }
+        public virtual void UpdateSetup() { }
         public virtual bool UpdateInput() {
             return false;
         }
-        public virtual void Update() {
-        }
-        public virtual void Draw(SpriteBatch s) {
-        }
+        public virtual void Update() { }
+        public virtual void Draw(SpriteBatch s) { }
         public virtual void DrawActive(SpriteBatch s) {
             Draw(s);
         }

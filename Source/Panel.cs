@@ -4,13 +4,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
-namespace AposGui
-{
+namespace AposGui {
     /// <summary>
     /// Goal: Container that can hold Components.
     /// </summary>
-    class Panel : Component
-    {
+    class Panel : Component {
         public Panel() {
             children = new List<Component>();
             Layout = new Layout();
@@ -19,10 +17,12 @@ namespace AposGui
         }
         List<Component> children;
         public Point Offset {
-            get; set;
+            get;
+            set;
         }
         public Size2 Size {
-            get; set;
+            get;
+            set;
         }
         protected Layout _layout;
         public Layout Layout {

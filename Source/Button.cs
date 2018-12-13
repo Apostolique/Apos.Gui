@@ -4,15 +4,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
-namespace AposGui
-{
+namespace AposGui {
     /// <summary>
     /// Goal: A button component that handles actions.
     /// </summary>
-    class Button : Component
-    {
-        public Button() : this(new Component()) {
-        }
+    class Button : Component {
+        public Button() : this(new Component()) { }
         public Button(Component iItem) {
             Item = iItem;
             _buttonActions = new List<ButtonConditionAction>();
@@ -30,16 +27,20 @@ namespace AposGui
             }
         }
         public virtual Component Item {
-            get; set;
+            get;
+            set;
         }
         public virtual bool OldIsHovered {
-            get; set;
+            get;
+            set;
         }
         public virtual bool IsHovered {
-            get; set;
+            get;
+            set;
         }
         public virtual bool ShowBox {
-            get; set;
+            get;
+            set;
         }
         protected List<ButtonConditionAction> _buttonActions;
 

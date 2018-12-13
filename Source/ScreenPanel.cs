@@ -1,12 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace AposGui
-{
+namespace AposGui {
     /// <summary>
     /// Goal: The ScreenPanel is always the same size as the Window.
     /// </summary>
-    class ScreenPanel : Panel
-    {
+    class ScreenPanel : Panel {
         public ScreenPanel(GameWindow iWindow) {
             _window = iWindow;
             Position = new Point(0, 0);

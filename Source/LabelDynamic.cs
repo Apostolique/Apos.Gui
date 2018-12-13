@@ -4,10 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 
-namespace AposGui
-{
-    class LabelDynamic : Label
-    {
+namespace AposGui {
+    class LabelDynamic : Label {
         public LabelDynamic(BitmapFont iFont) : base(iFont) {
             _text = delegate() {
                 return "Text Missing";
@@ -34,7 +32,7 @@ namespace AposGui
 
             s.DrawString(_font, _text(), new Vector2(Left + halfWidth - textHalfWidth, Top + halfHeight - textHalfHeight), c, ClippingRect);
         }
-        public override int PrefWidth => (int)_textSize.Width;
-        public override int PrefHeight => (int)_textSize.Height;
+        public override int PrefWidth => (int) _textSize.Width;
+        public override int PrefHeight => (int) _textSize.Height;
     }
 }

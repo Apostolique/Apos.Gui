@@ -2,15 +2,12 @@
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
-namespace AposGui
-{
+namespace AposGui {
     /// <summary>
     /// Goal: Stacks components on top of each others.
     /// </summary>
-    class LayoutVertical : Layout
-    {
-        public LayoutVertical() {
-        }
+    class LayoutVertical : Layout {
+        public LayoutVertical() { }
         public override void RecomputeChildren(List<Component> childs) {
             //Tell each children their position and size.
             Point position = Panel.Position;

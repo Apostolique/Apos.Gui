@@ -3,15 +3,12 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.BitmapFonts;
 
-namespace AposGui
-{
+namespace AposGui {
     /// <summary>
     /// Goal: A text component.
     /// </summary>
-    class Label : Component
-    {
-        public Label(BitmapFont iFont) : this(iFont, "Text Missing") {
-        }
+    class Label : Component {
+        public Label(BitmapFont iFont) : this(iFont, "Text Missing") { }
         public Label(BitmapFont iFont, string iText) {
             _font = iFont;
             _text = iText;
@@ -26,10 +23,12 @@ namespace AposGui
         protected Size2 _textSize;
         protected BitmapFont _font;
         public Color NormalColor {
-            get; set;
+            get;
+            set;
         }
         public Color ActiveColor {
-            get; set;
+            get;
+            set;
         }
 
         public override void Draw(SpriteBatch s) {
@@ -47,7 +46,7 @@ namespace AposGui
 
             s.DrawString(_font, _text, new Vector2(Left + halfWidth - textHalfWidth, Top + halfHeight - textHalfHeight), c, ClippingRect);
         }
-        public override int PrefWidth => (int)_textSize.Width;
-        public override int PrefHeight => (int)_textSize.Height;
+        public override int PrefWidth => (int) _textSize.Width;
+        public override int PrefHeight => (int) _textSize.Height;
     }
 }

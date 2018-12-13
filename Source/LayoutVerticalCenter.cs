@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
-namespace AposGui
-{
+namespace AposGui {
     /// <summary>
     /// Goal: Stacks components on top of each others and centers them inside the panel.
     /// </summary>
-    class LayoutVerticalCenter : Layout
-    {
-        public LayoutVerticalCenter() {
-        }
+    class LayoutVerticalCenter : Layout {
+        public LayoutVerticalCenter() { }
         protected int _oldWidth;
         protected int _oldHeigth;
         protected int _newWidth;
@@ -33,7 +30,7 @@ namespace AposGui
             _newHeight = Panel.Height;
 
             if (_oldWidth != _newWidth || _oldHeigth != _newHeight) {
-                Panel.Offset = new Point(Panel.Offset.X, (int)Math.Min(Math.Max(Panel.Offset.Y, Panel.Height - Panel.Size.Height), 0));
+                Panel.Offset = new Point(Panel.Offset.X, (int) Math.Min(Math.Max(Panel.Offset.Y, Panel.Height - Panel.Size.Height), 0));
             }
 
             Point position = Panel.Position;

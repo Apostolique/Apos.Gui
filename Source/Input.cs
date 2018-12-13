@@ -1,11 +1,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace AposGui
-{
+namespace AposGui {
     //This will get refactored into it's own separate package most likely.
-    public static class Input
-    {
+    public static class Input {
         private static MouseState _oldMouse;
         private static MouseState _newMouse;
         private static KeyboardState _oldKeyboard;

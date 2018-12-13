@@ -1,17 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AposGui
-{
+namespace AposGui {
     /// <summary>
     /// Goal: A text component.
     /// </summary>
-    class Border : Component
-    {
-        public Border() : this(new Component()) {
-        }
-        public Border(Component iC) : this(iC, 0, 0, 0, 0) {
-        }
+    class Border : Component {
+        public Border() : this(new Component()) { }
+        public Border(Component iC) : this(iC, 0, 0, 0, 0) { }
         public Border(Component iC, int iMarginLeft, int iMarginTop, int iMarginRight, int iMarginBottom) {
             Item = iC;
             Item.Parent = this;
@@ -21,7 +17,8 @@ namespace AposGui
             MarginBottom = iMarginBottom;
         }
         public virtual Component Item {
-            get; set;
+            get;
+            set;
         }
         public override Point Position {
             get => base.Position;
@@ -51,16 +48,20 @@ namespace AposGui
             }
         }
         public virtual int MarginLeft {
-            get; set;
+            get;
+            set;
         }
         public virtual int MarginTop {
-            get; set;
+            get;
+            set;
         }
         public virtual int MarginRight {
-            get; set;
+            get;
+            set;
         }
         public virtual int MarginBottom {
-            get; set;
+            get;
+            set;
         }
         public override Rectangle ClippingRect {
             get {

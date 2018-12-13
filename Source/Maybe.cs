@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
-namespace AposGui
-{
+namespace AposGui {
     /// <summary>
     /// The option type; explicitly represents nothing-or-thing nature of a value. 
     /// Supports some of the LINQ operators, such as SelectMany, Where and can be used 
@@ -24,8 +23,7 @@ namespace AposGui
     /// var result = (from a in list.FirstMaybe() from b in list.LastMaybe() select a + b).OrElse(-5);
     /// </example>
     /// <typeparam name="T"></typeparam>
-    public struct Maybe<T> : IEquatable<Maybe<T>>
-    {
+    public struct Maybe<T> : IEquatable<Maybe<T>> {
         /// <summary>
         /// Nothing value.
         /// </summary>
@@ -35,10 +33,8 @@ namespace AposGui
         /// The value, stored in the monad. Can be accessed only if is really present, otherwise throws
         /// </summary>
         /// <exception cref="InvalidOperationException"> is thrown if not value is present</exception>
-        public T Value
-        {
-            get
-            {
+        public T Value {
+            get {
                 if (!HasValue) throw new InvalidOperationException("value is not present");
                 return _value;
             }
@@ -49,10 +45,8 @@ namespace AposGui
         public bool HasValue { get { return _hasValue; } }
 
         /// <inheritdoc />
-        public override string ToString()
-        {
-            if (!HasValue)
-            {
+        public override string ToString() {
+            if (!HasValue) {
                 return "<Nothing>";
             }
 
@@ -64,45 +58,37 @@ namespace AposGui
         /// </summary>
         /// <param name="doubleMaybe"></param>
         /// <returns></returns>
-        public static implicit operator Maybe<T>(Maybe<Maybe<T>> doubleMaybe)
-        {
+        public static implicit operator Maybe<T>(Maybe<Maybe<T>> doubleMaybe) {
             return doubleMaybe.HasValue ? doubleMaybe.Value : Nothing;
         }
 
-        internal Maybe(T value)
-        {
+        internal Maybe(T value) {
             Contract.Requires(value != null);
 
             _value = value;
             _hasValue = true;
         }
 
-        public bool Equals(Maybe<T> other)
-        {
+        public bool Equals(Maybe<T> other) {
             return EqualityComparer<T>.Default.Equals(_value, other._value) && _hasValue.Equals(other._hasValue);
         }
 
-        public override bool Equals(object obj)
-        {
+        public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
             return obj is Maybe<T> && Equals((Maybe<T>) obj);
         }
 
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return (EqualityComparer<T>.Default.GetHashCode(_value)*397) ^ _hasValue.GetHashCode();
+        public override int GetHashCode() {
+            unchecked {
+                return (EqualityComparer<T>.Default.GetHashCode(_value) * 397) ^ _hasValue.GetHashCode();
             }
         }
 
-        public static bool operator ==(Maybe<T> left, Maybe<T> right)
-        {
+        public static bool operator ==(Maybe<T> left, Maybe<T> right) {
             return left.Equals(right);
         }
 
-        public static bool operator !=(Maybe<T> left, Maybe<T> right)
-        {
+        public static bool operator !=(Maybe<T> left, Maybe<T> right) {
             return !left.Equals(right);
         }
 
