@@ -1,6 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>AposGui</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Jean-David Moisan</Authors>
+    <Company>Vyne Enterprise Inc.</Company>
+    <RepositoryUrl>https://github.com/Apostolique/AposGui</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MonoGame.Extended" Version="*"/>
