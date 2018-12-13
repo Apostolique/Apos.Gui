@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace AposGui {
     /// <summary>
-    /// Goal: A text component.
+    /// Goal: Adds padding around a component.
     /// </summary>
     class Border : Component {
         public Border() : this(new Component()) { }
