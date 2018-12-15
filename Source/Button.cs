@@ -11,7 +11,7 @@ namespace AposGui {
     public class Button : Component {
         public Button() : this(new Component()) { }
         public Button(Component iItem) {
-            Item = iItem;
+            _item = iItem;
             _buttonActions = new List<ButtonConditionAction>();
             IsFocusable = true;
             OldIsHovered = false;
@@ -26,10 +26,7 @@ namespace AposGui {
                 buttonAction = iButtonAction;
             }
         }
-        public virtual Component Item {
-            get;
-            set;
-        }
+        protected Component _item;
         public virtual bool OldIsHovered {
             get;
             set;
@@ -48,8 +45,8 @@ namespace AposGui {
             get => base.Position;
             set {
                 base.Position = value;
-                if (Item != null) {
-                    Item.Position = base.Position;
+                if (_item != null) {
+                    _item.Position = base.Position;
                 }
             }
         }
@@ -57,8 +54,8 @@ namespace AposGui {
             get => base.Width;
             set {
                 base.Width = value;
-                if (Item != null) {
-                    Item.Width = base.Width;
+                if (_item != null) {
+                    _item.Width = base.Width;
                 }
             }
         }
@@ -66,8 +63,8 @@ namespace AposGui {
             get => base.Height;
             set {
                 base.Height = value;
-                if (Item != null) {
-                    Item.Height = base.Height;
+                if (_item != null) {
+                    _item.Height = base.Height;
                 }
             }
         }
@@ -78,8 +75,8 @@ namespace AposGui {
             set {
                 base.ClippingRect = value;
 
-                if (Item != null) {
-                    Item.ClippingRect = base.ClippingRect;
+                if (_item != null) {
+                    _item.ClippingRect = base.ClippingRect;
                 }
             }
         }
@@ -111,9 +108,9 @@ namespace AposGui {
             }
 
             if (ShowBox || HasFocus) {
-                Item.DrawActive(s);
+                _item.DrawActive(s);
             } else {
-                Item.Draw(s);
+                _item.Draw(s);
             }
 
             if (ShowBox && HasFocus) {
@@ -123,7 +120,7 @@ namespace AposGui {
                 s.DrawLine(Left, Bottom, Right, Bottom, Color.White, 2);
             }
         }
-        public override int PrefWidth => Item.PrefWidth;
-        public override int PrefHeight => Item.PrefHeight;
+        public override int PrefWidth => _item.PrefWidth;
+        public override int PrefHeight => _item.PrefHeight;
     }
 }

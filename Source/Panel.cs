@@ -15,7 +15,7 @@ namespace AposGui {
             Offset = new Point(0, 0);
             Size = new Size2(0, 0);
         }
-        List<Component> children;
+        protected List<Component> children;
         public Point Offset {
             get;
             set;
