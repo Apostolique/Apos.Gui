@@ -85,8 +85,11 @@ namespace AposGui {
         }
         public override bool UpdateInput() {
             bool usedInput = base.UpdateInput();
-            foreach (Component e in children) {
-                usedInput = e.UpdateInput() || usedInput;
+            for (int i = children.Count - 1; i >= 0; i--) {
+                if (children[i].UpdateInput()) {
+                    usedInput = true;
+                    break;
+                }
             }
             return usedInput;
         }
