@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 namespace AposGui {
     /// <summary>
     /// Goal: Container that can hold Components.
+    ///       It can also be scrolled over using the mouse wheel.
     /// </summary>
     public class PanelVerticalScroll : Panel {
         public PanelVerticalScroll() { }
@@ -14,10 +15,11 @@ namespace AposGui {
             if (!used && isHovered) {
                 if (Input.NewMouse.ScrollWheelValue != Input.OldMouse.ScrollWheelValue) {
                     Offset = new Point(Offset.X, (int) Math.Min(Math.Max(Offset.Y + Input.NewMouse.ScrollWheelValue - Input.OldMouse.ScrollWheelValue, Height - Size.Height), 0));
+                    used = true;
                 }
             }
 
-            return isHovered || used;
+            return used;
         }
     }
 }
