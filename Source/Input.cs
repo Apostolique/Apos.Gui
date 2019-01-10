@@ -9,7 +9,6 @@ namespace AposGui {
         private static MouseState _newMouse;
         private static KeyboardState _oldKeyboard;
         private static KeyboardState _newKeyboard;
-        private static TouchCollection _oldTouchCollection;
         private static TouchCollection _newTouchCollection;
         private static TouchPanelCapabilities _touchPanelCapabilities;
         private static GamePadState[] _oldGamePad;
@@ -20,7 +19,6 @@ namespace AposGui {
         public static MouseState NewMouse => _newMouse;
         public static KeyboardState OldKeyboard => _oldKeyboard;
         public static KeyboardState NewKeyboard => _newKeyboard;
-        public static TouchCollection OldTouchCollection => _oldTouchCollection;
         public static TouchCollection NewTouchCollection => _newTouchCollection;
         public static TouchPanelCapabilities TouchPanelCapabilities => _touchPanelCapabilities;
         public static GamePadState[] OldGamePad => _oldGamePad;
@@ -51,13 +49,14 @@ namespace AposGui {
             _oldMouse = _newMouse;
             _oldKeyboard = _newKeyboard;
             _oldGamePad = _newGamepad;
-            _oldTouchCollection = _newTouchCollection;
 
             _newMouse = Mouse.GetState();
             _newKeyboard = Keyboard.GetState();
-            _newGamepad = new GamePadState[GamePad.MaximumGamePadCount];
+
             _newTouchCollection = TouchPanel.GetState();
             _touchPanelCapabilities = TouchPanel.GetCapabilities();
+
+            _newGamepad = new GamePadState[GamePad.MaximumGamePadCount];
             _gamePadCapabilities = new GamePadCapabilities[GamePad.MaximumGamePadCount];
             for (int i = 0; i < GamePad.MaximumGamePadCount; i++) {
                 _newGamepad[i] = GamePad.GetState(i);
