@@ -21,8 +21,8 @@ namespace AposGui {
             return Input.NewMouse.ScrollWheelValue - Input.OldMouse.ScrollWheelValue;
         }
 
-        public static int WindowWidth => (int)(Window.ClientBounds.Width * Scale);
-        public static int WindowHeight => (int)(Window.ClientBounds.Height * Scale);
+        public static int WindowWidth => (int)(Window.ClientBounds.Width * (1 / GuiHelper.Scale));
+        public static int WindowHeight => (int)(Window.ClientBounds.Height * (1 / GuiHelper.Scale));
 
         public static Vector2 MouseToUI() {
             return ScreenToUI(new Vector2(Input.NewMouse.X, Input.NewMouse.Y));
