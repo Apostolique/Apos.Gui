@@ -85,7 +85,7 @@ namespace AposGui {
         }
         public override bool UpdateInput() {
             OldIsHovered = IsHovered;
-            IsHovered = IsInsideClip(new Point(Input.NewMouse.X, Input.NewMouse.Y));
+            IsHovered = IsInsideClip(GuiHelper.MouseToUI());
 
             bool isUsed = false;
 
@@ -99,6 +99,7 @@ namespace AposGui {
             return isUsed;
         }
         public override void Draw(SpriteBatch s) {
+            SetScissor(s);
             if (ShowBox) {
                 if (HasFocus) {
                     s.FillRectangle(new RectangleF(Left, Top, Width, Height), new Color(20, 20, 20));
@@ -119,6 +120,7 @@ namespace AposGui {
                 s.DrawLine(Left, Top, Right, Top, Color.White, 2);
                 s.DrawLine(Left, Bottom, Right, Bottom, Color.White, 2);
             }
+            ResetScissor(s);
         }
         public override int PrefWidth => _item.PrefWidth;
         public override int PrefHeight => _item.PrefHeight;

@@ -10,11 +10,12 @@ namespace AposGui {
         public PanelVerticalScroll() { }
         public override bool UpdateInput() {
             bool used = base.UpdateInput();
-            bool isHovered = IsInsideClip(new Point(Input.NewMouse.X, Input.NewMouse.Y));
+            bool isHovered = IsInsideClip(GuiHelper.MouseToUI());
 
             if (!used && isHovered) {
-                if (Input.NewMouse.ScrollWheelValue != Input.OldMouse.ScrollWheelValue) {
-                    Offset = new Point(Offset.X, (int) Math.Min(Math.Max(Offset.Y + Input.NewMouse.ScrollWheelValue - Input.OldMouse.ScrollWheelValue, Height - Size.Height), 0));
+                int scrollWheelDelta = GuiHelper.ScrollWheelDelta();
+                if (scrollWheelDelta != 0) {
+                    Offset = new Point(Offset.X, (int) Math.Min(Math.Max(Offset.Y + scrollWheelDelta, Height - Size.Height), 0));
                     used = true;
                 }
             }

@@ -24,13 +24,15 @@ namespace AposGui {
             }
         }
         public override void Draw(SpriteBatch s, Color c) {
+            SetScissor(s);
             int halfWidth = Width / 2;
             int textHalfWidth = PrefWidth / 2;
 
             int halfHeight = Height / 2;
             int textHalfHeight = PrefHeight / 2;
 
-            s.DrawString(_font, _text(), new Vector2(Left + halfWidth - textHalfWidth, Top + halfHeight - textHalfHeight), c, ClippingRect);
+            s.DrawString(_font, _text(), new Vector2(Left + halfWidth - textHalfWidth, Top + halfHeight - textHalfHeight), c);
+            ResetScissor(s);
         }
         public override int PrefWidth => (int) _textSize.Width;
         public override int PrefHeight => (int) _textSize.Height;

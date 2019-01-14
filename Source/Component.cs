@@ -37,6 +37,7 @@ namespace AposGui {
         public virtual int Bottom => Position.Y + Height;
         public virtual Rectangle BoundingRect => new Rectangle(Left, Top, Width, Height);
         protected Maybe<Rectangle> _clippingRect;
+        protected Rectangle oldScissor;
         public virtual Rectangle ClippingRect {
             get {
                 if (_clippingRect.HasValue) {
@@ -132,12 +133,21 @@ namespace AposGui {
 
             return new Rectangle(left, top, right - left, bottom - top);
         }
-        public virtual bool IsInside(Point v) {
-            return Left < v.X && Right > v.X && Top < v.Y && Bottom > v.Y;
+        public virtual bool IsInside(Vector2 v) {
+            return IsInside(BoundingRect, v);
         }
-        public virtual bool IsInsideClip(Point v) {
-            Rectangle r = ClippingRect;
+        public virtual bool IsInsideClip(Vector2 v) {
+            return IsInside(ClippingRect, v);
+        }
+        public virtual bool IsInside(Rectangle r, Vector2 v) {
             return r.Left < v.X && r.Right > v.X && r.Top < v.Y && r.Bottom > v.Y;
+        }
+        public virtual void SetScissor(SpriteBatch s) {
+            oldScissor = s.GraphicsDevice.ScissorRectangle;
+            GuiHelper.SetScissor(s, ClippingRect);
+        }
+        public virtual void ResetScissor(SpriteBatch s) {
+            GuiHelper.SetScissor(s, oldScissor);
         }
         public virtual void UpdateSetup() { }
         public virtual bool UpdateInput() {

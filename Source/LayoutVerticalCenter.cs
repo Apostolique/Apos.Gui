@@ -57,7 +57,7 @@ namespace AposGui {
                     c.Position = new Point(position.X + halfWidth - componentHalfWidth, offsetY) + Panel.Offset;
                 }
                 offsetY += cHeight;
-                c.ClippingRect = Panel.ClippingRect;
+                c.ClippingRect = c.ClipRectangle(Panel.ClippingRect);
             }
             Panel.Size = new Size2(_oldWidth, offsetY);
         }
