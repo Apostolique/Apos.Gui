@@ -10,6 +10,7 @@ namespace AposGui {
         private static RasterizerState _rasterState = new RasterizerState {
             ScissorTestEnable = true
         };
+        public static SamplerState GuiSampler = SamplerState.PointClamp;
         private static float _scale = 1f;
         public static float Scale {
             get => _scale;
@@ -43,7 +44,7 @@ namespace AposGui {
         }
 
         public static void Begin(SpriteBatch s) {
-            s.Begin(rasterizerState: _rasterState, transformMatrix: GetUIMatrix());
+            s.Begin(rasterizerState: _rasterState, transformMatrix: GetUIMatrix(), samplerState: GuiSampler);
             _beginCalled = true;
         }
         public static void End(SpriteBatch s) {
