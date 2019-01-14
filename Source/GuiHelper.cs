@@ -10,7 +10,15 @@ namespace AposGui {
         private static RasterizerState _rasterState = new RasterizerState {
             ScissorTestEnable = true
         };
-        public static float Scale = 1f;
+        private static float _scale = 1f;
+        public static float Scale {
+            get => _scale;
+            set {
+                if (value > 0) {
+                    _scale = value;
+                }
+            }
+        }
         private static bool _beginCalled = false;
 
         public static Matrix GetUIMatrix() {
