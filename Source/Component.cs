@@ -37,7 +37,7 @@ namespace AposGui {
         public virtual int Bottom => Position.Y + Height;
         public virtual Rectangle BoundingRect => new Rectangle(Left, Top, Width, Height);
         protected Maybe<Rectangle> _clippingRect;
-        protected Rectangle oldScissor;
+        protected Rectangle _oldScissor;
         public virtual Rectangle ClippingRect {
             get {
                 if (_clippingRect.HasValue) {
@@ -143,11 +143,11 @@ namespace AposGui {
             return r.Left < v.X && r.Right > v.X && r.Top < v.Y && r.Bottom > v.Y;
         }
         public virtual void SetScissor(SpriteBatch s) {
-            oldScissor = s.GraphicsDevice.ScissorRectangle;
+            _oldScissor = s.GraphicsDevice.ScissorRectangle;
             GuiHelper.SetScissor(s, ClippingRect);
         }
         public virtual void ResetScissor(SpriteBatch s) {
-            GuiHelper.SetScissor(s, oldScissor);
+            GuiHelper.SetScissor(s, _oldScissor);
         }
         public virtual void UpdateSetup() { }
         public virtual bool UpdateInput() {
