@@ -8,7 +8,6 @@ namespace AposGui {
         public ScreenPanel() {
             Position = new Point(0, 0);
         }
-        protected GameWindow _window;
         public override int Width => GuiHelper­.WindowWidth;
         public override int Height => GuiHelper.WindowHeight;
     }
