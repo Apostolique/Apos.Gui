@@ -101,10 +101,10 @@ namespace AposGui {
         public override void Draw(SpriteBatch s) {
             SetScissor(s);
             if (ShowBox) {
-                if (HasFocus) {
-                    s.FillRectangle(new RectangleF(Left, Top, Width, Height), new Color(20, 20, 20));
+                if (IsHovered) {
+                    s.FillRectangle(BoundingRect, new Color(20, 20, 20));
                 } else {
-                    s.FillRectangle(new RectangleF(Left, Top, Width, Height), Color.Black);
+                    s.FillRectangle(BoundingRect, Color.Black);
                 }
             }
 
@@ -115,11 +115,9 @@ namespace AposGui {
             }
 
             if (ShowBox && HasFocus) {
-                s.DrawLine(Left, Top, Left, Bottom, Color.White, 2);
-                s.DrawLine(Right, Top, Right, Bottom, Color.White, 2);
-                s.DrawLine(Left, Top, Right, Top, Color.White, 2);
-                s.DrawLine(Left, Bottom, Right, Bottom, Color.White, 2);
+                s.DrawRectangle(BoundingRect, Color.White, 2);
             }
+
             ResetScissor(s);
         }
         public override int PrefWidth => _item.PrefWidth;
