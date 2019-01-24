@@ -147,7 +147,7 @@ namespace AposGui {
             GuiHelper.SetScissor(s, ClippingRect);
         }
         public virtual void ResetScissor(SpriteBatch s) {
-            GuiHelper.SetScissor(s, _oldScissor);
+            GuiHelper.ResetScissor(s, _oldScissor);
         }
         public virtual void UpdateSetup() { }
         public virtual bool UpdateInput() {

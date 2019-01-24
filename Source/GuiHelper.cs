@@ -63,6 +63,14 @@ namespace AposGui {
             s.GraphicsDevice.ScissorRectangle = new Rectangle(x, y, w, h);
             Begin(s);
         }
+        public static void ResetScissor(SpriteBatch s, Rectangle r) {
+            if (_beginCalled) {
+                End(s);
+            }
+
+            s.GraphicsDevice.ScissorRectangle = r;
+            Begin(s);
+        }
         public static void DrawGui(SpriteBatch s, Component c) {
             c.Draw(s);
             if (_beginCalled) {
