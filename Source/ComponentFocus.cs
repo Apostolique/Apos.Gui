@@ -1,4 +1,5 @@
 using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace AposGui {
     /// <summary>
@@ -6,21 +7,35 @@ namespace AposGui {
     ///       This is especially useful for gamepad and keyboard controls.
     /// </summary>
     public class ComponentFocus {
+        //Constructors
+        public ComponentFocus(Component c) : this(c, () => false, () => false) { }
         public ComponentFocus(Component c, Func<bool> previousFocusAction, Func<bool> nextFocusAction) {
             RootComponent = c;
 
             Focus = findNext(RootComponent);
 
-            _previousFocusAction = previousFocusAction;
-            _nextFocusAction = nextFocusAction;
+            PreviousFocusAction = previousFocusAction;
+            NextFocusAction = nextFocusAction;
         }
+
+        //public vars
         public Component RootComponent {
             get;
             set;
         }
         public Component Focus {
-            get => _focus;
+            get {
+                if (_focus == null) {
+                    if (_oldFocus == null) {
+                        return RootComponent;
+                    } else {
+                        return _oldFocus;
+                    }
+                }
+                return _focus;
+            }
             set {
+                _oldFocus = _focus;
                 if (_focus != null) {
                     _focus.HasFocus = false;
                 }
@@ -30,35 +45,55 @@ namespace AposGui {
                 }
             }
         }
+        public Func<bool> PreviousFocusAction {
+            get;
+            set;
+        }
+        public Func<bool> NextFocusAction {
+            get;
+            set;
+        }
 
-        private Component _focus;
-        private Func<bool> _previousFocusAction;
-        private Func<bool> _nextFocusAction;
-
+        //public functions
+        public void UpdateSetup() {
+            RootComponent.UpdateSetup();
+        }
         public bool UpdateInput() {
             bool usedInput = false;
-            if (_nextFocusAction()) {
+            if (NextFocusAction()) {
                 FocusNext();
                 usedInput = true;
             }
-            if (_previousFocusAction()) {
+            if (PreviousFocusAction()) {
                 FocusPrevious();
                 usedInput = true;
             }
 
+            if (!usedInput) {
+                usedInput = RootComponent.UpdateInput();
+            }
+
             return usedInput;
         }
-
+        public void Update() {
+            RootComponent.Update();
+        }
+        public void Draw(SpriteBatch s) {
+            GuiHelper.DrawGui(s, RootComponent);
+        }
         public void FocusPrevious() {
             Focus = findPrevious(Focus);
         }
         public void FocusNext() {
             Focus = findNext(Focus);
         }
+
+        //private vars
+        private Component _oldFocus;
+        private Component _focus;
+
+        //private functions
         private Component findPrevious(Component c) {
-            if (c == null) {
-                c = RootComponent;
-            }
             Component currentFocus = c;
             currentFocus.HasFocus = false;
 
@@ -74,9 +109,6 @@ namespace AposGui {
             return null;
         }
         private Component findNext(Component c) {
-            if (c == null) {
-                c = RootComponent;
-            }
             Component currentFocus = c;
             currentFocus.HasFocus = false;
 
