@@ -7,7 +7,7 @@ namespace AposGui {
     ///       This is especially useful for gamepad and keyboard controls.
     /// </summary>
     public class ComponentFocus {
-        //Constructors
+        //constructors
         public ComponentFocus(Component c) : this(c, () => false, () => false) { }
         public ComponentFocus(Component c, Func<bool> previousFocusAction, Func<bool> nextFocusAction) {
             RootComponent = c;
