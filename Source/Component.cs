@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -9,14 +10,22 @@ namespace AposGui {
     ///       to how to handle inputs.
     /// </summary>
     public class Component {
+        //constructors
         public Component() {
             Position = new Point(0, 0);
             Width = 100;
             Height = 100;
             Parent = null;
+            OldIsHovered = false;
+            _isHovered = false;
             IsFocusable = false;
             _clippingRect = Maybe<Rectangle>.Nothing;
+            _hoverConditions = new List<Func<Component, bool>>();
+            _conditionOperations = new List<ConditionOperation>();
+            GrabFocus = (Component c) => { };
         }
+
+        //public vars
         public virtual Point Position {
             get;
             set;
@@ -36,8 +45,6 @@ namespace AposGui {
         public virtual int Right => Position.X + Width;
         public virtual int Bottom => Position.Y + Height;
         public virtual Rectangle BoundingRect => new Rectangle(Left, Top, Width, Height);
-        protected Maybe<Rectangle> _clippingRect;
-        protected Rectangle _oldScissor;
         public virtual Rectangle ClippingRect {
             get {
                 if (_clippingRect.HasValue) {
@@ -53,6 +60,17 @@ namespace AposGui {
             get;
             set;
         }
+        public virtual bool OldIsHovered {
+            get;
+            set;
+        }
+        public virtual bool IsHovered {
+            get => _isHovered;
+            set {
+                OldIsHovered = _isHovered;
+                _isHovered = value;
+            }
+        }
         public virtual bool IsFocusable {
             get;
             set;
@@ -60,6 +78,18 @@ namespace AposGui {
         public virtual bool HasFocus {
             get;
             set;
+        }
+        public virtual Action<Component> GrabFocus {
+            get;
+            set;
+        }
+
+        //public functions
+        public void AddHoverCondition(Func<Component, bool> c) {
+            _hoverConditions.Add(c);
+        }
+        public void AddAction(Func<Component, bool> c, Func<Component, bool> o) {
+            _conditionOperations.Add(new ConditionOperation(c, o));
         }
         public virtual Component GetPrevious() {
             if (Parent != null) {
@@ -91,7 +121,6 @@ namespace AposGui {
         public virtual Component GetFinalInverse() {
             return this;
         }
-
         public Rectangle ClipRectangle(Rectangle rect1) {
             return ClipRectangle(rect1, BoundingRect);
         }
@@ -151,12 +180,42 @@ namespace AposGui {
         }
         public virtual void UpdateSetup() { }
         public virtual bool UpdateInput() {
-            return false;
+            bool isUsed = false;
+            foreach (Func<Component, bool> c in _hoverConditions) {
+                if (c(this)) {
+                    IsHovered = true;
+                    break;
+                }
+            }
+
+            foreach (ConditionOperation co in _conditionOperations) {
+                if (co.Condition(this)) {
+                    isUsed = co.Operation(this) || isUsed;
+                }
+            }
+
+            if (IsFocusable && isUsed) {
+                GrabFocus(this);
+            }
+
+            return isUsed;
         }
         public virtual void Update() { }
         public virtual void Draw(SpriteBatch s) { }
-        public virtual void DrawActive(SpriteBatch s) {
-            Draw(s);
+
+        //private vars
+        protected struct ConditionOperation {
+            public ConditionOperation(Func<Component, bool> c, Func<Component, bool> o) {
+                Condition = c;
+                Operation = o;
+            }
+            public Func<Component, bool> Condition;
+            public Func<Component, bool> Operation;
         }
+        protected bool _isHovered;
+        protected Maybe<Rectangle> _clippingRect;
+        protected Rectangle _oldScissor;
+        protected List<Func<Component, bool>> _hoverConditions;
+        protected List<ConditionOperation> _conditionOperations;
     }
 }

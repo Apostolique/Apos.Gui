@@ -9,13 +9,17 @@ namespace AposGui {
     /// Goal: Container that can hold Components.
     /// </summary>
     public class Panel : Component {
-        public Panel() {
+        //constructors
+        public Panel() : this(new Layout()) {
+        }
+        public Panel(Layout l) {
             children = new List<Component>();
-            Layout = new Layout();
+            Layout = l;
             Offset = new Point(0, 0);
             Size = new Size2(0, 0);
         }
-        protected List<Component> children;
+
+        //public vars
         public Point Offset {
             get;
             set;
@@ -24,7 +28,6 @@ namespace AposGui {
             get;
             set;
         }
-        protected Layout _layout;
         public Layout Layout {
             get => _layout;
             set {
@@ -33,6 +36,7 @@ namespace AposGui {
             }
         }
 
+        //public functions
         public virtual void Add(Component e) {
             children.Add(e);
             e.Parent = this;
@@ -84,14 +88,18 @@ namespace AposGui {
             }
         }
         public override bool UpdateInput() {
-            bool usedInput = base.UpdateInput();
+            bool isUsed = false;
+
             for (int i = children.Count - 1; i >= 0; i--) {
                 if (children[i].UpdateInput()) {
-                    usedInput = true;
+                    isUsed = true;
                     break;
                 }
             }
-            return usedInput;
+            if (!isUsed) {
+                isUsed = base.UpdateInput();
+            }
+            return isUsed;
         }
         public override void Update() {
             base.Update();
@@ -104,5 +112,9 @@ namespace AposGui {
                 e.Draw(s);
             }
         }
+
+        //private vars
+        protected List<Component> children;
+        protected Layout _layout;
     }
 }

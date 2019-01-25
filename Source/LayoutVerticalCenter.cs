@@ -8,12 +8,10 @@ namespace AposGui {
     /// Goal: Stacks components on top of each others and centers them inside the panel.
     /// </summary>
     public class LayoutVerticalCenter : Layout {
+        //constructors
         public LayoutVerticalCenter() { }
-        protected int _oldWidth;
-        protected int _oldHeigth;
-        protected int _newWidth;
-        protected int _newHeight;
 
+        //public vars
         public override Panel Panel {
             get => base.Panel;
             set {
@@ -22,6 +20,8 @@ namespace AposGui {
                 _newHeight = base.Panel.Height;
             }
         }
+
+        //public functions
         public override void RecomputeChildren(List<Component> children) {
             //Tell each children their position and size.
             _oldWidth = _newWidth;
@@ -30,7 +30,7 @@ namespace AposGui {
             _newHeight = Panel.Height;
 
             if (_oldWidth != _newWidth || _oldHeigth != _newHeight) {
-                Panel.Offset = new Point(Panel.Offset.X, (int) Math.Min(Math.Max(Panel.Offset.Y, Panel.Height - Panel.Size.Height), 0));
+                Panel.Offset = new Point(Panel.Offset.X, (int)Math.Min(Math.Max(Panel.Offset.Y, Panel.Height - Panel.Size.Height), 0));
             }
 
             Point position = Panel.Position;
@@ -61,5 +61,11 @@ namespace AposGui {
             }
             Panel.Size = new Size2(_oldWidth, offsetY);
         }
+
+        //private vars
+        protected int _oldWidth;
+        protected int _oldHeigth;
+        protected int _newWidth;
+        protected int _newHeight;
     }
 }

@@ -8,6 +8,7 @@ namespace AposGui {
     /// Goal: A text component.
     /// </summary>
     public class Label : Component {
+        //constructors
         public Label(BitmapFont iFont) : this(iFont, "Text Missing") { }
         public Label(BitmapFont iFont, string iText) {
             _font = iFont;
@@ -19,9 +20,8 @@ namespace AposGui {
             NormalColor = Color.White;
             ActiveColor = new Color(150, 150, 150);
         }
-        protected string _text;
-        protected Size2 _textSize;
-        protected BitmapFont _font;
+
+        //public vars
         public Color NormalColor {
             get;
             set;
@@ -30,25 +30,34 @@ namespace AposGui {
             get;
             set;
         }
-
-        public override void Draw(SpriteBatch s) {
-            Draw(s, NormalColor);
-        }
-        public override void DrawActive(SpriteBatch s) {
-            Draw(s, ActiveColor);
-        }
-        public virtual void Draw(SpriteBatch s, Color c) {
-            SetScissor(s);
-            int halfWidth = Width / 2;
-            int textHalfWidth = PrefWidth / 2;
-
-            int halfHeight = Height / 2;
-            int textHalfHeight = PrefHeight / 2;
-
-            s.DrawString(_font, _text, new Vector2(Left + halfWidth - textHalfWidth, Top + halfHeight - textHalfHeight), c);
-            ResetScissor(s);
-        }
         public override int PrefWidth => (int) _textSize.Width;
         public override int PrefHeight => (int) _textSize.Height;
+
+        //public functions
+        public override void Draw(SpriteBatch s) {
+            SetScissor(s);
+            drawTextCentered(s, _text);
+            ResetScissor(s);
+        }
+
+        //private vars
+        protected string _text;
+        protected Size2 _textSize;
+        protected BitmapFont _font;
+
+        //private functions
+        protected virtual Color getColor() {
+            if (IsHovered) {
+                return ActiveColor;
+            }
+            return NormalColor;
+        }
+        protected virtual void drawTextCentered(SpriteBatch s, string text) {
+            int halfWidth = Width / 2;
+
+            int halfHeight = Height / 2;
+
+            s.DrawString(_font, text, new Vector2(Left + halfWidth, Top + halfHeight), getColor());
+        }
     }
 }

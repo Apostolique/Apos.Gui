@@ -7,20 +7,22 @@ namespace AposGui {
     ///       It can also be scrolled over using the mouse wheel.
     /// </summary>
     public class PanelVerticalScroll : Panel {
+        //constructors
         public PanelVerticalScroll() { }
-        public override bool UpdateInput() {
-            bool used = base.UpdateInput();
-            bool isHovered = IsInsideClip(GuiHelper.MouseToUI());
 
-            if (!used && isHovered) {
+        //public functions
+        public override bool UpdateInput() {
+            bool isUsed = base.UpdateInput();
+
+            if (!isUsed && IsHovered) {
                 int scrollWheelDelta = GuiHelper.ScrollWheelDelta();
                 if (scrollWheelDelta != 0) {
                     Offset = new Point(Offset.X, (int) Math.Min(Math.Max(Offset.Y + scrollWheelDelta, Height - Size.Height), 0));
-                    used = true;
+                    isUsed = true;
                 }
             }
 
-            return used;
+            return isUsed;
         }
     }
 }

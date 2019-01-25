@@ -6,12 +6,7 @@ namespace AposGui {
     /// Goal: Unorganized helper functions for AposGui.
     /// </summary>
     public static class GuiHelper {
-        public static GameWindow Window;
-        private static RasterizerState _rasterState = new RasterizerState {
-            ScissorTestEnable = true
-        };
-        public static SamplerState GuiSampler = SamplerState.PointClamp;
-        private static float _scale = 1f;
+        //public vars
         public static float Scale {
             get => _scale;
             set {
@@ -20,19 +15,18 @@ namespace AposGui {
                 }
             }
         }
-        private static bool _beginCalled = false;
+        public static GameWindow Window;
+        public static int WindowWidth => (int)(Window.ClientBounds.Width * (1 / GuiHelper.Scale));
+        public static int WindowHeight => (int)(Window.ClientBounds.Height * (1 / GuiHelper.Scale));
+        public static SamplerState GuiSampler = SamplerState.PointClamp;
 
+        //public functions
         public static Matrix GetUIMatrix() {
             return Matrix.CreateScale(Scale, Scale, 1);
         }
-
         public static int ScrollWheelDelta() {
             return Input.NewMouse.ScrollWheelValue - Input.OldMouse.ScrollWheelValue;
         }
-
-        public static int WindowWidth => (int)(Window.ClientBounds.Width * (1 / GuiHelper.Scale));
-        public static int WindowHeight => (int)(Window.ClientBounds.Height * (1 / GuiHelper.Scale));
-
         public static Vector2 MouseToUI() {
             return ScreenToUI(new Vector2(Input.NewMouse.X, Input.NewMouse.Y));
         }
@@ -42,7 +36,6 @@ namespace AposGui {
         public static Vector2 UIToScreen(Vector2 v) {
             return new Vector2(v.X * Scale, v.Y * Scale);
         }
-
         public static void Begin(SpriteBatch s) {
             s.Begin(rasterizerState: _rasterState, transformMatrix: GetUIMatrix(), samplerState: GuiSampler);
             _beginCalled = true;
@@ -77,5 +70,12 @@ namespace AposGui {
                 End(s);
             }
         }
+
+        //private vars
+        private static float _scale = 1f;
+        private static RasterizerState _rasterState = new RasterizerState {
+            ScissorTestEnable = true
+        };
+        private static bool _beginCalled = false;
     }
 }

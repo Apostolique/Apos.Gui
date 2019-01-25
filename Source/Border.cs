@@ -6,47 +6,48 @@ namespace AposGui {
     /// Goal: Adds padding around a component.
     /// </summary>
     public class Border : Component {
+        //constructors
         public Border() : this(new Component()) { }
-        public Border(Component iC) : this(iC, 0, 0, 0, 0) { }
-        public Border(Component iC, int iMarginLeft, int iMarginTop, int iMarginRight, int iMarginBottom) {
-            Item = iC;
-            Item.Parent = this;
+        public Border(Component c) : this(c, 0, 0, 0, 0) { }
+        public Border(Component c, int iMarginLeft, int iMarginTop, int iMarginRight, int iMarginBottom) {
+            Item = c;
             MarginLeft = iMarginLeft;
             MarginTop = iMarginTop;
             MarginRight = iMarginRight;
             MarginBottom = iMarginBottom;
         }
+
+        //public vars
         public virtual Component Item {
-            get;
-            set;
+            get => _item;
+            set {
+                _item = value;
+                _item.Parent = this;
+            }
         }
         public override Point Position {
             get => base.Position;
             set {
                 base.Position = value;
-                if (Item != null) {
-                    Item.Position = base.Position + new Point(MarginLeft, MarginTop);
-                }
+                Item.Position = base.Position + new Point(MarginLeft, MarginTop);
             }
         }
         public override int Width {
             get => base.Width;
             set {
                 base.Width = value;
-                if (Item != null) {
-                    Item.Width = base.Width - MarginLeft - MarginRight;
-                }
+                Item.Width = base.Width - MarginLeft - MarginRight;
             }
         }
         public override int Height {
             get => base.Height;
             set {
                 base.Height = value;
-                if (Item != null) {
-                    Item.Height = base.Height - MarginTop - MarginBottom;
-                }
+                Item.Height = base.Height - MarginTop - MarginBottom;
             }
         }
+        public override int PrefWidth => Item.PrefWidth + MarginLeft + MarginRight;
+        public override int PrefHeight => Item.PrefHeight + MarginTop + MarginBottom;
         public virtual int MarginLeft {
             get;
             set;
@@ -70,25 +71,35 @@ namespace AposGui {
             set {
                 base.ClippingRect = value;
 
-                if (Item != null) {
-                    Item.ClippingRect = base.ClippingRect;
-                }
+                Item.ClippingRect = base.ClippingRect;
             }
         }
-        public override Component GetFinal() {
-            if (Item != null) {
-                return Item;
+        public override bool IsHovered {
+            get => _isHovered;
+            set {
+                OldIsHovered = _isHovered;
+                _isHovered = value;
+
+                Item.IsHovered = _isHovered;
             }
-            return this;
+        }
+
+        //public functions
+        public override Component GetFinal() {
+            return Item;
         }
         public override Component GetFinalInverse() {
-            if (Item != null) {
-                return Item;
-            }
-            return this;
+            return Item;
+        }
+        public override void UpdateSetup() {
+            Item.UpdateSetup();
         }
         public override bool UpdateInput() {
-            return Item.UpdateInput();
+            bool isUsed = base.UpdateInput();
+
+            isUsed = isUsed || Item.UpdateInput();
+
+            return isUsed;
         }
         public override void Update() {
             Item.Update();
@@ -96,10 +107,8 @@ namespace AposGui {
         public override void Draw(SpriteBatch s) {
             Item.Draw(s);
         }
-        public override void DrawActive(SpriteBatch s) {
-            Item.DrawActive(s);
-        }
-        public override int PrefWidth => Item.PrefWidth + MarginLeft + MarginRight;
-        public override int PrefHeight => Item.PrefHeight + MarginTop + MarginBottom;
+
+        //private vars
+        protected Component _item;
     }
 }
