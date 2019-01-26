@@ -32,14 +32,14 @@ namespace AposGui {
         public static int ScrollWheelDelta() {
             return Input.NewMouse.ScrollWheelValue - Input.OldMouse.ScrollWheelValue;
         }
-        public static Vector2 MouseToUI() {
-            return ScreenToUI(new Vector2(Input.NewMouse.X, Input.NewMouse.Y));
+        public static Point MouseToUI() {
+            return ScreenToUI(new Point(Input.NewMouse.X, Input.NewMouse.Y));
         }
-        public static Vector2 ScreenToUI(Vector2 v) {
-            return new Vector2(v.X * (1 / Scale), v.Y * (1 / Scale));
+        public static Point ScreenToUI(Point p) {
+            return new Point((int)(p.X * (1 / Scale)), (int)(p.Y * (1 / Scale)));
         }
-        public static Vector2 UIToScreen(Vector2 v) {
-            return new Vector2(v.X * Scale, v.Y * Scale);
+        public static Point UIToScreen(Point p) {
+            return new Point((int)(p.X * Scale), (int)(p.Y * Scale));
         }
         public static void Begin(SpriteBatch s) {
             s.Begin(rasterizerState: _rasterState, transformMatrix: GetUIMatrix(), samplerState: GuiSampler);
