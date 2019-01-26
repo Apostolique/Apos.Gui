@@ -33,7 +33,7 @@ namespace AposGui {
             return Input.NewMouse.ScrollWheelValue - Input.OldMouse.ScrollWheelValue;
         }
         public static Point MouseToUI() {
-            return ScreenToUI(new Point(Input.NewMouse.X, Input.NewMouse.Y));
+            return ScreenToUI(Input.NewMouse.Position);
         }
         public static Point ScreenToUI(Point p) {
             return new Point((int)(p.X * (1 / Scale)), (int)(p.Y * (1 / Scale)));
