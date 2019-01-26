@@ -89,17 +89,28 @@ namespace AposGui {
             }
             set {
                 base.ClippingRect = value;
-
                 Item.ClippingRect = base.ClippingRect;
             }
         }
-        public override bool IsHovered {
-            get => _isHovered;
+        public override bool OldIsHovered {
+            get => base.OldIsHovered;
             set {
-                OldIsHovered = _isHovered;
-                _isHovered = value;
-
-                Item.IsHovered = _isHovered;
+                base.OldIsHovered = value;
+                Item.OldIsHovered = value;
+            }
+        }
+        public override bool IsHovered {
+            get => base.IsHovered;
+            set {
+                base.IsHovered = value;
+                Item.IsHovered = value;
+            }
+        }
+        public override bool HasFocus {
+            get => base.HasFocus;
+            set {
+                base.HasFocus = value;
+                Item.HasFocus = value;
             }
         }
 

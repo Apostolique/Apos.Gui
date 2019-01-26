@@ -8,28 +8,78 @@ namespace AposGui {
     /// <summary>
     /// Goal: A button component that handles actions.
     /// </summary>
-    public class Button : Border {
+    public class Button : Component {
         //constructors
         public Button() : this(new Component()) { }
-        public Button(Component c) : this(c, 0, 0, 0, 0) { }
-        public Button(Component c, int iMarginLeft, int iMarginTop, int iMarginRight, int iMarginBottom) : base(c, iMarginLeft, iMarginTop, iMarginRight, iMarginBottom) {
-            IsFocusable = true;
-            ShowBox = true;
+        public Button(Component c) {
+            Item = c;
         }
 
         //public vars
         public virtual bool ShowBox {
             get;
             set;
+        } = true;
+        public override bool OldIsHovered {
+            get => base.OldIsHovered;
+            set {
+                base.OldIsHovered = value;
+                Item.OldIsHovered = value;
+            }
         }
+        public override bool IsHovered {
+            get => base.IsHovered;
+            set {
+                base.IsHovered = value;
+                Item.IsHovered = value;
+            }
+        }
+        public override bool IsFocusable {
+            get;
+            set;
+        } = true;
+        public override bool HasFocus {
+            get => base.HasFocus;
+            set {
+                base.HasFocus = value;
+                Item.HasFocus = value;
+            }
+        }
+        public virtual Component Item {
+            get => _item;
+            set {
+                _item = value;
+                _item.Parent = this;
+                Item.Position = base.Position;
+                Item.Width = base.Width;
+                Item.Height = base.Height;
+            }
+        }
+        public override Point Position {
+            get => base.Position;
+            set {
+                base.Position = value;
+                Item.Position = base.Position;
+            }
+        }
+        public override int Width {
+            get => base.Width;
+            set {
+                base.Width = value;
+                Item.Width = base.Width;
+            }
+        }
+        public override int Height {
+            get => base.Height;
+            set {
+                base.Height = value;
+                Item.Height = base.Height;
+            }
+        }
+        public override int PrefWidth => Item.PrefWidth;
+        public override int PrefHeight => Item.PrefHeight;
 
         //public functions
-        public override Component GetFinal() {
-            return this;
-        }
-        public override Component GetFinalInverse() {
-            return this;
-        }
         public override void Draw(SpriteBatch s) {
             SetScissor(s);
             if (ShowBox) {
@@ -48,5 +98,8 @@ namespace AposGui {
 
             ResetScissor(s);
         }
+
+        //private vars
+        protected Component _item;
     }
 }

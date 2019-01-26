@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using SpriteFontPlus;
@@ -15,27 +16,24 @@ namespace AposGui {
             _textSize = GuiHelper.Font.MeasureString(_text);
             Width = PrefWidth;
             Height = PrefHeight;
-
-            NormalColor = Color.White;
-            ActiveColor = new Color(150, 150, 150);
         }
 
         //public vars
         public Color NormalColor {
             get;
             set;
-        }
+        } = Color.White;
         public Color ActiveColor {
             get;
             set;
-        }
+        } = new Color(150, 150, 150);
         public override int PrefWidth => (int) _textSize.Width;
         public override int PrefHeight => (int) _textSize.Height;
 
         //public functions
         public override void Draw(SpriteBatch s) {
             SetScissor(s);
-            drawTextCentered(s, _text);
+            s.DrawString(GuiHelper.Font, _text, new Vector2(Left, Top), getColor());
             ResetScissor(s);
         }
 
@@ -45,7 +43,7 @@ namespace AposGui {
 
         //private functions
         protected virtual Color getColor() {
-            if (IsHovered) {
+            if (IsHovered || HasFocus) {
                 return ActiveColor;
             }
             return NormalColor;

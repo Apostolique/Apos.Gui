@@ -2,15 +2,12 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using SpriteFontPlus;
 
 namespace AposGui {
     public class LabelDynamic : Label {
         //constructors
-        public LabelDynamic() {
-            _text = delegate() {
-                return "Text Missing";
-            };
-        }
+        public LabelDynamic() : this(() => "Text Missing") { }
         public LabelDynamic(Func<string> iText) {
             _text = iText;
         }
@@ -31,7 +28,7 @@ namespace AposGui {
         //public functions
         public override void Draw(SpriteBatch s) {
             SetScissor(s);
-            drawTextCentered(s, _text());
+            s.DrawString(GuiHelper.Font, _text(), new Vector2(Left, Top), getColor());
             ResetScissor(s);
         }
     }

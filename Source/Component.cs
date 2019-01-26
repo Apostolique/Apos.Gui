@@ -51,12 +51,9 @@ namespace AposGui {
             set;
         } = false;
         public virtual bool IsHovered {
-            get => _isHovered;
-            set {
-                OldIsHovered = _isHovered;
-                _isHovered = value;
-            }
-        }
+            get;
+            set;
+        } = false;
         public virtual bool IsFocusable {
             get;
             set;
@@ -167,6 +164,8 @@ namespace AposGui {
         public virtual void UpdateSetup() { }
         public virtual bool UpdateInput() {
             bool isUsed = false;
+            OldIsHovered = IsHovered;
+            IsHovered = false;
             foreach (Func<Component, bool> c in _hoverConditions) {
                 if (c(this)) {
                     IsHovered = true;
@@ -180,7 +179,7 @@ namespace AposGui {
                 }
             }
 
-            if (IsFocusable && isUsed) {
+            if (!HasFocus && IsFocusable && isUsed) {
                 GrabFocus(this);
             }
 
@@ -198,7 +197,6 @@ namespace AposGui {
             public Func<Component, bool> Condition;
             public Func<Component, bool> Operation;
         }
-        protected bool _isHovered = false;
         protected Option<Rectangle> _clippingRect = Option.None<Rectangle>();
         protected Rectangle _oldScissor;
         protected List<Func<Component, bool>> _hoverConditions = new List<Func<Component, bool>>();
