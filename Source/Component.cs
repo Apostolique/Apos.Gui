@@ -160,13 +160,13 @@ namespace AposGui {
 
             return new Rectangle(left, top, right - left, bottom - top);
         }
-        public virtual bool IsInside(Vector2 v) {
+        public virtual bool IsInside(Point v) {
             return IsInside(BoundingRect, v);
         }
-        public virtual bool IsInsideClip(Vector2 v) {
+        public virtual bool IsInsideClip(Point v) {
             return IsInside(ClippingRect, v);
         }
-        public virtual bool IsInside(Rectangle r, Vector2 v) {
+        public virtual bool IsInside(Rectangle r, Point v) {
             return r.Left < v.X && r.Right > v.X && r.Top < v.Y && r.Bottom > v.Y;
         }
         public virtual void SetScissor(SpriteBatch s) {
