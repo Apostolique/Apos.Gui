@@ -9,7 +9,8 @@ UI library for MonoGame.
 
 ## Features
 
-Coming soon!
+* Mouse, Keyboard, Gamepad, Touchscreen
+* UI scaling
 
 ## Usage samples
 
