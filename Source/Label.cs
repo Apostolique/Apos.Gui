@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using MonoGame.Extended.BitmapFonts;
+using SpriteFontPlus;
 
 namespace AposGui {
     /// <summary>
@@ -9,11 +9,10 @@ namespace AposGui {
     /// </summary>
     public class Label : Component {
         //constructors
-        public Label(BitmapFont iFont) : this(iFont, "Text Missing") { }
-        public Label(BitmapFont iFont, string iText) {
-            _font = iFont;
+        public Label() : this("Text Missing") { }
+        public Label(string iText) {
             _text = iText;
-            _textSize = _font.MeasureString(_text);
+            _textSize = GuiHelper.Font.MeasureString(_text);
             Width = PrefWidth;
             Height = PrefHeight;
 
@@ -43,7 +42,6 @@ namespace AposGui {
         //private vars
         protected string _text;
         protected Size2 _textSize;
-        protected BitmapFont _font;
 
         //private functions
         protected virtual Color getColor() {
@@ -54,10 +52,9 @@ namespace AposGui {
         }
         protected virtual void drawTextCentered(SpriteBatch s, string text) {
             int halfWidth = Width / 2;
-
             int halfHeight = Height / 2;
 
-            s.DrawString(_font, text, new Vector2(Left + halfWidth, Top + halfHeight), getColor());
+            s.DrawString(GuiHelper.Font, text, new Vector2(Left + halfWidth, Top + halfHeight), getColor());
         }
     }
 }

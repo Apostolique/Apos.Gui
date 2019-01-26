@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SpriteFontPlus;
 
 namespace AposGui {
     /// <summary>
@@ -14,6 +15,10 @@ namespace AposGui {
                     _scale = value;
                 }
             }
+        }
+        public static DynamicSpriteFont Font {
+            get;
+            set;
         }
         public static GameWindow Window;
         public static int WindowWidth => (int)(Window.ClientBounds.Width * (1 / GuiHelper.Scale));

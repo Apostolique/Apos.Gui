@@ -2,17 +2,16 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using MonoGame.Extended.BitmapFonts;
 
 namespace AposGui {
     public class LabelDynamic : Label {
         //constructors
-        public LabelDynamic(BitmapFont iFont) : base(iFont) {
+        public LabelDynamic() {
             _text = delegate() {
                 return "Text Missing";
             };
         }
-        public LabelDynamic(BitmapFont iFont, Func<string> iText) : base(iFont) {
+        public LabelDynamic(Func<string> iText) {
             _text = iText;
         }
 
@@ -21,7 +20,7 @@ namespace AposGui {
         new Size2 _textSize {
             get {
                 if (_text != null) {
-                    return _font.MeasureString(_text());
+                    return GuiHelper.Font.MeasureString(_text());
                 }
                 return Size2.Empty;
             }
