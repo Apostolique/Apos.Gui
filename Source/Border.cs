@@ -23,13 +23,16 @@ namespace AposGui {
             set {
                 _item = value;
                 _item.Parent = this;
+                Item.Position = base.Position + _topLeftOffset;
+                Item.Width = base.Width - MarginLeft - MarginRight;
+                Item.Height = base.Height - MarginTop - MarginBottom;
             }
         }
         public override Point Position {
             get => base.Position;
             set {
                 base.Position = value;
-                Item.Position = base.Position + new Point(MarginLeft, MarginTop);
+                Item.Position = base.Position + _topLeftOffset;
             }
         }
         public override int Width {
@@ -49,20 +52,36 @@ namespace AposGui {
         public override int PrefWidth => Item.PrefWidth + MarginLeft + MarginRight;
         public override int PrefHeight => Item.PrefHeight + MarginTop + MarginBottom;
         public virtual int MarginLeft {
-            get;
-            set;
+            get => _marginLeft;
+            set {
+                _marginLeft = value;
+                _topLeftOffset = new Point(MarginLeft, _topLeftOffset.Y);
+                Item.Position = base.Position + _topLeftOffset;
+                Item.Width = base.Width - MarginLeft - MarginRight;
+            }
         }
         public virtual int MarginTop {
-            get;
-            set;
+            get => _marginTop;
+            set {
+                _marginTop = value;
+                _topLeftOffset = new Point(_topLeftOffset.X, MarginTop);
+                Item.Position = base.Position + _topLeftOffset;
+                Item.Height = base.Height - MarginTop - MarginBottom;
+            }
         }
         public virtual int MarginRight {
-            get;
-            set;
+            get => _marginRight;
+            set {
+                _marginRight = value;
+                Item.Width = base.Width - MarginLeft - MarginRight;
+            }
         }
         public virtual int MarginBottom {
-            get;
-            set;
+            get => _marginBottom;
+            set {
+                _marginBottom = value;
+                Item.Height = base.Height - MarginTop - MarginBottom;
+            }
         }
         public override Rectangle ClippingRect {
             get {
@@ -110,5 +129,10 @@ namespace AposGui {
 
         //private vars
         protected Component _item;
+        protected int _marginLeft;
+        protected int _marginTop;
+        protected int _marginRight;
+        protected int _marginBottom;
+        protected Point _topLeftOffset = new Point(0, 0);
     }
 }
