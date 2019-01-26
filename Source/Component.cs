@@ -12,33 +12,21 @@ namespace AposGui {
     /// </summary>
     public class Component {
         //constructors
-        public Component() {
-            Position = new Point(0, 0);
-            Width = 100;
-            Height = 100;
-            Parent = null;
-            OldIsHovered = false;
-            _isHovered = false;
-            IsFocusable = false;
-            _clippingRect = Option.None<Rectangle>();
-            _hoverConditions = new List<Func<Component, bool>>();
-            _conditionOperations = new List<ConditionOperation>();
-            GrabFocus = (Component c) => { };
-        }
+        public Component() { }
 
         //public vars
         public virtual Point Position {
             get;
             set;
-        }
+        } = new Point(0, 0);
         public virtual int Width {
             get;
             set;
-        }
+        } = 100;
         public virtual int Height {
             get;
             set;
-        }
+        } = 100;
         public virtual int PrefWidth => Width;
         public virtual int PrefHeight => Height;
         public virtual int Left => Position.X;
@@ -57,11 +45,11 @@ namespace AposGui {
         public virtual Component Parent {
             get;
             set;
-        }
+        } = null;
         public virtual bool OldIsHovered {
             get;
             set;
-        }
+        } = false;
         public virtual bool IsHovered {
             get => _isHovered;
             set {
@@ -72,7 +60,7 @@ namespace AposGui {
         public virtual bool IsFocusable {
             get;
             set;
-        }
+        } = false;
         public virtual bool HasFocus {
             get;
             set;
@@ -80,7 +68,7 @@ namespace AposGui {
         public virtual Action<Component> GrabFocus {
             get;
             set;
-        }
+        } = (Component c) => {};
 
         //public functions
         public void AddHoverCondition(Func<Component, bool> c) {
@@ -210,10 +198,10 @@ namespace AposGui {
             public Func<Component, bool> Condition;
             public Func<Component, bool> Operation;
         }
-        protected bool _isHovered;
-        protected Option<Rectangle> _clippingRect;
+        protected bool _isHovered = false;
+        protected Option<Rectangle> _clippingRect = Option.None<Rectangle>();
         protected Rectangle _oldScissor;
-        protected List<Func<Component, bool>> _hoverConditions;
-        protected List<ConditionOperation> _conditionOperations;
+        protected List<Func<Component, bool>> _hoverConditions = new List<Func<Component, bool>>();
+        protected List<ConditionOperation> _conditionOperations = new List<ConditionOperation>();
     }
 }
