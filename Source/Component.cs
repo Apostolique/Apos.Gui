@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Optional;
 
 namespace AposGui {
     /// <summary>
@@ -19,7 +20,7 @@ namespace AposGui {
             OldIsHovered = false;
             _isHovered = false;
             IsFocusable = false;
-            _clippingRect = Maybe<Rectangle>.Nothing;
+            _clippingRect = Option.None<Rectangle>();
             _hoverConditions = new List<Func<Component, bool>>();
             _conditionOperations = new List<ConditionOperation>();
             GrabFocus = (Component c) => { };
@@ -47,13 +48,10 @@ namespace AposGui {
         public virtual Rectangle BoundingRect => new Rectangle(Left, Top, Width, Height);
         public virtual Rectangle ClippingRect {
             get {
-                if (_clippingRect.HasValue) {
-                    return _clippingRect.Value;
-                }
-                return BoundingRect;
+                return _clippingRect.ValueOr(() => BoundingRect);
             }
             set {
-                _clippingRect = new Maybe<Rectangle>(ClipRectangle(value));
+                _clippingRect = Option.Some(ClipRectangle(value));
             }
         }
         public virtual Component Parent {
@@ -213,7 +211,7 @@ namespace AposGui {
             public Func<Component, bool> Operation;
         }
         protected bool _isHovered;
-        protected Maybe<Rectangle> _clippingRect;
+        protected Option<Rectangle> _clippingRect;
         protected Rectangle _oldScissor;
         protected List<Func<Component, bool>> _hoverConditions;
         protected List<ConditionOperation> _conditionOperations;

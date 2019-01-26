@@ -21,5 +21,6 @@
     <PackageReference Include="Newtonsoft.Json" PrivateAssets="All" Version="*"/>
     <PackageReference Include="MonoGame.Framework.Portable" PrivateAssets="All" Version="3.6.0.1625"/>
     <PackageReference Include="SpriteFontPlus.MonoGame" Version="0.6.0.5"/>
+    <PackageReference Include="Optional" Version="4.0.0"/>
   </ItemGroup>
 </Project>
