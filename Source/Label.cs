@@ -37,13 +37,10 @@ namespace AposGui {
         }
 
         //private vars
-        protected string _text;
+        protected string _text = "Text Missing";
         protected Size2 _textSize {
             get {
-                if (_text != null) {
-                    return GuiHelper.Font.MeasureString(_text);
-                }
-                return Size2.Empty;
+                return GuiHelper.MeasureString(_text);
             }
         }
 

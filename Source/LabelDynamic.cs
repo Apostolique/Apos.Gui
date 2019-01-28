@@ -10,6 +10,8 @@ namespace AposGui {
         public LabelDynamic() : this(() => "Text Missing") { }
         public LabelDynamic(Func<string> iText) {
             _text = iText;
+            Width = PrefWidth;
+            Height = PrefHeight;
         }
 
         //public vars
@@ -24,13 +26,10 @@ namespace AposGui {
         }
 
         //private vars
-        new Func<string> _text;
+        new Func<string> _text = () => "Text Missing";
         new Size2 _textSize {
             get {
-                if (_text != null) {
-                    return GuiHelper.Font.MeasureString(_text());
-                }
-                return Size2.Empty;
+                return GuiHelper.MeasureString(_text());
             }
         }
     }

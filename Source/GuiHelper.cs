@@ -85,6 +85,10 @@ namespace AposGui {
             s.DrawString(Font, t, p, c, scale);
             Font.Size = FontSize;
         }
+        public static Vector2 MeasureString(string text) {
+            Font.Size = FontSize * Scale;
+            return Font.MeasureString(text) / Scale;
+        }
 
         //private vars
         private static float _scale = 1f;
