@@ -77,10 +77,10 @@ namespace AposGui {
             Begin(s);
         }
         public static void UpdateSetup() {
-            foreach (Action a in NextLoopActions) {
-                a();
+            for (int i = NextLoopActions.Count - 1; i >= 0; i--) {
+                NextLoopActions[i]();
+                NextLoopActions.RemoveAt(i);
             }
-            NextLoopActions.Clear();
         }
         public static void DrawGui(SpriteBatch s, Component c) {
             c.Draw(s);
