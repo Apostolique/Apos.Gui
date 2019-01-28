@@ -81,7 +81,7 @@ namespace AposGui {
         }
         public static void DrawString(SpriteBatch s, string t, Vector2 p, Color c) {
             Font.Size = FontSize * Scale;
-            Vector2 scale = new Vector2((1 / Scale));
+            Vector2 scale = new Vector2(1 / Scale);
             s.DrawString(Font, t, p, c, scale);
             Font.Size = FontSize;
         }
