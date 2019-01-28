@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpriteFontPlus;
@@ -28,6 +30,7 @@ namespace AposGui {
         public static int WindowWidth => (int)(Window.ClientBounds.Width * (1 / GuiHelper.Scale));
         public static int WindowHeight => (int)(Window.ClientBounds.Height * (1 / GuiHelper.Scale));
         public static SamplerState GuiSampler = SamplerState.PointClamp;
+        public static List<Action> NextLoopActions = new List<Action>();
 
         //public functions
         public static Matrix GetUIMatrix() {
@@ -72,6 +75,12 @@ namespace AposGui {
 
             s.GraphicsDevice.ScissorRectangle = r;
             Begin(s);
+        }
+        public static void UpdateSetup() {
+            foreach (Action a in NextLoopActions) {
+                a();
+            }
+            NextLoopActions.Clear();
         }
         public static void DrawGui(SpriteBatch s, Component c) {
             c.Draw(s);
