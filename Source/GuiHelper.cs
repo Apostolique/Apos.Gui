@@ -20,6 +20,10 @@ namespace AposGui {
             get;
             set;
         }
+        public static float FontSize {
+            get;
+            set;
+        }
         public static GameWindow Window;
         public static int WindowWidth => (int)(Window.ClientBounds.Width * (1 / GuiHelper.Scale));
         public static int WindowHeight => (int)(Window.ClientBounds.Height * (1 / GuiHelper.Scale));
@@ -74,6 +78,12 @@ namespace AposGui {
             if (_beginCalled) {
                 End(s);
             }
+        }
+        public static void DrawString(SpriteBatch s, string t, Vector2 p, Color c) {
+            Font.Size = FontSize * Scale;
+            Vector2 scale = new Vector2((1 / Scale));
+            s.DrawString(Font, t, p, c, scale);
+            Font.Size = FontSize;
         }
 
         //private vars
