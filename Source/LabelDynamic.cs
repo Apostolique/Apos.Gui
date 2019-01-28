@@ -13,6 +13,17 @@ namespace AposGui {
         }
 
         //public vars
+        public override int PrefWidth => (int) _textSize.Width;
+        public override int PrefHeight => (int) _textSize.Height;
+
+        //public functions
+        public override void Draw(SpriteBatch s) {
+            SetScissor(s);
+            GuiHelper.DrawString(s, _text(), new Vector2(Left, Top), getColor());
+            ResetScissor(s);
+        }
+
+        //private vars
         new Func<string> _text;
         new Size2 _textSize {
             get {
@@ -21,15 +32,6 @@ namespace AposGui {
                 }
                 return Size2.Empty;
             }
-        }
-        public override int PrefWidth => (int) _textSize.Width;
-        public override int PrefHeight => (int) _textSize.Height;
-
-        //public functions
-        public override void Draw(SpriteBatch s) {
-            SetScissor(s);
-            s.DrawString(GuiHelper.Font, _text(), new Vector2(Left, Top), getColor());
-            ResetScissor(s);
         }
     }
 }
