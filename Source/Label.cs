@@ -13,7 +13,6 @@ namespace AposGui {
         public Label() : this("Text Missing") { }
         public Label(string iText) {
             _text = iText;
-            _textSize = GuiHelper.Font.MeasureString(_text);
             Width = PrefWidth;
             Height = PrefHeight;
         }
@@ -33,13 +32,20 @@ namespace AposGui {
         //public functions
         public override void Draw(SpriteBatch s) {
             SetScissor(s);
-            s.DrawString(GuiHelper.Font, _text, new Vector2(Left, Top), getColor());
+            GuiHelper.DrawString(s, _text, new Vector2(Left, Top), getColor());
             ResetScissor(s);
         }
 
         //private vars
         protected string _text;
-        protected Size2 _textSize;
+        protected Size2 _textSize {
+            get {
+                if (_text != null) {
+                    return GuiHelper.Font.MeasureString(_text);
+                }
+                return Size2.Empty;
+            }
+        }
 
         //private functions
         protected virtual Color getColor() {
