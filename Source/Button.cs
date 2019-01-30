@@ -20,6 +20,15 @@ namespace AposGui {
             get;
             set;
         } = true;
+        public override Rectangle ClippingRect {
+            get {
+                return base.ClippingRect;
+            }
+            set {
+                base.ClippingRect = value;
+                Item.ClippingRect = value;
+            }
+        }
         public override bool OldIsHovered {
             get => base.OldIsHovered;
             set {
