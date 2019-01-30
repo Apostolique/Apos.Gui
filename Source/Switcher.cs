@@ -11,15 +11,15 @@ namespace AposGui {
     /// <summary>
     /// Goal: A Switch component that works like a tab.
     /// </summary>
-    public class Switch : Component {
+    public class Switcher : Component {
         //constructors
-        public Switch() { }
+        public Switcher() { }
 
         //public vars
         public string Key {
             get {
                 if (_children.Count > 0) {
-                    if (_children.ContainsKey(_key)) {
+                    if (_key != null && _children.ContainsKey(_key)) {
                         return _key;
                     }
                     _key = _children.Keys.First();
@@ -178,6 +178,11 @@ namespace AposGui {
             base.Update();
             if (_children.Count > 0) {
                 _children[Key].Update();
+            }
+        }
+        public override void Draw(SpriteBatch s) {
+            if (_children.Count > 0) {
+                _children[Key].Draw(s);
             }
         }
 
