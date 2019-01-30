@@ -29,7 +29,7 @@ namespace AposGui {
         public static GameWindow Window;
         public static int WindowWidth => (int)(Window.ClientBounds.Width * (1 / GuiHelper.Scale));
         public static int WindowHeight => (int)(Window.ClientBounds.Height * (1 / GuiHelper.Scale));
-        public static SamplerState GuiSampler = SamplerState.PointClamp;
+        public static SamplerState GuiSampler = SamplerState.LinearClamp;
         public static List<Action> NextLoopActions = new List<Action>();
 
         //public functions
@@ -89,14 +89,19 @@ namespace AposGui {
             }
         }
         public static void DrawString(SpriteBatch s, string t, Vector2 p, Color c) {
-            Font.Size = FontSize * Scale;
-            Vector2 scale = new Vector2(1 / Scale);
+            float virtualScale = (float)Math.Ceiling(Scale);
+            float finalScale = 1 / virtualScale;
+
+            Font.Size = FontSize * virtualScale;
+            Vector2 scale = new Vector2(finalScale);
             s.DrawString(Font, t, p, c, scale);
-            Font.Size = FontSize;
         }
         public static Vector2 MeasureString(string text) {
-            Font.Size = FontSize * Scale;
-            return Font.MeasureString(text) / Scale;
+            float virtualScale = (float)Math.Ceiling(Scale);
+            float finalScale = 1 / virtualScale;
+
+            Font.Size = FontSize * virtualScale;
+            return Font.MeasureString(text) * finalScale;
         }
 
         //private vars
