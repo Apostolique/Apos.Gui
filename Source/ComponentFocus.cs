@@ -56,7 +56,6 @@ namespace AposGui {
 
         //public functions
         public void UpdateSetup() {
-            GuiHelper.UpdateSetup();
             RootComponent.UpdateSetup();
         }
         public bool UpdateInput() {
