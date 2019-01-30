@@ -89,7 +89,7 @@ namespace AposGui {
             }
             set {
                 base.ClippingRect = value;
-                Item.ClippingRect = base.ClippingRect;
+                Item.ClippingRect = value;
             }
         }
         public override bool OldIsHovered {
@@ -113,6 +113,7 @@ namespace AposGui {
                 Item.HasFocus = value;
             }
         }
+        public override bool IsFocusable => Item.IsFocusable;
 
         //public functions
         public override Component GetFinal() {
