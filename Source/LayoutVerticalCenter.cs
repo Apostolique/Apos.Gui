@@ -59,7 +59,7 @@ namespace AposGui {
                 offsetY += cHeight;
                 c.ClippingRect = c.ClipRectangle(Panel.ClippingRect);
             }
-            Panel.Size = new Size2(_oldWidth, offsetY);
+            Panel.Size = new Size2(_newWidth, offsetY);
         }
 
         //private vars
