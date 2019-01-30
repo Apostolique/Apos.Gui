@@ -13,21 +13,18 @@ namespace AposGui {
         public Panel() : this(new Layout()) {
         }
         public Panel(Layout l) {
-            children = new List<Component>();
             Layout = l;
-            Offset = new Point(0, 0);
-            Size = new Size2(0, 0);
         }
 
         //public vars
         public Point Offset {
             get;
             set;
-        }
+        } = new Point(0, 0);
         public Size2 Size {
             get;
             set;
-        }
+        } = new Size2(0, 0);
         public Layout Layout {
             get => _layout;
             set {
@@ -38,60 +35,61 @@ namespace AposGui {
 
         //public functions
         public virtual void Add(Component e) {
-            children.Add(e);
+            _children.Add(e);
             e.Parent = this;
         }
         public virtual void Remove(Component e) {
-            children.Remove(e);
+            _children.Remove(e);
             e.Parent = null;
         }
         public override Component GetPrevious(Component c) {
-            int index = children.IndexOf(c) - 1;
-            if (index >= 0 && children.Count > 0) {
-                return children[index];
+            int index = _children.IndexOf(c) - 1;
+            if (index >= 0 && _children.Count > 0) {
+                return _children[index];
             } else if (Parent != null) {
                 return Parent.GetPrevious(this);
-            } else if (children.Count > 0) {
-                return children.Last();
+            } else if (_children.Count > 0) {
+                return _children.Last();
             }
             return this;
         }
         public override Component GetNext(Component c) {
-            int index = children.IndexOf(c) + 1;
-            if (index < children.Count) {
-                return children[index];
+            int index = _children.IndexOf(c) + 1;
+            if (index < _children.Count) {
+                return _children[index];
             } else if (Parent != null) {
                 return Parent.GetNext(this);
-            } else if (children.Count > 0) {
-                return children[0];
+            } else if (_children.Count > 0) {
+                return _children[0];
             }
             return this;
         }
         public override Component GetFinal() {
-            if (children.Count > 0) {
-                return children.First();
+            if (_children.Count > 0) {
+                return _children.First();
             }
             return this;
         }
         public override Component GetFinalInverse() {
-            if (children.Count > 0) {
-                return children.Last();
+            if (_children.Count > 0) {
+                return _children.Last();
             }
             return this;
         }
         public override void UpdateSetup() {
+            base.UpdateSetup();
             if (Layout != null) {
-                Layout.RecomputeChildren(children);
+                Layout.RecomputeChildren(_children);
             }
-            foreach (Component e in children) {
+            foreach (Component e in _children) {
                 e.UpdateSetup();
             }
         }
         public override bool UpdateInput() {
             bool isUsed = false;
 
-            for (int i = children.Count - 1; i >= 0; i--) {
-                if (children[i].UpdateInput()) {
+            for (int i = _children.Count - 1; i >= 0; i--) {
+                if (_children[i].UpdateInput()) {
                     isUsed = true;
                     break;
                 }
@@ -103,18 +101,18 @@ namespace AposGui {
         }
         public override void Update() {
             base.Update();
-            foreach (Component e in children) {
+            foreach (Component e in _children) {
                 e.Update();
             }
         }
         public override void Draw(SpriteBatch s) {
-            foreach (Component e in children) {
+            foreach (Component e in _children) {
                 e.Draw(s);
             }
         }
 
         //private vars
-        protected List<Component> children;
+        protected List<Component> _children = new List<Component>();
         protected Layout _layout;
     }
 }
