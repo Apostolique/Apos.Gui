@@ -37,10 +37,11 @@ namespace AposGui {
             int halfWidth = _newWidth / 2;
             int halfHeight = _newHeight / 2;
 
+            int canvasWidth = 0;
             int canvasHeight = 0;
             foreach (Component c in children) {
-                int cMarginHeight = c.PrefHeight;
-                canvasHeight += cMarginHeight;
+                canvasWidth = Math.Max(canvasWidth, c.PrefWidth);
+                canvasHeight += c.PrefHeight;
             }
 
             int canvasOffsetY = halfHeight - canvasHeight / 2;
@@ -59,7 +60,7 @@ namespace AposGui {
                 offsetY += cHeight;
                 c.ClippingRect = c.ClipRectangle(Panel.ClippingRect);
             }
-            Panel.Size = new Size2(_newWidth, offsetY);
+            Panel.Size = new Size2(canvasWidth, canvasHeight);
         }
 
         //private vars
