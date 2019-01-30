@@ -126,6 +126,7 @@ namespace AposGui {
         //public functions
         public void Add(string key, Component c) {
             _children.Add(key, c);
+            c.Parent = this;
         }
         public override Component GetPrevious(Component c) {
             if (_children.Count > 0) {
