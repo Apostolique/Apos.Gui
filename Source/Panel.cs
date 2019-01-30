@@ -32,6 +32,8 @@ namespace AposGui {
                 _layout.Panel = this;
             }
         }
+        public override int PrefWidth => (int)Size.Width;
+        public override int PrefHeight => (int)Size.Height;
 
         //public functions
         public virtual void Add(Component e) {
