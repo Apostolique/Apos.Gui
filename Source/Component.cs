@@ -45,7 +45,7 @@ namespace AposGui {
         public virtual Option<Component> Parent {
             get;
             set;
-        }
+        } = Option.None<Component>();
         public virtual bool OldIsHovered {
             get;
             set;
