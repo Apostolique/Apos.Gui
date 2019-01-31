@@ -12,6 +12,10 @@ UI library for MonoGame.
 * Mouse, Keyboard, Gamepad, Touchscreen
 * UI scaling
 
+## Showcase
+
+<img src="Images/Showcase.gif" alt="Apos GUI Loop" width="800" height="480" />
+
 ## Usage samples
 
 Coming soon!
