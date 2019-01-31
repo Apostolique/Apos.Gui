@@ -106,33 +106,6 @@ namespace AposGui {
 
             return new Rectangle(left, top, clipWidth, clipHeight);
         }
-        public Rectangle ClipSourceRectangle(Rectangle sourceRectangle, Rectangle destinationRectangle, Rectangle clippingRectangle) {
-            float left = (float) (clippingRectangle.Left - destinationRectangle.Left);
-            float right = (float) (destinationRectangle.Right - clippingRectangle.Right);
-            float top = (float) (clippingRectangle.Top - destinationRectangle.Top);
-            float bottom = (float) (destinationRectangle.Bottom - clippingRectangle.Bottom);
-            float x = left > 0 ? left : 0;
-            float y = top > 0 ? top : 0;
-            float w = (right > 0 ? right : 0) + x;
-            float h = (bottom > 0 ? bottom : 0) + y;
-
-            float scaleX = (float) destinationRectangle.Width / sourceRectangle.Width;
-            float scaleY = (float) destinationRectangle.Height / sourceRectangle.Height;
-            x /= scaleX;
-            y /= scaleY;
-            w /= scaleX;
-            h /= scaleY;
-
-            return new Rectangle((int) (sourceRectangle.X + x), (int) (sourceRectangle.Y + y), (int) (sourceRectangle.Width - w), (int) (sourceRectangle.Height - h));
-        }
-        public Rectangle ClipDestinationRectangle(Rectangle destinationRectangle, Rectangle clippingRectangle) {
-            var left = clippingRectangle.Left < destinationRectangle.Left ? destinationRectangle.Left : clippingRectangle.Left;
-            var top = clippingRectangle.Top < destinationRectangle.Top ? destinationRectangle.Top : clippingRectangle.Top;
-            var bottom = clippingRectangle.Bottom < destinationRectangle.Bottom ? clippingRectangle.Bottom : destinationRectangle.Bottom;
-            var right = clippingRectangle.Right < destinationRectangle.Right ? clippingRectangle.Right : destinationRectangle.Right;
-
-            return new Rectangle(left, top, right - left, bottom - top);
-        }
         public virtual bool IsInside(Point v) {
             return IsInside(BoundingRect, v);
         }
