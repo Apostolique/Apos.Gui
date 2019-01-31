@@ -16,112 +16,52 @@ namespace AposGui {
         public Switcher() { }
 
         //public vars
-        public T Key {
+        public Option<T> Key {
             get {
                 if (_children.Count > 0) {
-                    if (_key != null && _children.ContainsKey(_key)) {
-                        return _key;
+                    return _key.Or(() => _children.Keys.First());
+                }
+                return Option.None<T>();
+            }
+            set {
+                value.MatchSome(key => {
+                    if (_children.ContainsKey(key)) {
+                        _key = value;
                     }
-                    _key = _children.Keys.First();
-                    return _key;
-                }
-                return default(T);
-            }
-            set {
-                if (_children.ContainsKey(value)) {
-                    _key = value;
-                }
-            }
-        }
-        public override Rectangle ClippingRect {
-            get {
-                return base.ClippingRect;
-            }
-            set {
-                base.ClippingRect = value;
-                if (_children.Count > 0) {
-                    _children[Key].ClippingRect = value;
-                }
+                });
             }
         }
         public override bool OldIsHovered {
             get => base.OldIsHovered;
             set {
                 base.OldIsHovered = value;
-                if (_children.Count > 0) {
-                    _children[Key].OldIsHovered = value;
-                }
+                Key.MatchSome(key => {
+                    _children[key].OldIsHovered = value;
+                });
             }
         }
         public override bool IsHovered {
             get => base.IsHovered;
             set {
                 base.IsHovered = value;
-                if (_children.Count > 0) {
-                    _children[Key].IsHovered = value;
-                }
+                Key.MatchSome(key => {
+                    _children[key].IsHovered = value;
+                });
             }
         }
-        public override bool IsFocusable { 
-            get {
-                if (_children.Count > 0) {
-                    return _children[Key].IsFocusable;
-                }
-                return false;
-            }
-        }
+        public override bool IsFocusable => Key.Map(key => _children[key].IsFocusable).ValueOr(false);
+
         public override bool HasFocus {
             get => base.HasFocus;
             set {
                 base.HasFocus = value;
-                if (_children.Count > 0) {
-                    _children[Key].HasFocus = value;
-                }
+                Key.MatchSome(key => {
+                    _children[key].HasFocus = value;
+                });
             }
         }
-        public override Point Position {
-            get => base.Position;
-            set {
-                base.Position = value;
-                if (_children.Count > 0) {
-                    _children[Key].Position = base.Position;
-                }
-            }
-        }
-        public override int Width {
-            get => base.Width;
-            set {
-                base.Width = value;
-                if (_children.Count > 0) {
-                    _children[Key].Width = base.Width;
-                }
-            }
-        }
-        public override int Height {
-            get => base.Height;
-            set {
-                base.Height = value;
-                if (_children.Count > 0) {
-                    _children[Key].Height = base.Height;
-                }
-            }
-        }
-        public override int PrefWidth {
-            get {
-                if (_children.Count > 0) {
-                    return _children[Key].PrefWidth;
-                }
-                return Width;
-            }
-        }
-        public override int PrefHeight {
-            get {
-                if (_children.Count > 0) {
-                    return _children[Key].PrefHeight;
-                }
-                return Height;
-            }
-        }
+        public override int PrefWidth => Key.Map(key => _children[key].PrefWidth).ValueOr(Width);
+        public override int PrefHeight => Key.Map(key => _children[key].PrefHeight).ValueOr(Height);
 
         //public functions
         public void Add(T key, Component c) {
@@ -129,45 +69,46 @@ namespace AposGui {
             c.Parent = this;
         }
         public override Component GetPrevious(Component c) {
-            if (_children.Count > 0) {
-                return _children[Key];
-            } else if (Parent != null) {
-                return Parent.GetPrevious(this);
-            }
-            return this;
+            return Key.Map(key => _children[key]).ValueOr(() => {
+                if (Parent != null) {
+                    return Parent.GetPrevious(this);
+                }
+                return this;
+            });
         }
         public override Component GetNext(Component c) {
-            if (_children.Count > 0) {
-                return _children[Key];
-            } else if (Parent != null) {
-                return Parent.GetNext(this);
-            }
-            return this;
+            return Key.Map(key => _children[key]).ValueOr(() => {
+                if (Parent != null) {
+                    return Parent.GetNext(this);
+                }
+                return this;
+            });
         }
         public override Component GetFinal() {
-            if (_children.Count > 0) {
-                return _children[Key];
-            }
-            return this;
+            return Key.Map(key => _children[key]).ValueOr(this);
         }
         public override Component GetFinalInverse() {
-            if (_children.Count > 0) {
-                return _children[Key];
-            }
-            return this;
+            return Key.Map(key => _children[key]).ValueOr(this);
         }
         public override void UpdateSetup() {
             base.UpdateSetup();
-            if (_children.Count > 0) {
-                _children[Key].UpdateSetup();
-            }
+
+            Key.MatchSome(key => {
+                Component c = _children[key];
+                c.Width = Width;
+                c.Height = Height;
+                c.Position = Position;
+                c.ClippingRect = ClippingRect;
+
+                c.UpdateSetup();
+            });
         }
         public override bool UpdateInput() {
             bool isUsed = false;
 
-            if (_children.Count > 0) {
-                isUsed = _children[Key].UpdateInput();
-            }
+            Key.MatchSome(key => {
+                isUsed = _children[key].UpdateInput();
+            });
 
             if (!isUsed) {
                 isUsed = base.UpdateInput();
@@ -177,18 +118,18 @@ namespace AposGui {
         }
         public override void Update() {
             base.Update();
-            if (_children.Count > 0) {
-                _children[Key].Update();
-            }
+            Key.MatchSome(key => {
+                _children[key].Update();
+            });
         }
         public override void Draw(SpriteBatch s) {
-            if (_children.Count > 0) {
-                _children[Key].Draw(s);
-            }
+            Key.MatchSome(key => {
+                _children[key].Draw(s);
+            });
         }
 
         //private vars
-        protected T _key;
+        protected Option<T> _key = Option.None<T>();
         protected Dictionary<T, Component> _children = new Dictionary<T, Component>();
     }
 }

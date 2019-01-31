@@ -20,15 +20,6 @@ namespace AposGui {
             get;
             set;
         } = true;
-        public override Rectangle ClippingRect {
-            get {
-                return base.ClippingRect;
-            }
-            set {
-                base.ClippingRect = value;
-                Item.ClippingRect = value;
-            }
-        }
         public override bool OldIsHovered {
             get => base.OldIsHovered;
             set {
@@ -59,36 +50,22 @@ namespace AposGui {
             set {
                 _item = value;
                 _item.Parent = this;
-                Item.Position = base.Position;
-                Item.Width = base.Width;
-                Item.Height = base.Height;
-            }
-        }
-        public override Point Position {
-            get => base.Position;
-            set {
-                base.Position = value;
-                Item.Position = base.Position;
-            }
-        }
-        public override int Width {
-            get => base.Width;
-            set {
-                base.Width = value;
-                Item.Width = base.Width;
-            }
-        }
-        public override int Height {
-            get => base.Height;
-            set {
-                base.Height = value;
-                Item.Height = base.Height;
             }
         }
         public override int PrefWidth => Item.PrefWidth;
         public override int PrefHeight => Item.PrefHeight;
 
         //public functions
+        public override void UpdateSetup() {
+            base.UpdateSetup();
+
+            Item.Width = Width;
+            Item.Height = Height;
+            Item.Position = Position;
+            Item.ClippingRect = ClippingRect;
+
+            Item.UpdateSetup();
+        }
         public override void Draw(SpriteBatch s) {
             SetScissor(s);
             if (ShowBox) {
