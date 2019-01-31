@@ -48,10 +48,10 @@ namespace AposGui {
             int offsetY = position.Y;
             foreach (Component c in children) {
                 int cWidth = c.PrefWidth;
-                int componentHalfWidth = cWidth / 2;
                 int cHeight = c.PrefHeight;
                 c.Width = cWidth;
                 c.Height = cHeight;
+                int componentHalfWidth = cWidth / 2;
                 if (canvasHeight < _newHeight) {
                     c.Position = new Point(position.X + halfWidth - componentHalfWidth, offsetY + canvasOffsetY) + Panel.Offset;
                 } else {

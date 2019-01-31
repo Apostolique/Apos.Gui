@@ -27,10 +27,6 @@ namespace AposGui {
 
         //private vars
         new Func<string> _text = () => "Text Missing";
-        new Size2 _textSize {
-            get {
-                return GuiHelper.MeasureString(_text());
-            }
-        }
+        new Size2 _textSize => GuiHelper.MeasureString(_text());
     }
 }

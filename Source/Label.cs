@@ -26,8 +26,8 @@ namespace AposGui {
             get;
             set;
         } = new Color(150, 150, 150);
-        public override int PrefWidth => (int) _textSize.Width;
-        public override int PrefHeight => (int) _textSize.Height;
+        public override int PrefWidth => (int)_textSize.Width;
+        public override int PrefHeight => (int)_textSize.Height;
 
         //public functions
         public override void Draw(SpriteBatch s) {
@@ -38,11 +38,7 @@ namespace AposGui {
 
         //private vars
         protected string _text = "Text Missing";
-        protected Size2 _textSize {
-            get {
-                return GuiHelper.MeasureString(_text);
-            }
-        }
+        protected Size2 _textSize => GuiHelper.MeasureString(_text);
 
         //private functions
         protected virtual Color getColor() {
