@@ -17,7 +17,7 @@ namespace AposGui {
             if (!isUsed && IsHovered) {
                 int scrollWheelDelta = GuiHelper.ScrollWheelDelta();
                 if (scrollWheelDelta != 0) {
-                    Offset = new Point(Offset.X, (int) Math.Min(Math.Max(Offset.Y + scrollWheelDelta, Height - Size.Height), 0));
+                    Offset = new Point(Offset.X, (int) Math.Min(Math.Max(Offset.Y + scrollWheelDelta, ClippingRect.Height - Size.Height), 0));
                     isUsed = true;
                 }
             }

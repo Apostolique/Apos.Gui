@@ -26,11 +26,11 @@ namespace AposGui {
             //Tell each children their position and size.
             _oldWidth = _newWidth;
             _oldHeigth = _newHeight;
-            _newWidth = Panel.Width;
-            _newHeight = Panel.Height;
+            _newWidth = Panel.ClippingRect.Width;
+            _newHeight = Panel.ClippingRect.Height;
 
             if (_oldWidth != _newWidth || _oldHeigth != _newHeight) {
-                Panel.Offset = new Point(Panel.Offset.X, (int)Math.Min(Math.Max(Panel.Offset.Y, Panel.Height - Panel.Size.Height), 0));
+                Panel.Offset = new Point(Panel.Offset.X, (int)Math.Min(Math.Max(Panel.Offset.Y, Panel.ClippingRect.Height - Panel.Size.Height), 0));
             }
 
             Point position = Panel.Position;
