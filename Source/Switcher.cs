@@ -11,12 +11,12 @@ namespace AposGui {
     /// <summary>
     /// Goal: A Switch component that works like a tab.
     /// </summary>
-    public class Switcher : Component {
+    public class Switcher<T> : Component {
         //constructors
         public Switcher() { }
 
         //public vars
-        public string Key {
+        public T Key {
             get {
                 if (_children.Count > 0) {
                     if (_key != null && _children.ContainsKey(_key)) {
@@ -25,7 +25,7 @@ namespace AposGui {
                     _key = _children.Keys.First();
                     return _key;
                 }
-                return null;
+                return default(T);
             }
             set {
                 if (_children.ContainsKey(value)) {
@@ -124,7 +124,7 @@ namespace AposGui {
         }
 
         //public functions
-        public void Add(string key, Component c) {
+        public void Add(T key, Component c) {
             _children.Add(key, c);
             c.Parent = this;
         }
@@ -188,7 +188,7 @@ namespace AposGui {
         }
 
         //private vars
-        protected string _key;
-        protected Dictionary<string, Component> _children = new Dictionary<string, Component>();
+        protected T _key;
+        protected Dictionary<T, Component> _children = new Dictionary<T, Component>();
     }
 }
