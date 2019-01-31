@@ -39,7 +39,11 @@ namespace AposGui {
                 if (_focus != null) {
                     _focus.HasFocus = false;
                 }
-                _focus = value;
+                Component focus = value;
+                if (!focus.IsFocusable) {
+                    focus = findNext(focus);
+                }
+                _focus = focus;
                 if (_focus != null) {
                     _focus.HasFocus = true;
                 }
