@@ -42,10 +42,10 @@ namespace AposGui {
                 _clippingRect = Option.Some(ClipRectangle(value));
             }
         }
-        public virtual Component Parent {
+        public virtual Option<Component> Parent {
             get;
             set;
-        } = null;
+        }
         public virtual bool OldIsHovered {
             get;
             set;
@@ -75,28 +75,16 @@ namespace AposGui {
             _conditionOperations.Add(new ConditionOperation(c, o));
         }
         public virtual Component GetPrevious() {
-            if (Parent != null) {
-                return Parent.GetPrevious(this);
-            }
-            return this;
+            return Parent.Map(parent => parent.GetPrevious(this)).ValueOr(this);
         }
         public virtual Component GetNext() {
-            if (Parent != null) {
-                return Parent.GetNext(this);
-            }
-            return this;
+            return Parent.Map(parent => parent.GetNext(this)).ValueOr(this);
         }
         public virtual Component GetPrevious(Component c) {
-            if (Parent != null) {
-                return Parent.GetPrevious(this);
-            }
-            return this;
+            return GetPrevious();
         }
         public virtual Component GetNext(Component c) {
-            if (Parent != null) {
-                return Parent.GetNext(this);
-            }
-            return this;
+            return GetNext();
         }
         public virtual Component GetFinal() {
             return this;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using Optional;
 
 namespace AposGui {
     /// <summary>
@@ -49,7 +50,7 @@ namespace AposGui {
             get => _item;
             set {
                 _item = value;
-                _item.Parent = this;
+                _item.Parent = Option.Some((Component)this);
             }
         }
         public override int PrefWidth => Item.PrefWidth;

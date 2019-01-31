@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
+using Optional;
 
 namespace AposGui {
     /// <summary>
@@ -38,33 +39,35 @@ namespace AposGui {
         //public functions
         public virtual void Add(Component e) {
             _children.Add(e);
-            e.Parent = this;
+            e.Parent = Option.Some((Component)this);
         }
         public virtual void Remove(Component e) {
             _children.Remove(e);
-            e.Parent = null;
+            e.Parent = Option.None<Component>();
         }
         public override Component GetPrevious(Component c) {
             int index = _children.IndexOf(c) - 1;
             if (index >= 0 && _children.Count > 0) {
                 return _children[index];
-            } else if (Parent != null) {
-                return Parent.GetPrevious(this);
-            } else if (_children.Count > 0) {
-                return _children.Last();
             }
-            return this;
+            return Parent.Map(parent => parent.GetPrevious(this)).ValueOr(() => {
+                if (_children.Count > 0) {
+                    return _children.Last();
+                }
+                return this;
+            });
         }
         public override Component GetNext(Component c) {
             int index = _children.IndexOf(c) + 1;
             if (index < _children.Count) {
                 return _children[index];
-            } else if (Parent != null) {
-                return Parent.GetNext(this);
-            } else if (_children.Count > 0) {
-                return _children[0];
             }
-            return this;
+            return Parent.Map(parent => parent.GetNext(this)).ValueOr(() => {
+                if (_children.Count > 0) {
+                    return _children[0];
+                }
+                return this;
+            });
         }
         public override Component GetFinal() {
             if (_children.Count > 0) {

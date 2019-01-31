@@ -49,7 +49,7 @@ namespace AposGui {
                 });
             }
         }
-        public override bool IsFocusable => Key.Map(key => _children[key].IsFocusable).ValueOr(false);
+        //public override bool IsFocusable => Key.Map(key => _children[key].IsFocusable).ValueOr(false);
 
         public override bool HasFocus {
             get => base.HasFocus;
@@ -66,23 +66,13 @@ namespace AposGui {
         //public functions
         public void Add(T key, Component c) {
             _children.Add(key, c);
-            c.Parent = this;
+            c.Parent = Option.Some((Component)this);
         }
         public override Component GetPrevious(Component c) {
-            return Key.Map(key => _children[key]).ValueOr(() => {
-                if (Parent != null) {
-                    return Parent.GetPrevious(this);
-                }
-                return this;
-            });
+            return Key.Map(key => _children[key]).ValueOr(() => Parent.Map(parent => parent.GetPrevious(this)).ValueOr(this));
         }
         public override Component GetNext(Component c) {
-            return Key.Map(key => _children[key]).ValueOr(() => {
-                if (Parent != null) {
-                    return Parent.GetNext(this);
-                }
-                return this;
-            });
+            return Key.Map(key => _children[key]).ValueOr(() => Parent.Map(parent => parent.GetNext(this)).ValueOr(this));
         }
         public override Component GetFinal() {
             return Key.Map(key => _children[key]).ValueOr(this);
