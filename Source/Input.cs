@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace AposGui {
+namespace Apos.Gui {
     //This will get refactored into it's own separate package most likely.
     public static class Input {
         //public vars

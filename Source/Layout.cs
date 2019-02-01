@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: Handles how components are positioned inside a panel.
     /// </summary>

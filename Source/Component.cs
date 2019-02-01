@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Optional;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: The core of a user interface.
     ///       Handles everything from how something is drawn,

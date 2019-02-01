@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Optional;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: Adds padding around a component.
     /// </summary>

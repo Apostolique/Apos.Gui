@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using SpriteFontPlus;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: A text component.
     /// </summary>

@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: Stacks components on top of each others.
     /// </summary>

@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: Provides a way to control which component has focus.
     ///       This is especially useful for gamepad and keyboard controls.

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Optional;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: Container that can hold Components.
     /// </summary>

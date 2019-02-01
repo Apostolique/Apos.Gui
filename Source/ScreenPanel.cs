@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: The ScreenPanel is always the same size as the Window.
     /// </summary>

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpriteFontPlus;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: Unorganized helper functions for AposGui.
     /// </summary>

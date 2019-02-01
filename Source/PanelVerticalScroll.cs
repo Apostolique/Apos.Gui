@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: Container that can hold Components.
     ///       It can also be scrolled over using the mouse wheel.

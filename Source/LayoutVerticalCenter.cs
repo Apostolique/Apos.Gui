@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: Stacks components on top of each others and centers them inside the panel.
     /// </summary>

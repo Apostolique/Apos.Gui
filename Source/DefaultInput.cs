@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Xna.Framework.Input;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: Predefined inputs for Mouse, Keyboard, Gamepad, Touchscreen.
     /// </summary>

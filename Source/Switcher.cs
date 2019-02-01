@@ -7,7 +7,7 @@ using SpriteFontPlus;
 using Optional;
 using System.Linq;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: A Switch component that works like a tab.
     /// </summary>

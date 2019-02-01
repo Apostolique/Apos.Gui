@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Optional;
 
-namespace AposGui {
+namespace Apos.Gui {
     /// <summary>
     /// Goal: A button component that handles actions.
     /// </summary>

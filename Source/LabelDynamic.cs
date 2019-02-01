@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using SpriteFontPlus;
 
-namespace AposGui {
+namespace Apos.Gui {
     public class LabelDynamic : Label {
         //constructors
         public LabelDynamic() : this(() => "Text Missing") { }
