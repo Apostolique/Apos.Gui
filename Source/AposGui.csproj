@@ -2,16 +2,16 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
     <PackageId>AposGui</PackageId>
-    <Title>AposGui</Title>
+    <Title>Apos.Gui</Title>
     <Version>0.8.0</Version>
     <Description>UI library for MonoGame.</Description>
     <Authors>Jean-David Moisan</Authors>
     <Company>Vyne Enterprise Inc.</Company>
     <Copyright>Copyright 2018</Copyright>
     <PackageTags>gamedev;monogame;ui</PackageTags>
-    <PackageIconUrl>https://raw.githubusercontent.com/Apostolique/AposGui/master/Images/Icon.png</PackageIconUrl>
-    <RepositoryUrl>https://github.com/Apostolique/AposGui</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/Apostolique/AposGui</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/Apostolique/Apos.Gui/master/Images/Icon.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/Apostolique/Apos.Gui</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/Apostolique/Apos.Gui</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
