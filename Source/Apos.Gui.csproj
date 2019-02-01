@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
-    <PackageId>AposGui</PackageId>
+    <PackageId>Apos.Gui</PackageId>
     <Title>Apos.Gui</Title>
     <Version>0.8.0</Version>
     <Description>UI library for MonoGame.</Description>

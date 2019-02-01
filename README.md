@@ -5,7 +5,7 @@ UI library for MonoGame.
 
 ## Build
 
-### [NuGet](https://www.nuget.org/packages/AposGui/) [![NuGet](https://img.shields.io/nuget/v/AposGui.svg)](https://www.nuget.org/packages/AposGui/) [![NuGet](https://img.shields.io/nuget/dt/AposGui.svg)](https://www.nuget.org/packages/AposGui/)
+### [NuGet](https://www.nuget.org/packages/Apos.Gui/) [![NuGet](https://img.shields.io/nuget/v/Apos.Gui.svg)](https://www.nuget.org/packages/Apos.Gui/) [![NuGet](https://img.shields.io/nuget/dt/Apos.Gui.svg)](https://www.nuget.org/packages/Apos.Gui/)
 
 ## Features
 
