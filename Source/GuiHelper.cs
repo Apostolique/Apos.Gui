@@ -26,7 +26,10 @@ namespace Apos.Gui {
             get;
             set;
         }
-        public static GameWindow Window;
+        public static GameWindow Window {
+            get;
+            set;
+        }
         public static int WindowWidth => (int)(Window.ClientBounds.Width * (1 / GuiHelper.Scale));
         public static int WindowHeight => (int)(Window.ClientBounds.Height * (1 / GuiHelper.Scale));
         public static SamplerState GuiSampler = SamplerState.LinearClamp;
