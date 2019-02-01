@@ -1,4 +1,4 @@
-# AposGui
+# Apos.Gui
 UI library for MonoGame.
 
 [![Discord](https://img.shields.io/discord/355231098122272778.svg)](https://discord.gg/N9t26Uv)
