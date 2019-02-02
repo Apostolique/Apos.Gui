@@ -1,0 +1,1 @@
+NDSearch.OnPrefixDataLoaded("gam",["Property"],[["GamePadCapabilities",,[["Apos.Gui.Input",,,,0,"File:Input.cs:Apos.Gui.Input.GamePadCapabilities","CSharpClass:Apos.Gui.Input:GamePadCapabilities"]]]]);

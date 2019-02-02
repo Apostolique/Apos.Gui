@@ -1,0 +1,1 @@
+NDSearch.OnPrefixDataLoaded("cli",["Property","Function"],[["ClippingRect",,[["Apos.Gui.Component",,,,0,"File:Component.cs:Apos.Gui.Component.ClippingRect","CSharpClass:Apos.Gui.Component:ClippingRect"]]],["ClipRectangle",,[["Apos.Gui.Component",,,,1,"File:Component.cs:Apos.Gui.Component.ClipRectangle","CSharpClass:Apos.Gui.Component:ClipRectangle"]]]]);

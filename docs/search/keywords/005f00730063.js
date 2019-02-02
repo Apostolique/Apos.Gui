@@ -1,0 +1,1 @@
+NDSearch.OnPrefixDataLoaded("_sc",["Variable"],[["_scale",,[["Apos.Gui.GuiHelper",,,,0,"File:GuiHelper.cs:Apos.Gui.GuiHelper._scale","CSharpClass:Apos.Gui.GuiHelper:_scale"]]]]);

@@ -1,0 +1,1 @@
+NDSearch.OnPrefixDataLoaded("siz",["Property"],[["Size",,[["Apos.Gui.Panel",,,,0,"File:Panel.cs:Apos.Gui.Panel.Size","CSharpClass:Apos.Gui.Panel:Size"]]]]);

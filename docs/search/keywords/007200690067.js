@@ -1,0 +1,1 @@
+NDSearch.OnPrefixDataLoaded("rig",["Property"],[["Right",,[["Apos.Gui.Component",,,,0,"File:Component.cs:Apos.Gui.Component.Right","CSharpClass:Apos.Gui.Component:Right"]]]]);

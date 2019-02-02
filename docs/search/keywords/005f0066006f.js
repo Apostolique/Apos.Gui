@@ -1,0 +1,1 @@
+NDSearch.OnPrefixDataLoaded("_fo",["Variable"],[["_focus",,[["Apos.Gui.ComponentFocus",,,,0,"File:ComponentFocus.cs:Apos.Gui.ComponentFocus._focus","CSharpClass:Apos.Gui.ComponentFocus:_focus"]]]]);
