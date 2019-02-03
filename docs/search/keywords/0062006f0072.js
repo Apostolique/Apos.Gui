@@ -1,1 +1,1 @@
-NDSearch.OnPrefixDataLoaded("bor",["Class"],[["Border",,[["Apos.Gui",,,,0,"File:Border.cs:Apos.Gui.Border","CSharpClass:Apos.Gui.Border"]]]]);
+NDSearch.OnPrefixDataLoaded("bor",["Class","Constructor"],[["Border",,[["Apos.Gui",,,,0,"File:Border.cs:Apos.Gui.Border","CSharpClass:Apos.Gui.Border"],["Apos.Gui.Border",,,,1,"File:Border.cs:Apos.Gui.Border.Border","CSharpClass:Apos.Gui.Border:Border"]]]]);
