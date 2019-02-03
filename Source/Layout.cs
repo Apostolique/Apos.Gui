@@ -5,16 +5,16 @@ namespace Apos.Gui {
     /// Goal: Handles how components are positioned inside a panel.
     /// </summary>
     public class Layout {
-        //constructors
+        // Group: Constructors
         public Layout() { }
 
-        //public vars
+        // Group: Public Variables
         public virtual Panel Panel {
             get;
             set;
         }
 
-        //public functions
+        // Group: Public Functions
         public virtual void RecomputeChildren(List<Component> children) {
             //Tell each children their position and size.
         }

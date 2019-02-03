@@ -10,14 +10,14 @@ namespace Apos.Gui {
     /// Goal: Container that can hold Components.
     /// </summary>
     public class Panel : Component {
-        //constructors
+        // Group: Constructors
         public Panel() : this(new Layout()) {
         }
         public Panel(Layout l) {
             Layout = l;
         }
 
-        //public vars
+        // Group: Public Variables
         public Point Offset {
             get;
             set;
@@ -36,7 +36,7 @@ namespace Apos.Gui {
         public override int PrefWidth => (int)Size.Width;
         public override int PrefHeight => (int)Size.Height;
 
-        //public functions
+        // Group: Public Functions
         public virtual void Add(Component e) {
             _children.Add(e);
             e.Parent = Option.Some((Component)this);
@@ -116,7 +116,7 @@ namespace Apos.Gui {
             }
         }
 
-        //private vars
+        // Group: Private Variables
         protected List<Component> _children = new List<Component>();
         protected Layout _layout;
     }

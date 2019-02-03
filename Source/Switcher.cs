@@ -12,10 +12,10 @@ namespace Apos.Gui {
     /// Goal: A Switch component that works like a tab.
     /// </summary>
     public class Switcher<T> : Component {
-        //constructors
+        // Group: Constructors
         public Switcher() { }
 
-        //public vars
+        // Group: Public Variables
         public Option<T> Key {
             get {
                 if (_children.Count > 0) {
@@ -63,7 +63,7 @@ namespace Apos.Gui {
         public override int PrefWidth => Key.Map(key => _children[key].PrefWidth).ValueOr(Width);
         public override int PrefHeight => Key.Map(key => _children[key].PrefHeight).ValueOr(Height);
 
-        //public functions
+        // Group: Public Functions
         public void Add(T key, Component c) {
             _children.Add(key, c);
             c.Parent = Option.Some((Component)this);
@@ -118,7 +118,7 @@ namespace Apos.Gui {
             });
         }
 
-        //private vars
+        // Group: Private Variables
         protected Option<T> _key = Option.None<T>();
         protected Dictionary<T, Component> _children = new Dictionary<T, Component>();
     }

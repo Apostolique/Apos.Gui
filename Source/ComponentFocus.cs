@@ -7,7 +7,7 @@ namespace Apos.Gui {
     ///       This is especially useful for gamepad and keyboard controls.
     /// </summary>
     public class ComponentFocus {
-        //constructors
+        // Group: Constructors
         public ComponentFocus(Component c) : this(c, () => false, () => false) { }
         public ComponentFocus(Component c, Func<bool> previousFocusAction, Func<bool> nextFocusAction) {
             RootComponent = c;
@@ -18,7 +18,7 @@ namespace Apos.Gui {
             NextFocusAction = nextFocusAction;
         }
 
-        //public vars
+        // Group: Public Variables
         public Component RootComponent {
             get;
             set;
@@ -58,7 +58,7 @@ namespace Apos.Gui {
             set;
         }
 
-        //public functions
+        // Group: Public Functions
         public void UpdateSetup() {
             RootComponent.UpdateSetup();
         }
@@ -92,11 +92,11 @@ namespace Apos.Gui {
             Focus = findNext(Focus);
         }
 
-        //private vars
+        // Group: Private Variables
         private Component _oldFocus;
         private Component _focus;
 
-        //private functions
+        // Group: Private Functions
         private Component findPrevious(Component c) {
             Component currentFocus = c;
             currentFocus.HasFocus = false;

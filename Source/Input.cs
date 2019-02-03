@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input.Touch;
 namespace Apos.Gui {
     //This will get refactored into it's own separate package most likely.
     public static class Input {
-        //public vars
+        // Group: Public Variables
         public static MouseState OldMouse => _oldMouse;
         public static MouseState NewMouse => _newMouse;
         public static KeyboardState OldKeyboard => _oldKeyboard;
@@ -16,7 +16,7 @@ namespace Apos.Gui {
         public static GamePadState[] NewGamePad => _newGamepad;
         public static GamePadCapabilities[] GamePadCapabilities => _gamePadCapabilities;
 
-        //public functions
+        // Group: Public Functions
         public static void Update() {
             if (!_initiated) {
                 Setup();
@@ -42,7 +42,7 @@ namespace Apos.Gui {
             }
         }
 
-        //private vars
+        // Group: Private Variables
         private static bool _initiated = false;
         private static MouseState _oldMouse;
         private static MouseState _newMouse;
@@ -54,7 +54,7 @@ namespace Apos.Gui {
         private static GamePadState[] _newGamepad;
         private static GamePadCapabilities[] _gamePadCapabilities;
 
-        //private functions
+        // Group: Private Functions
         private static void Setup() {
             _newMouse = Mouse.GetState();
             _newKeyboard = Keyboard.GetState();

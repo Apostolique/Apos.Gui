@@ -7,10 +7,10 @@ namespace Apos.Gui {
     ///       It can also be scrolled over using the mouse wheel.
     /// </summary>
     public class PanelVerticalScroll : Panel {
-        //constructors
+        // Group: Constructors
         public PanelVerticalScroll() { }
 
-        //public functions
+        // Group: Public Functions
         public override bool UpdateInput() {
             bool isUsed = base.UpdateInput();
 

@@ -10,13 +10,13 @@ namespace Apos.Gui {
     /// Goal: A button component that handles actions.
     /// </summary>
     public class Button : Component {
-        //constructors
+        // Group: Constructors
         public Button() : this(new Component()) { }
         public Button(Component c) {
             Item = c;
         }
 
-        //public vars
+        // Group: Public Variables
         public virtual bool ShowBox {
             get;
             set;
@@ -56,7 +56,7 @@ namespace Apos.Gui {
         public override int PrefWidth => Item.PrefWidth;
         public override int PrefHeight => Item.PrefHeight;
 
-        //public functions
+        // Group: Public Functions
         public override void UpdateSetup() {
             base.UpdateSetup();
 
@@ -86,7 +86,7 @@ namespace Apos.Gui {
             ResetScissor(s);
         }
 
-        //private vars
+        // Group: Private Variables
         protected Component _item;
     }
 }

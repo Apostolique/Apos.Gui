@@ -9,7 +9,7 @@ namespace Apos.Gui {
     /// Goal: A text component.
     /// </summary>
     public class Label : Component {
-        //constructors
+        // Group: Constructors
         public Label() : this("Text Missing") { }
         public Label(string iText) {
             _text = iText;
@@ -17,7 +17,7 @@ namespace Apos.Gui {
             Height = PrefHeight;
         }
 
-        //public vars
+        // Group: Public Variables
         public Color NormalColor {
             get;
             set;
@@ -29,18 +29,18 @@ namespace Apos.Gui {
         public override int PrefWidth => (int)_textSize.Width;
         public override int PrefHeight => (int)_textSize.Height;
 
-        //public functions
+        // Group: Public Functions
         public override void Draw(SpriteBatch s) {
             SetScissor(s);
             GuiHelper.DrawString(s, _text, new Vector2(Left, Top), getColor());
             ResetScissor(s);
         }
 
-        //private vars
+        // Group: Private Variables
         protected string _text = "Text Missing";
         protected Size2 _textSize => GuiHelper.MeasureString(_text);
 
-        //private functions
+        // Group: Private Functions
         protected virtual Color getColor() {
             if (IsHovered || HasFocus) {
                 return ActiveColor;

@@ -6,7 +6,7 @@ using SpriteFontPlus;
 
 namespace Apos.Gui {
     public class LabelDynamic : Label {
-        //constructors
+        // Group: Constructors
         public LabelDynamic() : this(() => "Text Missing") { }
         public LabelDynamic(Func<string> iText) {
             _text = iText;
@@ -14,18 +14,18 @@ namespace Apos.Gui {
             Height = PrefHeight;
         }
 
-        //public vars
+        // Group: Public Variables
         public override int PrefWidth => (int) _textSize.Width;
         public override int PrefHeight => (int) _textSize.Height;
 
-        //public functions
+        // Group: Public Functions
         public override void Draw(SpriteBatch s) {
             SetScissor(s);
             GuiHelper.DrawString(s, _text(), new Vector2(Left, Top), getColor());
             ResetScissor(s);
         }
 
-        //private vars
+        // Group: Private Variables
         new Func<string> _text = () => "Text Missing";
         new Size2 _textSize => GuiHelper.MeasureString(_text());
     }

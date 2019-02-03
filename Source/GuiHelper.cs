@@ -9,7 +9,7 @@ namespace Apos.Gui {
     /// Goal: Unorganized helper functions for AposGui.
     /// </summary>
     public static class GuiHelper {
-        //public vars
+        // Group: Public Variables
         public static float Scale {
             get => _scale;
             set {
@@ -35,7 +35,7 @@ namespace Apos.Gui {
         public static SamplerState GuiSampler = SamplerState.LinearClamp;
         public static List<Action> NextLoopActions = new List<Action>();
 
-        //public functions
+        // Group: Public Functions
         public static Matrix GetUIMatrix() {
             return Matrix.CreateScale(Scale, Scale, 1);
         }
@@ -107,7 +107,7 @@ namespace Apos.Gui {
             return Font.MeasureString(text) * finalScale;
         }
 
-        //private vars
+        // Group: Private Variables
         private static float _scale = 1f;
         private static RasterizerState _rasterState = new RasterizerState {
             ScissorTestEnable = true

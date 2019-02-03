@@ -11,10 +11,10 @@ namespace Apos.Gui {
     ///       to how to handle inputs.
     /// </summary>
     public class Component {
-        //constructors
+        // Group: Constructors
         public Component() { }
 
-        //public vars
+        // Group: Public Variables
         public virtual Point Position {
             get;
             set;
@@ -67,7 +67,7 @@ namespace Apos.Gui {
             set;
         } = (Component c) => {};
 
-        //public functions
+        // Group: Public Functions
         public void AddHoverCondition(Func<Component, bool> c) {
             _hoverConditions.Add(c);
         }
@@ -149,18 +149,21 @@ namespace Apos.Gui {
         public virtual void Update() { }
         public virtual void Draw(SpriteBatch s) { }
 
-        //private vars
-        protected struct ConditionOperation {
-            public ConditionOperation(Func<Component, bool> c, Func<Component, bool> o) {
-                Condition = c;
-                Operation = o;
-            }
-            public Func<Component, bool> Condition;
-            public Func<Component, bool> Operation;
-        }
+        // Group: Private Variables
         protected Option<Rectangle> _clippingRect = Option.None<Rectangle>();
         protected Rectangle _oldScissor;
         protected List<Func<Component, bool>> _hoverConditions = new List<Func<Component, bool>>();
         protected List<ConditionOperation> _conditionOperations = new List<ConditionOperation>();
+        protected struct ConditionOperation {
+            // Group: Constructors
+            public ConditionOperation(Func<Component, bool> c, Func<Component, bool> o) {
+                Condition = c;
+                Operation = o;
+            }
+
+            // Group: Public Variables
+            public Func<Component, bool> Condition;
+            public Func<Component, bool> Operation;
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace Apos.Gui {
     /// Goal: Adds padding around a component.
     /// </summary>
     public class Border : Component {
-        //constructors
+        // Group: Constructors
         public Border() : this(new Component()) { }
         public Border(Component c) : this(c, 0, 0, 0, 0) { }
         public Border(Component c, int iMarginLeft, int iMarginTop, int iMarginRight, int iMarginBottom) {
@@ -18,7 +18,7 @@ namespace Apos.Gui {
             MarginBottom = iMarginBottom;
         }
 
-        //public vars
+        // Group: Public Variables
         public virtual Component Item {
             get => _item;
             set {
@@ -75,7 +75,7 @@ namespace Apos.Gui {
         }
         public override bool IsFocusable => Item.IsFocusable;
 
-        //public functions
+        // Group: Public Functions
         public override Component GetFinal() {
             return Item;
         }
@@ -107,7 +107,7 @@ namespace Apos.Gui {
             Item.Draw(s);
         }
 
-        //private vars
+        // Group: Private Variables
         protected Component _item;
         protected int _marginLeft;
         protected int _marginTop;
