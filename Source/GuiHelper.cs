@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Apos.Input;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpriteFontPlus;
@@ -40,10 +41,10 @@ namespace Apos.Gui {
             return Matrix.CreateScale(Scale, Scale, 1);
         }
         public static int ScrollWheelDelta() {
-            return Input.NewMouse.ScrollWheelValue - Input.OldMouse.ScrollWheelValue;
+            return InputHelper.NewMouse.ScrollWheelValue - InputHelper.OldMouse.ScrollWheelValue;
         }
         public static Point MouseToUI() {
-            return ScreenToUI(Input.NewMouse.Position);
+            return ScreenToUI(InputHelper.NewMouse.Position);
         }
         public static Point ScreenToUI(Point p) {
             return new Point((int)(p.X * (1 / Scale)), (int)(p.Y * (1 / Scale)));
