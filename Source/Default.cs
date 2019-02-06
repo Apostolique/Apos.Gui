@@ -27,11 +27,6 @@ namespace Apos.Gui {
         public static Func<Component, bool> ConsumeCondition = (Component c) => true;
 
         // Group: Public Functions
-        public static Component GiveHover(Component c) {
-            c.AddHoverCondition(ConditionHoverMouse);
-
-            return c;
-        }
         public static Component CreateButton(string text, Func<Component, bool> operation, Action<Component> grabFocus) {
             Label l = new Label(text);
             l.ActiveColor = Color.White;
@@ -39,7 +34,7 @@ namespace Apos.Gui {
 
             return CreateButton(l, operation, grabFocus);
         }
-        public static Component CreateButtonDynamic(Func<string> text, Func<Component, bool> operation, Action<Component> grabFocus) {
+        public static Component CreateButton(Func<string> text, Func<Component, bool> operation, Action<Component> grabFocus) {
             LabelDynamic l = new LabelDynamic(text);
             l.ActiveColor = Color.White;
             l.NormalColor = new Color(150, 150, 150);
