@@ -6,7 +6,7 @@ namespace Apos.Gui {
     /// <summary>
     /// Goal: Predefined inputs for Mouse, Keyboard, Gamepad, Touchscreen.
     /// </summary>
-    public static class DefaultInput {
+    public static class Defaults {
         // Group: Public Variables
         public static Func<Component, bool> ConditionHoverMouse = (Component b) => b.IsInsideClip(GuiHelper.MouseToUI());
         public static Func<Component, bool> ConditionGotHovered = (Component b) => !b.OldIsHovered && b.IsHovered;
