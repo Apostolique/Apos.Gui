@@ -14,6 +14,9 @@ namespace Apos.Gui {
         public Button() : this(new Component()) { }
         public Button(Component c) {
             Item = c;
+            IsFocusable = true;
+            Width = Item.PrefWidth;
+            Height = Item.PrefHeight;
         }
 
         // Group: Public Variables
@@ -35,10 +38,6 @@ namespace Apos.Gui {
                 Item.IsHovered = value;
             }
         }
-        public override bool IsFocusable {
-            get;
-            set;
-        } = true;
         public override bool HasFocus {
             get => base.HasFocus;
             set {
