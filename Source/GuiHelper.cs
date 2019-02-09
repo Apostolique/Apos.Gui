@@ -47,10 +47,16 @@ namespace Apos.Gui {
             return ScreenToUI(InputHelper.NewMouse.Position);
         }
         public static Point ScreenToUI(Point p) {
-            return new Point((int)(p.X * (1 / Scale)), (int)(p.Y * (1 / Scale)));
+            return new Point(ScreenToUI(p.X), ScreenToUI(p.Y));
+        }
+        public static int ScreenToUI(int i) {
+            return (int)(i * (1 / Scale));
         }
         public static Point UIToScreen(Point p) {
-            return new Point((int)(p.X * Scale), (int)(p.Y * Scale));
+            return new Point(UIToScreen(p.X), UIToScreen(p.Y));
+        }
+        public static int UIToScreen(int i) {
+            return (int)(i * Scale);
         }
         public static void Begin(SpriteBatch s) {
             s.Begin(rasterizerState: _rasterState, transformMatrix: GetUIMatrix(), samplerState: GuiSampler);
