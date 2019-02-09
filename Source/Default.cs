@@ -26,6 +26,24 @@ namespace Apos.Gui {
             buttonReleased(Keys.Escape);
         public static Func<Component, bool> ConsumeCondition = (Component c) => true;
 
+        public static Func<Component, bool> IsScrolled = (Component b) => {
+            return b.IsHovered && GuiHelper.ScrollWheelDelta() != 0;
+        };
+        public static Func<Component, bool> ScrollVertically = (Component b) => {
+            Panel p = (Panel)b;
+            int scrollWheelDelta = GuiHelper.ScrollWheelDelta();
+            p.Offset = new Point(p.Offset.X, (int)Math.Min(Math.Max(p.Offset.Y + scrollWheelDelta, p.ClippingRect.Height - p.Size.Height), 0));
+
+            return true;
+        };
+        public static Func<Component, bool> ScrollHorizontally = (Component b) => {
+            Panel p = (Panel)b;
+            int scrollWheelDelta = GuiHelper.ScrollWheelDelta();
+            p.Offset = new Point((int)Math.Min(Math.Max(p.Offset.X + scrollWheelDelta, p.ClippingRect.Width - p.Size.Width), 0), p.Offset.Y);
+
+            return true;
+        };
+
         // Group: Public Functions
         public static Component CreateButton(string text, Func<Component, bool> operation, Action<Component> grabFocus) {
             Label l = new Label(text);
