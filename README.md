@@ -24,4 +24,6 @@ UI library for MonoGame.
 
 ## Usage samples
 
-Coming soon!
+Working usage code can be found in the [AposGameStarter](https://github.com/Apostolique/AposGameStarter) project.
+
+For example in the [Menu class](https://github.com/Apostolique/AposGameStarter/blob/master/Menu.cs). 
