@@ -67,6 +67,8 @@ screen.Add(p);
 focus = new ComponentFocus(screen, Default.ConditionPreviousFocus, Default.ConditionNextFocus);
 ```
 
+The above code will create 2 buttons, "Fun" and "Quit". You can use your mouse to interact with them, your keyboard, or a gamepad.
+
 In your `Update(GameTime gameTime)`, call the following functions:
 
 ```csharp
