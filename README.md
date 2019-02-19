@@ -92,6 +92,7 @@ In your `Draw(GameTime gameTime)`, call:
 protected override void Draw(GameTime gameTime) {
     GraphicsDevice.Clear(Color.Black);
     focus.Draw(spritebatch);
+    base.Draw(gameTime);
 }
 ```
 
