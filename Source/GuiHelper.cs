@@ -10,6 +10,7 @@ namespace Apos.Gui {
     /// Unorganized helper functions for Apos.Gui.
     /// </summary>
     public static class GuiHelper {
+
         // Group: Public Variables
 
         /// <value>The scale of the UI. Defaults to 1f.</value>
