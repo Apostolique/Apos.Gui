@@ -5,39 +5,64 @@ using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
     /// <summary>
-    /// Goal: Predefined inputs for Mouse, Keyboard, Gamepad, Touchscreen.
+    /// Predefined inputs for Mouse, Keyboard, Gamepad, Touchscreen.
     /// </summary>
     public static class Default {
+
         // Group: Public Variables
-        public static Func<Component, bool> ConditionHoverMouse = (Component b) => b.IsInsideClip(GuiHelper.MouseToUI());
-        public static Func<Component, bool> ConditionGotHovered = (Component b) => !b.OldIsHovered && b.IsHovered;
-        public static Func<Component, bool> ConditionInteraction = (Component b) =>
-            b.HasFocus && (buttonReleased(s => s[0].Buttons.A) ||
+
+        /// <returns>Returns true when the mouse is inside the clip area of a component.</returns>
+        public static Func<Component, bool> ConditionHoverMouse = (Component c) => c.IsInsideClip(GuiHelper.MouseToUI());
+        /// <returns>Returns true when a component just got hovered.</returns>
+        public static Func<Component, bool> ConditionGotHovered = (Component c) => !c.OldIsHovered && c.IsHovered;
+        /// <returns>
+        /// Returns true when gamepad 0's A button or space or enter or left mouse button are released.
+        /// The left mouse button requires that the component is hovered.
+        /// </returns>
+        public static Func<Component, bool> ConditionInteraction = (Component c) =>
+            c.HasFocus && (buttonReleased(s => s[0].Buttons.A) ||
                            buttonReleased(Keys.Space) || buttonReleased(Keys.Enter)) ||
-            b.IsHovered && buttonReleased(s => s.LeftButton);
+            c.IsHovered && buttonReleased(s => s.LeftButton);
+        /// <returns>
+        /// Returns true when gamepad 0's left thumbstick has just been made positive or the up arrow key is released.
+        /// </returns>
         public static Func<bool> ConditionPreviousFocus = () =>
             InputHelper.OldGamePad[0].ThumbSticks.Left.Y <= 0 && InputHelper.NewGamePad[0].ThumbSticks.Left.Y > 0 ||
             buttonReleased(Keys.Up);
+        /// <returns>
+        /// Returns true when gamepad 0's left thumbstick has just been made negative or the down arrow key is released.
+        /// </returns>
         public static Func<bool> ConditionNextFocus = () =>
             InputHelper.OldGamePad[0].ThumbSticks.Left.Y >= 0 && InputHelper.NewGamePad[0].ThumbSticks.Left.Y < 0 ||
             buttonReleased(Keys.Down);
+        /// <returns>
+        /// Returns true when gamepad 0's B button is released or the escape key is released.
+        /// </returns>
         public static Func<bool> ConditionBackFocus = () =>
             buttonReleased(s => s[0].Buttons.B) ||
             buttonReleased(Keys.Escape);
+        /// <returns>
+        /// Always returns true. This is useful when you want a condition to mark an input as used.
+        /// When an input is marked as used, the component will request to be put in focus.
+        /// </returns>
         public static Func<Component, bool> ConsumeCondition = (Component c) => true;
-
-        public static Func<Component, bool> IsScrolled = (Component b) => {
-            return b.IsHovered && GuiHelper.ScrollWheelDelta != 0;
+        /// <returns>Returns true when a component is hovered and the mouse wheel is being scrolled.</returns>
+        public static Func<Component, bool> IsScrolled = (Component c) => {
+            return c.IsHovered && GuiHelper.ScrollWheelDelta != 0;
         };
-        public static Func<Component, bool> ScrollVertically = (Component b) => {
-            Panel p = (Panel)b;
+        /// <returns>This should be strictly used on a panel so that it can be scrolled vertically.</returns>
+        /// <seealso cref="IsScrolled"/>
+        public static Func<Component, bool> ScrollVertically = (Component c) => {
+            Panel p = (Panel)c;
             int scrollWheelDelta = GuiHelper.ScrollWheelDelta;
             p.Offset = new Point(p.Offset.X, (int)Math.Min(Math.Max(p.Offset.Y + scrollWheelDelta, p.ClippingRect.Height - p.Size.Height), 0));
 
             return true;
         };
-        public static Func<Component, bool> ScrollHorizontally = (Component b) => {
-            Panel p = (Panel)b;
+        /// <returns>This should be strictly used on a panel so that it can be scrolled horizontally.</returns>
+        /// <seealso cref="IsScrolled"/>
+        public static Func<Component, bool> ScrollHorizontally = (Component c) => {
+            Panel p = (Panel)c;
             int scrollWheelDelta = GuiHelper.ScrollWheelDelta;
             p.Offset = new Point((int)Math.Min(Math.Max(p.Offset.X + scrollWheelDelta, p.ClippingRect.Width - p.Size.Width), 0), p.Offset.Y);
 
@@ -45,20 +70,48 @@ namespace Apos.Gui {
         };
 
         // Group: Public Functions
-        public static Component CreateButton(string text, Func<Component, bool> operation, Action<Component> grabFocus) {
-            Label l = new Label(text);
+
+        /// <summary>
+        /// Creates a button with a label that becomes white on hover.
+        /// The button can be interacted with using gamepad 0, keyboard and mouse.
+        /// Adds a border of size 20 around the label.
+        /// </summary>
+        /// <param name="t">The string to use for the label.</param>
+        /// <param name="operation">The action that the button does when interacted with.</param>
+        /// <param name="grabFocus">A way for the component to request focus.</param>
+        /// <returns>Returns the button that was created.</returns>
+        public static Component CreateButton(string t, Func<Component, bool> operation, Action<Component> grabFocus) {
+            Label l = new Label(t);
             l.ActiveColor = Color.White;
             l.NormalColor = new Color(150, 150, 150);
 
             return CreateButton(l, operation, grabFocus);
         }
-        public static Component CreateButton(Func<string> text, Func<Component, bool> operation, Action<Component> grabFocus) {
-            LabelDynamic l = new LabelDynamic(text);
+        /// <summary>
+        /// Creates a button with a dynamic label that becomes white on hover.
+        /// The button can be interacted with using gamepad 0, keyboard and mouse.
+        /// Adds a border of size 20 around the label.
+        /// </summary>
+        /// <param name="ld">A function that returns a string.</param>
+        /// <param name="operation">The action that the button does when interacted with.</param>
+        /// <param name="grabFocus">A way for the component to request focus.</param>
+        /// <returns>Returns the button that was created.</returns>
+        public static Component CreateButton(Func<string> ld, Func<Component, bool> operation, Action<Component> grabFocus) {
+            LabelDynamic l = new LabelDynamic(ld);
             l.ActiveColor = Color.White;
             l.NormalColor = new Color(150, 150, 150);
 
             return CreateButton(l, operation, grabFocus);
         }
+        /// <summary>
+        /// Creates a button with a custom component.
+        /// The button can be interacted with using gamepad 0, keyboard and mouse.
+        /// Adds a border of size 20 around the component.
+        /// </summary>
+        /// <param name="c">The component to give to the button.</param>
+        /// <param name="operation">The action that the button does when interacted with.</param>
+        /// <param name="grabFocus">A way for the component to request focus.</param>
+        /// <returns></returns>
         public static Component CreateButton(Component c, Func<Component, bool> operation, Action<Component> grabFocus) {
             Border border = new Border(c, 20, 20, 20, 20);
             Button b = new Button(border);
@@ -72,6 +125,7 @@ namespace Apos.Gui {
         }
 
         // Group: Private Functions
+
         private static bool buttonReleased(Keys key) {
             return InputHelper.IsActive && ActionKeyboard.Released(key);
         }
