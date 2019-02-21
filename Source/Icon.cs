@@ -7,7 +7,7 @@ namespace Apos.Gui {
     /// <summary>
     /// Goal: Just a simple Gui element that displays a texture.
     /// </summary>
-    class Icon : Component {
+    public class Icon : Component {
         // Group: Constructors
         public Icon(TextureRegion2D iRegion) {
             _region = iRegion;
