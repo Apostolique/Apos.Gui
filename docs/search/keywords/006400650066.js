@@ -1,1 +1,1 @@
-NDSearch.OnPrefixDataLoaded("def",["Class"],[["DefaultInput",,[["Apos.Gui",,,,0,"File:DefaultInput.cs:Apos.Gui.DefaultInput","CSharpClass:Apos.Gui.DefaultInput"]]]]);
+NDSearch.OnPrefixDataLoaded("def",["Class"],[["Default",,[["Apos.Gui",,,,0,"File:Default.cs:Apos.Gui.Default","CSharpClass:Apos.Gui.Default"]]]]);

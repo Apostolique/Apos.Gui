@@ -1,0 +1,1 @@
+NDSearch.OnPrefixDataLoaded("iss",["Variable"],[["IsScrolled",,[["Apos.Gui.Default",,,,0,"File:Default.cs:Apos.Gui.Default.IsScrolled","CSharpClass:Apos.Gui.Default:IsScrolled"]]]]);

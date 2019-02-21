@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("_ga",["Variable"],[["_gamePadCapabilities",,[["Apos.Gui.Input",,,,0,"File:Input.cs:Apos.Gui.Input._gamePadCapabilities","CSharpClass:Apos.Gui.Input:_gamePadCapabilities"]]]]);
