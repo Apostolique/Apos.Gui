@@ -13,6 +13,10 @@ namespace Apos.Gui {
 
         // Group: Constructors
 
+        /// <summary>
+        /// Creates an empty component that doesn't really do anything.
+        /// You can script this but usually this is better as a base class for other components.
+        /// </summary>
         public Component() { }
 
         // Group: Public Variables
