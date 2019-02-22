@@ -50,9 +50,11 @@ Action<Component> grabFocus = (Component c) => {
 var screen = new ScreenPanel();
 screen.Layout = new LayoutVerticalCenter();
 
-var p = new PanelVerticalScroll();
+var p = new Panel();
 p.Layout = new LayoutVerticalCenter();
 p.AddHoverCondition(Default.ConditionHoverMouse);
+p.AddAction(Default.IsScrolled, Default.ScrollVertically);
+
 p.Add(Default.CreateButton("Fun"), (Component c) => {
     Console.WriteLine("This is fun.");
     return true;
