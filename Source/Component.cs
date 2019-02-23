@@ -76,7 +76,7 @@ namespace Apos.Gui {
                 return _clippingRect.ValueOr(() => BoundingRect);
             }
             set {
-                _clippingRect = Option.Some(ClipRectangle(value));
+                _clippingRect = Option.Some(value);
             }
         }
         /// <summary>
@@ -271,10 +271,10 @@ namespace Apos.Gui {
         /// </summary>
         /// <returns>Returns a new rectangle that corresponds to the two rectangle's intersection.</returns>
         public static Rectangle ClipRectangle(Rectangle rect1, Rectangle rect2) {
-            var left = rect1.Left < rect2.Left ? rect2.Left : rect1.Left;
-            var top = rect1.Top < rect2.Top ? rect2.Top : rect1.Top;
-            var right = rect1.Right < rect2.Right ? rect1.Right : rect2.Right;
-            var bottom = rect1.Bottom < rect2.Bottom ? rect1.Bottom : rect2.Bottom;
+            var left = Math.Max(rect1.Left, rect2.Left);
+            var top = Math.Max(rect1.Top, rect2.Top);
+            var right = Math.Min(rect1.Right, rect2.Right);
+            var bottom = Math.Min(rect1.Bottom, rect2.Bottom);
 
             int clipWidth = Math.Max(right - left, 0);
             int clipHeight = Math.Max(bottom - top, 0);
