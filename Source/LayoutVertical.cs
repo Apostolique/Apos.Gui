@@ -24,7 +24,7 @@ namespace Apos.Gui {
                 c.Height = cHeight;
                 c.Position = new Point(position.X, offsetY + position.Y) + Panel.Offset;
                 offsetY += cHeight;
-                c.ClippingRect = c.ClipRectangle(Panel.ClippingRect);
+                c.ClippingRect = Panel.ClipRectangle(c.BoundingRect);
             }
             Panel.Size = new Size2(width, offsetY);
         }
