@@ -89,7 +89,7 @@ namespace Apos.Gui {
             Item.Width = Width - MarginLeft - MarginRight;
             Item.Height = Height - MarginTop - MarginBottom;
             Item.Position = Position + _topLeftOffset;
-            Item.ClippingRect = ClippingRect;
+            Item.ClippingRect = ClipRectangle(Item.BoundingRect);
 
             Item.UpdateSetup();
         }
