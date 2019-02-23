@@ -189,8 +189,6 @@ namespace Apos.Gui {
         /// Clips a rectangle against this component's bounding rectangle.
         /// </summary>
         public Rectangle ClipRectangle(Rectangle rect1) {
-            //TODO: Change the API so that this is done against this component's clipping rect.
-            //      This implies that this function is called against the parent and not the child.
             return ClipRectangle(rect1, ClippingRect);
         }
         /// <summary>
