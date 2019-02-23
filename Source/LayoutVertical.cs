@@ -17,12 +17,12 @@ namespace Apos.Gui {
             int width = Panel.Width;
             int height = Panel.Height;
 
-            int offsetY = position.Y;
+            int offsetY = 0;
             foreach (Component c in childs) {
                 int cHeight = c.PrefHeight;
                 c.Width = width;
                 c.Height = cHeight;
-                c.Position = new Point(position.X, offsetY) + Panel.Offset;
+                c.Position = new Point(position.X, offsetY + position.Y) + Panel.Offset;
                 offsetY += cHeight;
                 c.ClippingRect = c.ClipRectangle(Panel.ClippingRect);
             }
