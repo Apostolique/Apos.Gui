@@ -186,7 +186,7 @@ namespace Apos.Gui {
             return this;
         }
         /// <summary>
-        /// Clips a rectangle against this component's bounding rectangle.
+        /// Clips a rectangle against this component's clipping rectangle.
         /// </summary>
         public Rectangle ClipRectangle(Rectangle rect1) {
             return ClipRectangle(rect1, ClippingRect);
