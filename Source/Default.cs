@@ -127,13 +127,13 @@ namespace Apos.Gui {
         // Group: Private Functions
 
         private static bool buttonReleased(Keys key) {
-            return InputHelper.IsActive && ActionKeyboard.Released(key);
+            return InputHelper.IsActive && ConditionKeyboard.Released(key);
         }
         private static bool buttonReleased(Func<MouseState, ButtonState> button) {
-            return InputHelper.IsActive && ActionMouse.Released(button);
+            return InputHelper.IsActive && ConditionMouse.Released(button);
         }
         private static bool buttonReleased(Func<GamePadState[], ButtonState> button) {
-            return InputHelper.IsActive && ActionGamePad.Released(button);
+            return InputHelper.IsActive && ConditionGamePad.Released(button);
         }
     }
 }
