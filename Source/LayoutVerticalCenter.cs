@@ -34,8 +34,8 @@ namespace Apos.Gui {
             }
 
             Point position = Panel.Position;
-            int halfWidth = _newWidth / 2;
-            int halfHeight = _newHeight / 2;
+            int halfWidth = Panel.Width / 2;
+            int halfHeight = Panel.Height / 2;
 
             int canvasWidth = 0;
             int canvasHeight = 0;
