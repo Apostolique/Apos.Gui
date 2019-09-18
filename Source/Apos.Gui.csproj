@@ -1,15 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <PackageId>Apos.Gui</PackageId>
     <Title>Apos.Gui</Title>
-    <Version>0.9.14</Version>
+    <Version>0.10.0</Version>
     <Description>UI library for MonoGame.</Description>
     <Authors>Jean-David Moisan</Authors>
     <Company>Vyne Enterprise Inc.</Company>
     <Copyright>Copyright 2018</Copyright>
     <PackageTags>gamedev;monogame;ui</PackageTags>
-    <PackageIconUrl>https://raw.githubusercontent.com/Apostolique/Apos.Gui/master/Images/Icon.png</PackageIconUrl>
+    <PackageIconUrl>../Images/Icon.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/Apostolique/Apos.Gui</RepositoryUrl>
     <PackageProjectUrl>https://github.com/Apostolique/Apos.Gui</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -18,10 +18,10 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Extended" PrivateAssets="All" Version="*" />
+    <PackageReference Include="MonoGame.Extended" PrivateAssets="All" Version="3.7.0" />
     <PackageReference Include="MonoGame.Framework.Portable" PrivateAssets="All" Version="3.6.0.1625" />
-    <PackageReference Include="SpriteFontPlus.MonoGame" Version="0.6.2.14" />
+    <PackageReference Include="SpriteFontPlus.MonoGame" Version="0.7.0.22" />
     <PackageReference Include="Optional" Version="4.0.0" />
-    <PackageReference Include="Apos.Input" Version="0.2.2" />
+    <PackageReference Include="Apos.Input" Version="0.4.0" />
   </ItemGroup>
 </Project>
