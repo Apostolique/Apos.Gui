@@ -20,9 +20,9 @@ namespace Apos.Gui {
         /// The left mouse button requires that the component is hovered.
         /// </returns>
         public static Func<Component, bool> ConditionInteraction = (Component c) =>
-            c.HasFocus && (buttonReleased(s => s[0].Buttons.A) ||
+            c.HasFocus && (buttonReleased(GamePadButton.A, 0) ||
                            buttonReleased(Keys.Space) || buttonReleased(Keys.Enter)) ||
-            c.IsHovered && buttonReleased(s => s.LeftButton);
+            c.IsHovered && buttonReleased(MouseButton.LeftButton);
         /// <returns>
         /// Returns true when gamepad 0's left thumbstick has just been made positive or the up arrow key is released.
         /// </returns>
@@ -39,7 +39,7 @@ namespace Apos.Gui {
         /// Returns true when gamepad 0's B button is released or the escape key is released.
         /// </returns>
         public static Func<bool> ConditionBackFocus = () =>
-            buttonReleased(s => s[0].Buttons.B) ||
+            buttonReleased(GamePadButton.B, 0) ||
             buttonReleased(Keys.Escape);
         /// <returns>
         /// Always returns true. This is useful when you want a condition to mark an input as used.
@@ -129,11 +129,11 @@ namespace Apos.Gui {
         private static bool buttonReleased(Keys key) {
             return InputHelper.IsActive && ConditionKeyboard.Released(key);
         }
-        private static bool buttonReleased(Func<MouseState, ButtonState> button) {
+        private static bool buttonReleased(MouseButton button) {
             return InputHelper.IsActive && ConditionMouse.Released(button);
         }
-        private static bool buttonReleased(Func<GamePadState[], ButtonState> button) {
-            return InputHelper.IsActive && ConditionGamePad.Released(button);
+        private static bool buttonReleased(GamePadButton button, int gamePadIndex) {
+            return InputHelper.IsActive && ConditionGamePad.Released(button, gamePadIndex);
         }
     }
 }

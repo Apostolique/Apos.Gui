@@ -22,6 +22,6 @@
     <PackageReference Include="MonoGame.Framework.Portable" PrivateAssets="All" Version="3.6.0.1625" />
     <PackageReference Include="SpriteFontPlus.MonoGame" Version="0.7.0.22" />
     <PackageReference Include="Optional" Version="4.0.0" />
-    <PackageReference Include="Apos.Input" Version="0.4.0" />
+    <PackageReference Include="Apos.Input" Version="0.5.1" />
   </ItemGroup>
 </Project>
