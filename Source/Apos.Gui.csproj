@@ -18,8 +18,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MonoGame.Extended" PrivateAssets="All" Version="3.7.0" />
-    <PackageReference Include="MonoGame.Framework.Portable" PrivateAssets="All" Version="3.6.0.1625" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL.Core" PrivateAssets="All" Version="3.7.0.7" />
+    <PackageReference Include="MonoGame.Extended" Version="3.7.0" />
     <PackageReference Include="SpriteFontPlus.MonoGame" Version="0.7.0.22" />
     <PackageReference Include="Optional" Version="4.0.0" />
     <PackageReference Include="Apos.Input" Version="0.5.1" />
