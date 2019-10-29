@@ -55,15 +55,15 @@ p.Layout = new LayoutVerticalCenter();
 p.AddHoverCondition(Default.ConditionHoverMouse);
 p.AddAction(Default.IsScrolled, Default.ScrollVertically);
 
-p.Add(Default.CreateButton("Fun"), (Component c) => {
+p.Add(Default.CreateButton("Fun", (Component c) => {
     Console.WriteLine("This is fun.");
     return true;
-});
-p.Add(Default.CreateButton("Quit"), (Component c) => {
+}, grabFocus));
+p.Add(Default.CreateButton("Quit", (Component c) => {
     Console.WriteLine("Quitting the game.");
     Exit();
     return true;
-});
+}, grabFocus));
 screen.Add(p);
 
 focus = new ComponentFocus(screen, Default.ConditionPreviousFocus, Default.ConditionNextFocus);
