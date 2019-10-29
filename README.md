@@ -83,8 +83,8 @@ protected override void Update(GameTime gametime) {
     focus.UpdateInput();
     focus.Update();
 
-    //Call Update at the end.
-    InputHelper.Update();
+    //Call UpdateCleanup at the end.
+    InputHelper.UpdateCleanup();
 }
 ```
 
