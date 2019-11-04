@@ -228,7 +228,7 @@ namespace Apos.Gui {
         public virtual void UpdateSetup() { }
         /// <summary>
         /// Called to process user inputs.
-        /// Separating the logic for inputs makes it easy to freeze inputs on components or the while UI.
+        /// Separating the logic for inputs makes it easy to freeze inputs on components or the whole UI.
         /// </summary>
         /// <returns>Returns true when an input has been consumed.</returns>
         public virtual bool UpdateInput() {
