@@ -43,7 +43,7 @@ You can create a simple UI with the following code:
 ```csharp
 ComponentFocus focus;
 
-Action<Component> grabFocus = (Component c) => {
+Action<Component> grabFocus = c => {
     focus.Focus = c;
 };
 
@@ -55,11 +55,11 @@ p.Layout = new LayoutVerticalCenter();
 p.AddHoverCondition(Default.ConditionHoverMouse);
 p.AddAction(Default.IsScrolled, Default.ScrollVertically);
 
-p.Add(Default.CreateButton("Fun", (Component c) => {
+p.Add(Default.CreateButton("Fun", c => {
     Console.WriteLine("This is fun.");
     return true;
 }, grabFocus));
-p.Add(Default.CreateButton("Quit", (Component c) => {
+p.Add(Default.CreateButton("Quit", c => {
     Console.WriteLine("Quitting the game.");
     Exit();
     return true;
