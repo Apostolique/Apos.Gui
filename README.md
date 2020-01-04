@@ -34,11 +34,11 @@ protected override void LoadContent() {
     GuiHelper.Window = Window;
     GuiHelper.Scale = 1f;
 
+    GuiHelper.FontSize = 30;
     using MemoryStream ms = new MemoryStream();
     TitleContainer.OpenStream($"{Content.RootDirectory}/Fonts/FontFile.ttf").CopyTo(ms);
     byte[] fontBytes = ms.ToArray();
-    GuiHelper.Font = DynamicSpriteFont.FromTtf(fontBytes, 30);
-    GuiHelper.FontSize = 30;
+    GuiHelper.Font = DynamicSpriteFont.FromTtf(fontBytes, GuiHelper.FontSize);
 }
 ```
 
