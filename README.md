@@ -45,7 +45,7 @@ ComponentFocus focus;
 
 Action<Component> grabFocus = (Component c) => {
     focus.Focus = c;
-}
+};
 
 var screen = new ScreenPanel();
 screen.Layout = new LayoutVerticalCenter();
