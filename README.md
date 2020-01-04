@@ -33,7 +33,7 @@ protected override void LoadContent() {
     InputHelper.Game = this;
     GuiHelper.Window = Window;
     GuiHelper.Scale = 1f;
-    GuiHelper.Font = DynamicSpriteFont.FromTtf(File.ReadAllBytes(Content.RootDirectory + "/Fonts/FontFile.ttf"), 30);
+    GuiHelper.Font = DynamicSpriteFont.FromTtf(File.ReadAllBytes($"{Content.RootDirectory}/Fonts/FontFile.ttf"), 30);
     GuiHelper.FontSize = 30;
 }
 ```
