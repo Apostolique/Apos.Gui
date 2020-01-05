@@ -122,7 +122,7 @@ namespace Apos.Gui {
         public virtual Action<Component> GrabFocus {
             get;
             set;
-        } = (Component c) => {};
+        } = c => {};
 
         // Group: Public Functions
 
