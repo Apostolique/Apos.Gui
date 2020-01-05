@@ -132,21 +132,15 @@ namespace Apos.Gui {
             );
         private static ConditionComposite _mouseInteraction =
             new ConditionComposite(
-                new ConditionSet(
-                    new ConditionMouse(MouseButton.LeftButton)
-                )
+                new ConditionSet(new ConditionMouse(MouseButton.LeftButton))
             );
         private static ConditionComposite _buttonPreviousFocus =
             new ConditionComposite(
-                new ConditionSet(
-                    new ConditionKeyboard(Keys.Up)
-                )
+                new ConditionSet(new ConditionKeyboard(Keys.Up))
             );
         private static ConditionComposite _buttonNextFocus =
             new ConditionComposite(
-                new ConditionSet(
-                    new ConditionKeyboard(Keys.Down)
-                )
+                new ConditionSet(new ConditionKeyboard(Keys.Down))
             );
         private static ConditionComposite _buttonBackFocus =
             new ConditionComposite(
