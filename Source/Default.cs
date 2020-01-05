@@ -126,11 +126,9 @@ namespace Apos.Gui {
 
         private static ConditionComposite _buttonInteraction =
             new ConditionComposite(
-                new ConditionSet(
-                    new ConditionKeyboard(Keys.Space),
-                    new ConditionKeyboard(Keys.Enter),
-                    new ConditionGamePad(GamePadButton.A, 0)
-                )
+                new ConditionSet(new ConditionKeyboard(Keys.Space)),
+                new ConditionSet(new ConditionKeyboard(Keys.Enter)),
+                new ConditionSet(new ConditionKeyboard(Keys.Space))
             );
         private static ConditionComposite _mouseInteraction =
             new ConditionComposite(
@@ -152,10 +150,8 @@ namespace Apos.Gui {
             );
         private static ConditionComposite _buttonBackFocus =
             new ConditionComposite(
-                new ConditionSet(
-                    new ConditionKeyboard(Keys.Escape),
-                    new ConditionGamePad(GamePadButton.B, 0)
-                )
+                new ConditionSet(new ConditionKeyboard(Keys.Escape)),
+                new ConditionSet(new ConditionGamePad(GamePadButton.B, 0))
             );
     }
 }
