@@ -3,7 +3,7 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <PackageId>Apos.Gui</PackageId>
     <Title>Apos.Gui</Title>
-    <Version>0.11.2</Version>
+    <Version>0.11.3</Version>
     <Description>UI library for MonoGame.</Description>
     <Authors>Jean-David Moisan</Authors>
     <Company>Vyne Enterprise Inc.</Company>
