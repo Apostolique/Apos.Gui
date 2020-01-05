@@ -7,7 +7,7 @@
     <Description>UI library for MonoGame.</Description>
     <Authors>Jean-David Moisan</Authors>
     <Company>Vyne Enterprise Inc.</Company>
-    <Copyright>Copyright 2018</Copyright>
+    <Copyright>Copyright 2020</Copyright>
     <PackageTags>gamedev;monogame;ui</PackageTags>
     <PackageIcon>Icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/Apostolique/Apos.Gui</RepositoryUrl>
