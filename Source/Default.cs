@@ -20,7 +20,7 @@ namespace Apos.Gui {
         /// The left mouse button requires that the component is hovered.
         /// </returns>
         public static Func<Component, bool> ConditionInteraction = c =>
-            c.HasFocus && (_buttonInteraction.Released()) ||
+            c.HasFocus && _buttonInteraction.Released() ||
             c.IsHovered && _mouseInteraction.Released();
         /// <returns>
         /// Returns true when gamepad 0's left thumbstick has just been made positive or the up arrow key is released.
