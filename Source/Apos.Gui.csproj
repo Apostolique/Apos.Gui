@@ -20,7 +20,7 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL.Core" PrivateAssets="All" Version="3.7.0.7" />
     <PackageReference Include="MonoGame.Extended" Version="3.7.0" />
-    <PackageReference Include="SpriteFontPlus.MonoGame" Version="0.7.0.22" />
+    <PackageReference Include="SpriteFontPlus" Version="0.7.1.25" />
     <PackageReference Include="Optional" Version="4.0.0" />
     <PackageReference Include="Apos.Input" Version="0.6.1" />
   </ItemGroup>
