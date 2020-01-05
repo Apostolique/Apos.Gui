@@ -1,7 +1,7 @@
 using System;
-using Microsoft.Xna.Framework.Input;
 using Apos.Input;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace Apos.Gui {
     /// <summary>
@@ -12,47 +12,45 @@ namespace Apos.Gui {
         // Group: Public Variables
 
         /// <returns>Returns true when the mouse is inside the clip area of a component.</returns>
-        public static Func<Component, bool> ConditionHoverMouse = (Component c) => c.IsInsideClip(GuiHelper.MouseToUI());
+        public static Func<Component, bool> ConditionHoverMouse = c => c.IsInsideClip(GuiHelper.MouseToUI());
         /// <returns>Returns true when a component just got hovered.</returns>
-        public static Func<Component, bool> ConditionGotHovered = (Component c) => !c.OldIsHovered && c.IsHovered;
+        public static Func<Component, bool> ConditionGotHovered = c => !c.OldIsHovered && c.IsHovered;
         /// <returns>
         /// Returns true when gamepad 0's A button or space or enter or left mouse button are released.
         /// The left mouse button requires that the component is hovered.
         /// </returns>
-        public static Func<Component, bool> ConditionInteraction = (Component c) =>
-            c.HasFocus && (buttonReleased(GamePadButton.A, 0) ||
-                           buttonReleased(Keys.Space) || buttonReleased(Keys.Enter)) ||
-            c.IsHovered && buttonReleased(MouseButton.LeftButton);
+        public static Func<Component, bool> ConditionInteraction = c =>
+            c.HasFocus && (_buttonInteraction.Released()) ||
+            c.IsHovered && _mouseInteraction.Released();
         /// <returns>
         /// Returns true when gamepad 0's left thumbstick has just been made positive or the up arrow key is released.
         /// </returns>
         public static Func<bool> ConditionPreviousFocus = () =>
             InputHelper.OldGamePad[0].ThumbSticks.Left.Y <= 0 && InputHelper.NewGamePad[0].ThumbSticks.Left.Y > 0 ||
-            buttonReleased(Keys.Up);
+            _buttonPreviousFocus.Released();
         /// <returns>
         /// Returns true when gamepad 0's left thumbstick has just been made negative or the down arrow key is released.
         /// </returns>
         public static Func<bool> ConditionNextFocus = () =>
             InputHelper.OldGamePad[0].ThumbSticks.Left.Y >= 0 && InputHelper.NewGamePad[0].ThumbSticks.Left.Y < 0 ||
-            buttonReleased(Keys.Down);
+            _buttonNextFocus.Released();
         /// <returns>
         /// Returns true when gamepad 0's B button is released or the escape key is released.
         /// </returns>
         public static Func<bool> ConditionBackFocus = () =>
-            buttonReleased(GamePadButton.B, 0) ||
-            buttonReleased(Keys.Escape);
+            _buttonBackFocus.Released();
         /// <returns>
         /// Always returns true. This is useful when you want a condition to mark an input as used.
         /// When an input is marked as used, the component will request to be put in focus.
         /// </returns>
-        public static Func<Component, bool> ConsumeCondition = (Component c) => true;
+        public static Func<Component, bool> ConsumeCondition = c => true;
         /// <returns>Returns true when a component is hovered and the mouse wheel is being scrolled.</returns>
-        public static Func<Component, bool> IsScrolled = (Component c) => {
+        public static Func<Component, bool> IsScrolled = c => {
             return c.IsHovered && GuiHelper.ScrollWheelDelta != 0;
         };
         /// <returns>This should be strictly used on a panel so that it can be scrolled vertically.</returns>
         /// <seealso cref="IsScrolled"/>
-        public static Func<Component, bool> ScrollVertically = (Component c) => {
+        public static Func<Component, bool> ScrollVertically = c => {
             Panel p = (Panel)c;
             int scrollWheelDelta = GuiHelper.ScrollWheelDelta;
             p.Offset = new Point(p.Offset.X, (int)Math.Min(Math.Max(p.Offset.Y + scrollWheelDelta, p.ClippingRect.Height - p.Size.Height), 0));
@@ -61,7 +59,7 @@ namespace Apos.Gui {
         };
         /// <returns>This should be strictly used on a panel so that it can be scrolled horizontally.</returns>
         /// <seealso cref="IsScrolled"/>
-        public static Func<Component, bool> ScrollHorizontally = (Component c) => {
+        public static Func<Component, bool> ScrollHorizontally = c => {
             Panel p = (Panel)c;
             int scrollWheelDelta = GuiHelper.ScrollWheelDelta;
             p.Offset = new Point((int)Math.Min(Math.Max(p.Offset.X + scrollWheelDelta, p.ClippingRect.Width - p.Size.Width), 0), p.Offset.Y);
@@ -124,16 +122,40 @@ namespace Apos.Gui {
             return b;
         }
 
-        // Group: Private Functions
+        // Group: Private Variables
 
-        private static bool buttonReleased(Keys key) {
-            return InputHelper.IsActive && ConditionKeyboard.Released(key);
-        }
-        private static bool buttonReleased(MouseButton button) {
-            return InputHelper.IsActive && ConditionMouse.Released(button);
-        }
-        private static bool buttonReleased(GamePadButton button, int gamePadIndex) {
-            return InputHelper.IsActive && ConditionGamePad.Released(button, gamePadIndex);
-        }
+        private static ConditionComposite _buttonInteraction =
+            new ConditionComposite(
+                new ConditionSet(
+                    new ConditionKeyboard(Keys.Space),
+                    new ConditionKeyboard(Keys.Enter),
+                    new ConditionGamePad(GamePadButton.A, 0)
+                )
+            );
+        private static ConditionComposite _mouseInteraction =
+            new ConditionComposite(
+                new ConditionSet(
+                    new ConditionMouse(MouseButton.LeftButton)
+                )
+            );
+        private static ConditionComposite _buttonPreviousFocus =
+            new ConditionComposite(
+                new ConditionSet(
+                    new ConditionKeyboard(Keys.Up)
+                )
+            );
+        private static ConditionComposite _buttonNextFocus =
+            new ConditionComposite(
+                new ConditionSet(
+                    new ConditionKeyboard(Keys.Down)
+                )
+            );
+        private static ConditionComposite _buttonBackFocus =
+            new ConditionComposite(
+                new ConditionSet(
+                    new ConditionKeyboard(Keys.Escape),
+                    new ConditionGamePad(GamePadButton.B, 0)
+                )
+            );
     }
 }
