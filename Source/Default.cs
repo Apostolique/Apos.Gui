@@ -128,7 +128,7 @@ namespace Apos.Gui {
             new ConditionComposite(
                 new ConditionSet(new ConditionKeyboard(Keys.Space)),
                 new ConditionSet(new ConditionKeyboard(Keys.Enter)),
-                new ConditionSet(new ConditionKeyboard(Keys.Space))
+                new ConditionSet(new ConditionGamePad(GamePadButton.A, 0))
             );
         private static ConditionComposite _mouseInteraction =
             new ConditionComposite(
