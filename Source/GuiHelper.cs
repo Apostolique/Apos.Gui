@@ -127,6 +127,8 @@ namespace Apos.Gui {
         public static void Setup(Game game, DynamicSpriteFont font) {
             InputHelper.Setup(game);
             Font = font;
+
+            SpriteBatch = new SpriteBatch(InputHelper.Game.GraphicsDevice);
         }
         /// <summary>
         /// This should be called at the start of the game's update loop.
