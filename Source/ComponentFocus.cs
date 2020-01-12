@@ -1,5 +1,4 @@
 using System;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Apos.Gui {
     /// <summary>
@@ -7,7 +6,9 @@ namespace Apos.Gui {
     ///       This is especially useful for gamepad and keyboard controls.
     /// </summary>
     public class ComponentFocus {
+
         // Group: Constructors
+
         public ComponentFocus(Component c) : this(c, () => false, () => false) { }
         public ComponentFocus(Component c, Func<bool> previousFocusAction, Func<bool> nextFocusAction) {
             RootComponent = c;
@@ -19,6 +20,7 @@ namespace Apos.Gui {
         }
 
         // Group: Public Variables
+
         public Component RootComponent {
             get;
             set;
@@ -59,6 +61,7 @@ namespace Apos.Gui {
         }
 
         // Group: Public Functions
+
         public void UpdateSetup() {
             RootComponent.UpdateSetup();
         }
@@ -82,8 +85,8 @@ namespace Apos.Gui {
         public void Update() {
             RootComponent.Update();
         }
-        public void Draw(SpriteBatch s) {
-            GuiHelper.DrawGui(s, RootComponent);
+        public void Draw() {
+            GuiHelper.DrawGui(RootComponent);
         }
         public void FocusPrevious() {
             Focus = findPrevious(Focus);
@@ -93,10 +96,12 @@ namespace Apos.Gui {
         }
 
         // Group: Private Variables
+
         private Component _oldFocus;
         private Component _focus;
 
         // Group: Private Functions
+
         private Component findPrevious(Component c) {
             Component currentFocus = c;
             currentFocus.HasFocus = false;

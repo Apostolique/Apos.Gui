@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using Optional;
 
@@ -10,7 +9,9 @@ namespace Apos.Gui {
     /// Goal: Container that can hold Components.
     /// </summary>
     public class Panel : Component {
+
         // Group: Constructors
+
         public Panel() : this(new Layout()) {
         }
         public Panel(Layout l) {
@@ -18,6 +19,7 @@ namespace Apos.Gui {
         }
 
         // Group: Public Variables
+
         public Point Offset {
             get;
             set;
@@ -37,6 +39,7 @@ namespace Apos.Gui {
         public override int PrefHeight => (int)Size.Height;
 
         // Group: Public Functions
+
         public virtual void Add(Component e) {
             _children.Add(e);
             e.Parent = Option.Some((Component)this);
@@ -110,13 +113,14 @@ namespace Apos.Gui {
                 e.Update();
             }
         }
-        public override void Draw(SpriteBatch s) {
+        public override void Draw() {
             foreach (Component e in _children) {
-                e.Draw(s);
+                e.Draw();
             }
         }
 
         // Group: Private Variables
+
         protected List<Component> _children = new List<Component>();
         protected Layout _layout;
     }

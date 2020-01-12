@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using Optional;
 
@@ -10,7 +7,9 @@ namespace Apos.Gui {
     /// Goal: A button component that handles actions.
     /// </summary>
     public class Button : Component {
+
         // Group: Constructors
+
         public Button() : this(new Component()) { }
         public Button(Component c) {
             Item = c;
@@ -20,6 +19,7 @@ namespace Apos.Gui {
         }
 
         // Group: Public Variables
+
         public virtual bool ShowBox {
             get;
             set;
@@ -56,6 +56,7 @@ namespace Apos.Gui {
         public override int PrefHeight => Item.PrefHeight;
 
         // Group: Public Functions
+
         public override void UpdateSetup() {
             base.UpdateSetup();
 
@@ -66,26 +67,27 @@ namespace Apos.Gui {
 
             Item.UpdateSetup();
         }
-        public override void Draw(SpriteBatch s) {
-            SetScissor(s);
+        public override void Draw() {
+            SetScissor();
             if (ShowBox) {
                 if (IsHovered) {
-                    s.FillRectangle(BoundingRect, new Color(20, 20, 20));
+                    _s.FillRectangle(BoundingRect, new Color(20, 20, 20));
                 } else {
-                    s.FillRectangle(BoundingRect, Color.Black);
+                    _s.FillRectangle(BoundingRect, Color.Black);
                 }
             }
 
-            Item.Draw(s);
+            Item.Draw();
 
             if (ShowBox && HasFocus) {
-                s.DrawRectangle(BoundingRect, Color.White, 2);
+                _s.DrawRectangle(BoundingRect, Color.White, 2);
             }
 
-            ResetScissor(s);
+            ResetScissor();
         }
 
         // Group: Private Variables
+
         protected Component _item;
     }
 }

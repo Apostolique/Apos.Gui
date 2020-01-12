@@ -43,6 +43,10 @@ namespace Apos.Gui {
             get;
             set;
         } = SamplerState.LinearClamp;
+        public static SpriteBatch SpriteBatch {
+            get;
+            set;
+        }
         /// <summary>
         /// This is a list of actions that will be executed at the start of a game loop. This is useful for queueing
         /// actions that will be done in the next loop cycle.
@@ -84,51 +88,34 @@ namespace Apos.Gui {
             return (int)(n * Scale);
         }
         /// <summary>
-        /// Calls begin on the spritebatch with the UI rasterizer state, transform matrix and sampler state.
-        /// </summary>
-        /// <param name="s">A spritebatch that is waiting for begin to be called on it.</param>
-        public static void Begin(SpriteBatch s) {
-            s.Begin(rasterizerState: _rasterState, transformMatrix: UIMatrix, samplerState: GuiSampler);
-            _beginCalled = true;
-        }
-        /// <summary>
-        /// Calls end on the spritebatch.
-        /// </summary>
-        /// <param name="s">A spritebatch that is waiting for end to be called on it.</param>
-        public static void End(SpriteBatch s) {
-            s.End();
-            _beginCalled = false;
-        }
-        /// <summary>
         /// Uses a rectangle to limit the area that the spritebatch is allowed to draw to.
         /// The rectangle is converted into screen coordinates.
         /// </summary>
         /// <param name="s">A spritebatch that is being tracked by the UI.</param>
         /// <param name="r">The rectangle to use for the spritebatch scissor in UI coordinates.</param>
-        public static void SetScissor(SpriteBatch s, Rectangle r) {
+        public static void SetScissor(Rectangle r) {
             if (_beginCalled) {
-                End(s);
+                End();
             }
             int x = (int)(r.X * Scale);
             int y = (int)(r.Y * Scale);
             int w = (int)(r.Width * Scale);
             int h = (int)(r.Height * Scale);
 
-            s.GraphicsDevice.ScissorRectangle = new Rectangle(x, y, w, h);
-            Begin(s);
+            SpriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(x, y, w, h);
+            Begin();
         }
         /// <summary>
         /// Uses a rectangle to limit the area that the spritebatch is allowed to draw to.
         /// </summary>
-        /// <param name="s">A spritebatch that is being tracked by the UI.</param>
         /// <param name="r">The rectangle to use for the spritebatch scissor in screen coordinates.</param>
-        public static void ResetScissor(SpriteBatch s, Rectangle r) {
+        public static void ResetScissor(Rectangle r) {
             if (_beginCalled) {
-                End(s);
+                End();
             }
 
-            s.GraphicsDevice.ScissorRectangle = r;
-            Begin(s);
+            SpriteBatch.GraphicsDevice.ScissorRectangle = r;
+            Begin();
         }
         /// <summary>
         /// Call Setup in the game's LoadContent.
@@ -160,36 +147,29 @@ namespace Apos.Gui {
         /// This should be used on a UI root component.
         /// This function tracks the spritebatch to call being and end correctly.
         /// </summary>
-        /// <param name="s">A spritebatch that is waiting for begin to be called on it.</param>
         /// <param name="c">A root component to draw.</param>
-        public static void DrawGui(SpriteBatch s, Component c) {
-            c.Draw(s);
+        public static void DrawGui(Component c) {
+            c.Draw();
             if (_beginCalled) {
-                End(s);
+                End();
             }
         }
+
+        // Group: Private Functions
+
         /// <summary>
-        /// Draws a string using the Font, FontSize and UI scale.
+        /// Calls begin on the spritebatch with the UI rasterizer state, transform matrix and sampler state.
         /// </summary>
-        /// <param name="s">A spritebatch that is being tracked by the UI.</param>
-        /// <param name="t">The string to draw.</param>
-        /// <param name="p">The position for the string.</param>
-        /// <param name="c">The color for the string.</param>
-        public static void DrawString(SpriteBatch s, string t, Vector2 p, Color c) {
-            float virtualScale = (float)Math.Ceiling(Scale);
-            float finalScale = 1 / virtualScale;
-
-            Font.Size = FontSize * virtualScale;
-            Vector2 scale = new Vector2(finalScale);
-            s.DrawString(Font, t, p, c, scale);
+        private static void Begin() {
+            SpriteBatch.Begin(rasterizerState: _rasterState, transformMatrix: UIMatrix, samplerState: GuiSampler);
+            _beginCalled = true;
         }
-        /// <param name="t">The string to measure.</param>
-        public static Vector2 MeasureString(string t) {
-            float virtualScale = (float)Math.Ceiling(Scale);
-            float finalScale = 1 / virtualScale;
-
-            Font.Size = FontSize * virtualScale;
-            return Font.MeasureString(t) * finalScale;
+        /// <summary>
+        /// Calls end on the spritebatch.
+        /// </summary>
+        private static void End() {
+            SpriteBatch.End();
+            _beginCalled = false;
         }
 
         // Group: Private Variables

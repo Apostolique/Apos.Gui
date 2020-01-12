@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using SpriteFontPlus;
@@ -9,7 +8,9 @@ namespace Apos.Gui {
     /// Goal: A text component.
     /// </summary>
     public class Label : Component {
+
         // Group: Constructors
+
         public Label() : this("Text Missing") { }
         public Label(string iText) {
             _text = iText;
@@ -18,6 +19,7 @@ namespace Apos.Gui {
         }
 
         // Group: Public Variables
+
         public Color NormalColor {
             get;
             set;
@@ -30,17 +32,20 @@ namespace Apos.Gui {
         public override int PrefHeight => (int)_textSize.Height;
 
         // Group: Public Functions
-        public override void Draw(SpriteBatch s) {
-            SetScissor(s);
-            GuiHelper.DrawString(s, _text, new Vector2(Left, Top), getColor());
-            ResetScissor(s);
+
+        public override void Draw() {
+            SetScissor();
+            DrawString(_text, new Vector2(Left, Top), getColor());
+            ResetScissor();
         }
 
         // Group: Private Variables
+
         protected string _text = "Text Missing";
-        protected Size2 _textSize => GuiHelper.MeasureString(_text);
+        protected Size2 _textSize => MeasureString(_text);
 
         // Group: Private Functions
+
         protected virtual Color getColor() {
             if (IsHovered || HasFocus) {
                 return ActiveColor;

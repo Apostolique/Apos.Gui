@@ -1,21 +1,19 @@
-using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using SpriteFontPlus;
-using Optional;
 using System.Linq;
+using Optional;
 
 namespace Apos.Gui {
     /// <summary>
     /// Goal: A Switch component that works like a tab.
     /// </summary>
     public class Switcher<T> : Component {
+
         // Group: Constructors
+
         public Switcher() { }
 
         // Group: Public Variables
+
         public Option<T> Key {
             get {
                 if (_children.Count > 0) {
@@ -64,6 +62,7 @@ namespace Apos.Gui {
         public override int PrefHeight => Key.Map(key => _children[key].PrefHeight).ValueOr(Height);
 
         // Group: Public Functions
+
         public void Add(T key, Component c) {
             _children.Add(key, c);
             c.Parent = Option.Some((Component)this);
@@ -112,13 +111,14 @@ namespace Apos.Gui {
                 _children[key].Update();
             });
         }
-        public override void Draw(SpriteBatch s) {
+        public override void Draw() {
             Key.MatchSome(key => {
-                _children[key].Draw(s);
+                _children[key].Draw();
             });
         }
 
         // Group: Private Variables
+
         protected Option<T> _key = Option.None<T>();
         protected Dictionary<T, Component> _children = new Dictionary<T, Component>();
     }

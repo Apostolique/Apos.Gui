@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Optional;
+using SpriteFontPlus;
 
 namespace Apos.Gui {
     /// <summary>
@@ -209,16 +210,16 @@ namespace Apos.Gui {
         /// Sets the drawing limits for this component.
         /// </summary>
         /// <param name="s">A spritebatch that is being tracked by the UI.</param>
-        public virtual void SetScissor(SpriteBatch s) {
-            _oldScissor = s.GraphicsDevice.ScissorRectangle;
-            GuiHelper.SetScissor(s, ClippingRect);
+        public virtual void SetScissor() {
+            _oldScissor = _s.GraphicsDevice.ScissorRectangle;
+            GuiHelper.SetScissor(ClippingRect);
         }
         /// <summary>
         /// Cleans up the drawing limits that were set by SetScissor.
         /// </summary>
         /// <param name="s">A spritebatch that is being tracked by the UI.</param>
-        public virtual void ResetScissor(SpriteBatch s) {
-            GuiHelper.ResetScissor(s, _oldScissor);
+        public virtual void ResetScissor() {
+            GuiHelper.ResetScissor(_oldScissor);
         }
         /// <summary>
         /// Called at the start of the update loop.
@@ -263,8 +264,7 @@ namespace Apos.Gui {
         /// <summary>
         /// The component's draw function.
         /// </summary>
-        /// <param name="s">A spritebatch that is being tracked by the UI.</param>
-        public virtual void Draw(SpriteBatch s) { }
+        public virtual void Draw() { }
 
         /// <summary>
         /// Clips a rectangle against another rectangle.
@@ -288,8 +288,38 @@ namespace Apos.Gui {
             return r.Left < p.X && r.Right > p.X && r.Top < p.Y && r.Bottom > p.Y;
         }
 
+        // Group: Private Functions
+
+        /// <summary>
+        /// Draws a string using the Font, FontSize and UI scale.
+        /// </summary>
+        /// <param name="s">A spritebatch that is being tracked by the UI.</param>
+        /// <param name="t">The string to draw.</param>
+        /// <param name="p">The position for the string.</param>
+        /// <param name="c">The color for the string.</param>
+        protected void DrawString(string t, Vector2 p, Color c) {
+            float virtualScale = (float)Math.Ceiling(GuiHelper.Scale);
+            float finalScale = 1 / virtualScale;
+
+            GuiHelper.Font.Size = GuiHelper.FontSize * virtualScale;
+            Vector2 scale = new Vector2(finalScale);
+            _s.DrawString(GuiHelper.Font, t, p, c, scale);
+        }
+        /// <param name="t">The string to measure.</param>
+        protected Vector2 MeasureString(string t) {
+            float virtualScale = (float)Math.Ceiling(GuiHelper.Scale);
+            float finalScale = 1 / virtualScale;
+
+            GuiHelper.Font.Size = GuiHelper.FontSize * virtualScale;
+            return GuiHelper.Font.MeasureString(t) * finalScale;
+        }
+
         // Group: Private Variables
 
+        /// <summary>
+        /// SpriteBatch to use for drawing.
+        /// </summary>
+        protected SpriteBatch _s => GuiHelper.SpriteBatch;
         /// <summary>
         /// The clipping rectangle that this component might or might not have.
         /// </summary>

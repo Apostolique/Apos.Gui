@@ -7,10 +7,13 @@ namespace Apos.Gui {
     /// Goal: Stacks components on top of each others.
     /// </summary>
     public class LayoutVertical : Layout {
+
         // Group: Constructors
+
         public LayoutVertical() { }
 
         // Group: Public Functions
+
         public override void RecomputeChildren(List<Component> childs) {
             //Tell each children their position and size.
             Point position = Panel.Position;

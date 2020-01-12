@@ -8,10 +8,13 @@ namespace Apos.Gui {
     /// Goal: Stacks components on top of each others and centers them inside the panel.
     /// </summary>
     public class LayoutVerticalCenter : Layout {
+
         // Group: Constructors
+
         public LayoutVerticalCenter() { }
 
         // Group: Public Variables
+
         public override Panel Panel {
             get => base.Panel;
             set {
@@ -22,6 +25,7 @@ namespace Apos.Gui {
         }
 
         // Group: Public Functions
+
         public override void RecomputeChildren(List<Component> children) {
             //Tell each children their position and size.
             _oldWidth = _newWidth;
@@ -64,6 +68,7 @@ namespace Apos.Gui {
         }
 
         // Group: Private Variables
+
         protected int _oldWidth;
         protected int _oldHeigth;
         protected int _newWidth;
