@@ -33,10 +33,7 @@ namespace Apos.Gui {
             set;
         } = 30f;
         /// <value>Your game's window. Used by responsive components.</value>
-        public static GameWindow Window {
-            get;
-            set;
-        }
+        public static GameWindow Window => InputHelper.Window;
         /// <returns>The window's width in UI scale.</returns>
         public static int WindowWidth => (int)(Window.ClientBounds.Width * (1 / GuiHelper.Scale));
         /// <returns>The window's height in UI scale.</returns>
@@ -134,13 +131,30 @@ namespace Apos.Gui {
             Begin(s);
         }
         /// <summary>
+        /// Call Setup in the game's LoadContent.
+        /// </summary>
+        /// <param name="game">Your game object.</param>
+        /// <param name="font">The font that you want to use for the UI.</param>
+        public static void Setup(Game game, DynamicSpriteFont font) {
+            InputHelper.Setup(game);
+            Font = font;
+            FontSize = Font.Size;
+        }
+        /// <summary>
         /// This should be called at the start of the game's update loop.
         /// </summary>
         public static void UpdateSetup() {
+            InputHelper.UpdateSetup();
             for (int i = NextLoopActions.Count - 1; i >= 0; i--) {
                 NextLoopActions[i]();
                 NextLoopActions.RemoveAt(i);
             }
+        }
+        /// <summary>
+        /// Call this at the end of your update loop.
+        /// </summary>
+        public static void UpdateCleanup() {
+            InputHelper.UpdateCleanup();
         }
         /// <summary>
         /// This should be used on a UI root component.
