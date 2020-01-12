@@ -94,7 +94,6 @@ namespace Apos.Gui {
         /// Uses a rectangle to limit the area that the spritebatch is allowed to draw to.
         /// The rectangle is converted into screen coordinates.
         /// </summary>
-        /// <param name="s">A spritebatch that is being tracked by the UI.</param>
         /// <param name="r">The rectangle to use for the spritebatch scissor in UI coordinates.</param>
         public static void SetScissor(Rectangle r) {
             if (_beginCalled) {
@@ -155,6 +154,28 @@ namespace Apos.Gui {
             if (_beginCalled) {
                 End();
             }
+        }
+        /// <summary>
+        /// Draws a string using the Font, FontSize and UI scale.
+        /// </summary>
+        /// <param name="t">The string to draw.</param>
+        /// <param name="p">The position for the string.</param>
+        /// <param name="c">The color for the string.</param>
+        public static void DrawString(string t, Vector2 p, Color c) {
+            float virtualScale = (float)Math.Ceiling(Scale);
+            float finalScale = 1 / virtualScale;
+
+            Font.Size = FontSize * virtualScale;
+            Vector2 scale = new Vector2(finalScale);
+            SpriteBatch.DrawString(Font, t, p, c, scale);
+        }
+        /// <param name="t">The string to measure.</param>
+        public static Vector2 MeasureString(string t) {
+            float virtualScale = (float)Math.Ceiling(Scale);
+            float finalScale = 1 / virtualScale;
+
+            Font.Size = FontSize * virtualScale;
+            return Font.MeasureString(t) * finalScale;
         }
 
         // Group: Private Functions

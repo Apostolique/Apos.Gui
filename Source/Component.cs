@@ -209,7 +209,6 @@ namespace Apos.Gui {
         /// <summary>
         /// Sets the drawing limits for this component.
         /// </summary>
-        /// <param name="s">A spritebatch that is being tracked by the UI.</param>
         public virtual void SetScissor() {
             _oldScissor = _s.GraphicsDevice.ScissorRectangle;
             GuiHelper.SetScissor(ClippingRect);
@@ -217,7 +216,6 @@ namespace Apos.Gui {
         /// <summary>
         /// Cleans up the drawing limits that were set by SetScissor.
         /// </summary>
-        /// <param name="s">A spritebatch that is being tracked by the UI.</param>
         public virtual void ResetScissor() {
             GuiHelper.ResetScissor(_oldScissor);
         }
@@ -293,26 +291,12 @@ namespace Apos.Gui {
         /// <summary>
         /// Draws a string using the Font, FontSize and UI scale.
         /// </summary>
-        /// <param name="s">A spritebatch that is being tracked by the UI.</param>
         /// <param name="t">The string to draw.</param>
         /// <param name="p">The position for the string.</param>
         /// <param name="c">The color for the string.</param>
-        protected void DrawString(string t, Vector2 p, Color c) {
-            float virtualScale = (float)Math.Ceiling(GuiHelper.Scale);
-            float finalScale = 1 / virtualScale;
-
-            GuiHelper.Font.Size = GuiHelper.FontSize * virtualScale;
-            Vector2 scale = new Vector2(finalScale);
-            _s.DrawString(GuiHelper.Font, t, p, c, scale);
-        }
+        protected void DrawString(string t, Vector2 p, Color c) => GuiHelper.DrawString(t, p, c);
         /// <param name="t">The string to measure.</param>
-        protected Vector2 MeasureString(string t) {
-            float virtualScale = (float)Math.Ceiling(GuiHelper.Scale);
-            float finalScale = 1 / virtualScale;
-
-            GuiHelper.Font.Size = GuiHelper.FontSize * virtualScale;
-            return GuiHelper.Font.MeasureString(t) * finalScale;
-        }
+        protected Vector2 MeasureString(string t) => GuiHelper.MeasureString(t);
 
         // Group: Private Variables
 
