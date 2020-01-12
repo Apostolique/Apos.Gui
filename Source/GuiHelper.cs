@@ -27,22 +27,25 @@ namespace Apos.Gui {
             get;
             set;
         }
-        /// <value>Size for the font. Defaults to 30.</value>
+        /// <value>Size for the font.</value>
         public static float FontSize {
-            get;
-            set;
-        } = 30f;
+            get => Font.Size;
+            set {
+                Font.Size = value;
+            }
+        }
         /// <value>Your game's window. Used by responsive components.</value>
         public static GameWindow Window => InputHelper.Window;
         /// <returns>The window's width in UI scale.</returns>
-        public static int WindowWidth => (int)(Window.ClientBounds.Width * (1 / GuiHelper.Scale));
+        public static int WindowWidth => (int)(Window.ClientBounds.Width * (1 / Scale));
         /// <returns>The window's height in UI scale.</returns>
-        public static int WindowHeight => (int)(Window.ClientBounds.Height * (1 / GuiHelper.Scale));
+        public static int WindowHeight => (int)(Window.ClientBounds.Height * (1 / Scale));
         /// <value>Defaults to LinearClamp.</value>
         public static SamplerState GuiSampler {
             get;
             set;
         } = SamplerState.LinearClamp;
+        /// <summary>SpriteBatch used and managed by the Gui.</summary>
         public static SpriteBatch SpriteBatch {
             get;
             set;
@@ -125,7 +128,6 @@ namespace Apos.Gui {
         public static void Setup(Game game, DynamicSpriteFont font) {
             InputHelper.Setup(game);
             Font = font;
-            FontSize = Font.Size;
         }
         /// <summary>
         /// This should be called at the start of the game's update loop.
