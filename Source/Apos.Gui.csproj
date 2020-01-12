@@ -3,7 +3,7 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <PackageId>Apos.Gui</PackageId>
     <Title>Apos.Gui</Title>
-    <Version>0.11.4</Version>
+    <Version>0.11.5</Version>
     <Description>UI library for MonoGame.</Description>
     <Authors>Jean-David Moisan</Authors>
     <Company>Vyne Enterprise Inc.</Company>
@@ -22,7 +22,7 @@
     <PackageReference Include="MonoGame.Extended" Version="3.7.0" />
     <PackageReference Include="SpriteFontPlus" Version="0.7.1.25" />
     <PackageReference Include="Optional" Version="4.0.0" />
-    <PackageReference Include="Apos.Input" Version="0.6.2" />
+    <PackageReference Include="Apos.Input" Version="0.7.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="../Images/Icon.png" Pack="true" PackagePath="" />
