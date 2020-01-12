@@ -93,7 +93,7 @@ In your `Draw(GameTime gameTime)`, call:
 ```csharp
 protected override void Draw(GameTime gameTime) {
     GraphicsDevice.Clear(Color.Black);
-    focus.Draw(spritebatch);
+    focus.Draw();
     base.Draw(gameTime);
 }
 ```
