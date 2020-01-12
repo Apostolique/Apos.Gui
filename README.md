@@ -30,15 +30,12 @@ In your game's `LoadContent()`, get the Helper classes ready:
 
 ```csharp
 protected override void LoadContent() {
-    InputHelper.Game = this;
-    GuiHelper.Window = Window;
-    GuiHelper.Scale = 1f;
-
-    GuiHelper.FontSize = 30;
     using MemoryStream ms = new MemoryStream();
     TitleContainer.OpenStream($"{Content.RootDirectory}/Fonts/FontFile.ttf").CopyTo(ms);
     byte[] fontBytes = ms.ToArray();
-    GuiHelper.Font = DynamicSpriteFont.FromTtf(fontBytes, GuiHelper.FontSize);
+    var font = DynamicSpriteFont.FromTtf(fontBytes, 30);
+
+    GuiHelper.Setup(this, font);
 }
 ```
 
@@ -80,7 +77,6 @@ In your `Update(GameTime gameTime)`, call the following functions:
 ```csharp
 protected override void Update(GameTime gametime) {
     //Call UpdateSetup at the start.
-    InputHelper.UpdateSetup();
     GuiHelper.UpdateSetup();
 
     focus.UpdateSetup();
@@ -88,7 +84,7 @@ protected override void Update(GameTime gametime) {
     focus.Update();
 
     //Call UpdateCleanup at the end.
-    InputHelper.UpdateCleanup();
+    GuiHelper.UpdateCleanup();
 }
 ```
 
