@@ -99,3 +99,11 @@ protected override void Draw(GameTime gameTime) {
 ```
 
 Working usage code can be found in the [AposGameStarter](https://github.com/Apostolique/AposGameStarter) project. Look into [menu.cs](https://github.com/Apostolique/AposGameStarter/blob/master/Menu.cs).
+
+## Other projects you might like
+
+* [Apos.Input](https://github.com/Apostolique/Apos.Input) - Input library for MonoGame.
+* [Apos.History](https://github.com/Apostolique/Apos.History) - A C# library that makes it easy to handle undo and redo.
+* [Apos.Content](https://github.com/Apostolique/Apos.Content) - Content builder library for MonoGame.
+* [Apos.Framework](https://github.com/Apostolique/Apos.Framework) - Game architecture for MonoGame.
+* [AposGameStarter](https://github.com/Apostolique/AposGameStarter) - MonoGame project starter. Common files to help create a game faster.
