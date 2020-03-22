@@ -1,0 +1,22 @@
+name: Release to NuGet
+
+on:
+  push:
+    paths:
+    - 'VERSION'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+    - name: Pack with dotnet
+      run: dotnet pack Source/Apos.Gui.csproj --output nuget-packages --configuration Release
+    - name: Push with dotnet
+      run: dotnet nuget push nuget-packages/*.nupkg --api-key ${{ secrets.NuGetAPIKey }} --source https://api.nuget.org/v3/index.json
