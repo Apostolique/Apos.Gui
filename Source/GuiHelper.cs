@@ -28,7 +28,7 @@ namespace Apos.Gui {
             set;
         }
         /// <value>Size for the font.</value>
-        public static float FontSize {
+        public static int FontSize {
             get => Font.Size;
             set {
                 Font.Size = value;
@@ -167,7 +167,7 @@ namespace Apos.Gui {
             float virtualScale = (float)Math.Ceiling(Scale);
             float finalScale = 1 / virtualScale;
 
-            Font.Size = FontSize * virtualScale;
+            Font.Size = (int)(FontSize * virtualScale);
             Vector2 scale = new Vector2(finalScale);
             SpriteBatch.DrawString(Font, t, p, c, scale);
         }
@@ -176,7 +176,7 @@ namespace Apos.Gui {
             float virtualScale = (float)Math.Ceiling(Scale);
             float finalScale = 1 / virtualScale;
 
-            Font.Size = FontSize * virtualScale;
+            Font.Size = (int)(FontSize * virtualScale);
             return Font.MeasureString(t) * finalScale;
         }
 
