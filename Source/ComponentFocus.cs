@@ -42,7 +42,7 @@ namespace Apos.Gui {
                     _focus.HasFocus = false;
                 }
                 Component focus = value;
-                if (!focus.IsFocusable) {
+                if (focus != null && !focus.IsFocusable) {
                     focus = findNext(focus);
                 }
                 _focus = focus;
