@@ -148,8 +148,8 @@ namespace Apos.Gui {
         /// If this component has a parent, it will ask the parent to return this component's previous neighbor.
         /// Otherwise, it will return itself.
         /// </summary>
-        public virtual Component GetPrevious() {
-            return Parent.Map(parent => parent.GetPrevious(this)).ValueOr(this);
+        public virtual Component GetPrev() {
+            return Parent.Map(parent => parent.GetPrev(this)).ValueOr(this);
         }
         /// <summary>
         /// If this component has a parent, it will ask the parent to return this component's next neighbor.
@@ -162,8 +162,8 @@ namespace Apos.Gui {
         /// This function is used by components that manage children.
         /// It will try to return a child that is previous to another component.
         /// </summary>
-        public virtual Component GetPrevious(Component c) {
-            return GetPrevious();
+        public virtual Component GetPrev(Component c) {
+            return GetPrev();
         }
         /// <summary>
         /// This function is used by components that manage children.

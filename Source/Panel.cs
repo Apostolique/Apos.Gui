@@ -48,12 +48,12 @@ namespace Apos.Gui {
             _children.Remove(e);
             e.Parent = Option.None<Component>();
         }
-        public override Component GetPrevious(Component c) {
+        public override Component GetPrev(Component c) {
             int index = _children.IndexOf(c) - 1;
             if (index >= 0 && _children.Count > 0) {
                 return _children[index];
             }
-            return Parent.Map(parent => parent.GetPrevious(this)).ValueOr(() => {
+            return Parent.Map(parent => parent.GetPrev(this)).ValueOr(() => {
                 if (_children.Count > 0) {
                     return _children.Last();
                 }

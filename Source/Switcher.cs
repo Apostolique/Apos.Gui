@@ -67,8 +67,8 @@ namespace Apos.Gui {
             _children.Add(key, c);
             c.Parent = Option.Some((Component)this);
         }
-        public override Component GetPrevious(Component c) {
-            return Key.Map(key => _children[key]).ValueOr(() => Parent.Map(parent => parent.GetPrevious(this)).ValueOr(this));
+        public override Component GetPrev(Component c) {
+            return Key.Map(key => _children[key]).ValueOr(() => Parent.Map(parent => parent.GetPrev(this)).ValueOr(this));
         }
         public override Component GetNext(Component c) {
             return Key.Map(key => _children[key]).ValueOr(() => Parent.Map(parent => parent.GetNext(this)).ValueOr(this));

@@ -10,12 +10,12 @@ namespace Apos.Gui {
         // Group: Constructors
 
         public ComponentFocus(Component c) : this(c, () => false, () => false) { }
-        public ComponentFocus(Component c, Func<bool> previousFocusAction, Func<bool> nextFocusAction) {
+        public ComponentFocus(Component c, Func<bool> prevFocusAction, Func<bool> nextFocusAction) {
             RootComponent = c;
 
             Focus = findNext(RootComponent);
 
-            PreviousFocusAction = previousFocusAction;
+            PrevFocusAction = prevFocusAction;
             NextFocusAction = nextFocusAction;
         }
 
@@ -51,7 +51,7 @@ namespace Apos.Gui {
                 }
             }
         }
-        public Func<bool> PreviousFocusAction {
+        public Func<bool> PrevFocusAction {
             get;
             set;
         }
@@ -71,8 +71,8 @@ namespace Apos.Gui {
                 FocusNext();
                 usedInput = true;
             }
-            if (PreviousFocusAction()) {
-                FocusPrevious();
+            if (PrevFocusAction()) {
+                FocusPrev();
                 usedInput = true;
             }
 
@@ -88,8 +88,8 @@ namespace Apos.Gui {
         public void Draw() {
             GuiHelper.DrawGui(RootComponent);
         }
-        public void FocusPrevious() {
-            Focus = findPrevious(Focus);
+        public void FocusPrev() {
+            Focus = findPrev(Focus);
         }
         public void FocusNext() {
             Focus = findNext(Focus);
@@ -102,12 +102,12 @@ namespace Apos.Gui {
 
         // Group: Private Functions
 
-        private Component findPrevious(Component c) {
+        private Component findPrev(Component c) {
             Component currentFocus = c;
             currentFocus.HasFocus = false;
 
             do {
-                currentFocus = currentFocus.GetPrevious();
+                currentFocus = currentFocus.GetPrev();
                 currentFocus = findFinalInverse(currentFocus);
             } while (!currentFocus.IsFocusable && currentFocus != c);
 
@@ -133,22 +133,22 @@ namespace Apos.Gui {
             return null;
         }
         private Component findFinal(Component c) {
-            Component previousFinal;
+            Component prevFinal;
             Component currentFinal = c;
             do {
-                previousFinal = currentFinal;
-                currentFinal = previousFinal.GetFinal();
-            } while (currentFinal != previousFinal && currentFinal != c);
+                prevFinal = currentFinal;
+                currentFinal = prevFinal.GetFinal();
+            } while (currentFinal != prevFinal && currentFinal != c);
 
             return currentFinal;
         }
         private Component findFinalInverse(Component c) {
-            Component previousFinal;
+            Component prevFinal;
             Component currentFinal = c;
             do {
-                previousFinal = currentFinal;
-                currentFinal = previousFinal.GetFinalInverse();
-            } while (currentFinal != previousFinal && currentFinal != c);
+                prevFinal = currentFinal;
+                currentFinal = prevFinal.GetFinalInverse();
+            } while (currentFinal != prevFinal && currentFinal != c);
 
             return currentFinal;
         }

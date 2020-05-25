@@ -67,7 +67,7 @@ p.Add(Default.CreateButton("Quit", c => {
 }, grabFocus));
 screen.Add(p);
 
-focus = new ComponentFocus(screen, Default.ConditionPreviousFocus, Default.ConditionNextFocus);
+focus = new ComponentFocus(screen, Default.ConditionPrevFocus, Default.ConditionNextFocus);
 ```
 
 The above code will create 2 buttons, "Fun" and "Quit". You can use your mouse, keyboard, or gamepad to interact with them.
