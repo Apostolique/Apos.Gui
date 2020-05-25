@@ -131,7 +131,7 @@ namespace Apos.Gui {
                 new GamePadCondition(GamePadButton.A, 0)
             );
         private static ICondition _mouseInteraction = new MouseCondition(MouseButton.LeftButton);
-        private static ICondition _buttonPrevFocus = new KeyboardCondition(Keys.Up);
+        private static ICondition _buttonPreviousFocus = new KeyboardCondition(Keys.Up);
         private static ICondition _buttonNextFocus = new KeyboardCondition(Keys.Down);
         private static ICondition _buttonBackFocus =
             new AnyCondition(
