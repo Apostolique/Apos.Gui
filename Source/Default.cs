@@ -124,28 +124,19 @@ namespace Apos.Gui {
 
         // Group: Private Variables
 
-        private static ConditionComposite _buttonInteraction =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.Space)),
-                new ConditionSet(new ConditionKeyboard(Keys.Enter)),
-                new ConditionSet(new ConditionGamePad(GamePadButton.A, 0))
+        private static ICondition _buttonInteraction =
+            new AnyCondition(
+                new KeyboardCondition(Keys.Space),
+                new KeyboardCondition(Keys.Enter),
+                new GamePadCondition(GamePadButton.A, 0)
             );
-        private static ConditionComposite _mouseInteraction =
-            new ConditionComposite(
-                new ConditionSet(new ConditionMouse(MouseButton.LeftButton))
-            );
-        private static ConditionComposite _buttonPreviousFocus =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.Up))
-            );
-        private static ConditionComposite _buttonNextFocus =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.Down))
-            );
-        private static ConditionComposite _buttonBackFocus =
-            new ConditionComposite(
-                new ConditionSet(new ConditionKeyboard(Keys.Escape)),
-                new ConditionSet(new ConditionGamePad(GamePadButton.B, 0))
+        private static ICondition _mouseInteraction = new MouseCondition(MouseButton.LeftButton);
+        private static ICondition _buttonPrevFocus = new KeyboardCondition(Keys.Up);
+        private static ICondition _buttonNextFocus = new KeyboardCondition(Keys.Down);
+        private static ICondition _buttonBackFocus =
+            new AnyCondition(
+                new KeyboardCondition(Keys.Escape),
+                new GamePadCondition(GamePadButton.B, 0)
             );
     }
 }
