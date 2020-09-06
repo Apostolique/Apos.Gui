@@ -2,8 +2,8 @@ name: Release to NuGet
 
 on:
   push:
-    paths:
-    - 'VERSION'
+    tags:
+    - 'v*'
 
 jobs:
   build:
