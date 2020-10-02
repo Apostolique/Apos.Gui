@@ -19,19 +19,27 @@ namespace Apos.Gui {
             set {
                 if (value > 0) {
                     _scale = value;
+                    _virtualScale = (float)Math.Ceiling(_scale);
+                    _finalScale = 1f / _virtualScale;
+                    SetFontSize();
                 }
             }
         }
         /// <value>The font used by components that display text.</value>
         public static DynamicSpriteFont Font {
-            get;
-            set;
+            get => _font;
+            set {
+                _font = value;
+                _fontSize = _font.Size;
+                SetFontSize();
+            }
         }
         /// <value>Size for the font.</value>
         public static int FontSize {
-            get => Font.Size;
+            get => _fontSize;
             set {
-                Font.Size = value;
+                _fontSize = value;
+                SetFontSize();
             }
         }
         /// <value>Your game's window. Used by responsive components.</value>
@@ -164,20 +172,11 @@ namespace Apos.Gui {
         /// <param name="p">The position for the string.</param>
         /// <param name="c">The color for the string.</param>
         public static void DrawString(string t, Vector2 p, Color c) {
-            float virtualScale = (float)Math.Ceiling(Scale);
-            float finalScale = 1 / virtualScale;
-
-            Font.Size = (int)(FontSize * virtualScale);
-            Vector2 scale = new Vector2(finalScale);
-            SpriteBatch.DrawString(Font, t, p, c, scale);
+            SpriteBatch.DrawString(Font, t, p, c, new Vector2(_finalScale));
         }
         /// <param name="t">The string to measure.</param>
         public static Vector2 MeasureString(string t) {
-            float virtualScale = (float)Math.Ceiling(Scale);
-            float finalScale = 1 / virtualScale;
-
-            Font.Size = (int)(FontSize * virtualScale);
-            return Font.MeasureString(t) * finalScale;
+            return Font.MeasureString(t) * _finalScale;
         }
 
         // Group: Private Functions
@@ -196,16 +195,19 @@ namespace Apos.Gui {
             SpriteBatch.End();
             _beginCalled = false;
         }
+        private static void SetFontSize() {
+            if (_font != null) {
+                _font.Size = (int)(_fontSize * _virtualScale);
+            }
+        }
 
         // Group: Private Variables
 
-        /// <summary>
-        /// The scale field behind the Scale property.
-        /// </summary>
+        private static DynamicSpriteFont _font;
+        private static int _fontSize = 30;
         private static float _scale = 1f;
-        /// <summary>
-        /// A rasterizer state that enables the scissor test for the spritebatch.
-        /// </summary>
+        private static float _virtualScale = 1f;
+        private static float _finalScale = 1f;
         private static RasterizerState _rasterState = new RasterizerState {
             ScissorTestEnable = true
         };
