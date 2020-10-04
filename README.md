@@ -98,7 +98,7 @@ protected override void Draw(GameTime gameTime) {
 }
 ```
 
-Working usage code can be found in the [AposGameStarter](https://github.com/Apostolique/AposGameStarter) project. Look into [menu.cs](https://github.com/Apostolique/AposGameStarter/blob/master/Menu.cs).
+Working usage code can be found in the [AposGameStarter](https://github.com/Apostolique/AposGameStarter) project. Look into [menu.cs](https://github.com/Apostolique/AposGameStarter/blob/master/Game/Layer1/Menu.cs).
 
 ## Other projects you might like
 
