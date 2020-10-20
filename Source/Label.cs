@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
-using SpriteFontPlus;
 
 namespace Apos.Gui {
     /// <summary>
@@ -56,7 +55,7 @@ namespace Apos.Gui {
             int halfWidth = Width / 2;
             int halfHeight = Height / 2;
 
-            s.DrawString(GuiHelper.Font, text, new Vector2(Left + halfWidth, Top + halfHeight), getColor());
+            DrawString(text, new Vector2(Left + halfWidth, Top + halfHeight), getColor());
         }
     }
 }

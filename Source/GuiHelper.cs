@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Apos.Input;
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SpriteFontPlus;
 
 namespace Apos.Gui {
     /// <summary>
@@ -21,17 +21,14 @@ namespace Apos.Gui {
                     _scale = value;
                     _virtualScale = (float)Math.Ceiling(_scale);
                     _finalScale = 1f / _virtualScale;
-                    SetFontSize();
                 }
             }
         }
         /// <value>The font used by components that display text.</value>
-        public static DynamicSpriteFont Font {
+        public static FontSystem Font {
             get => _font;
             set {
                 _font = value;
-                _fontSize = _font.Size;
-                SetFontSize();
             }
         }
         /// <value>Size for the font.</value>
@@ -39,7 +36,6 @@ namespace Apos.Gui {
             get => _fontSize;
             set {
                 _fontSize = value;
-                SetFontSize();
             }
         }
         /// <value>Your game's window. Used by responsive components.</value>
@@ -132,7 +128,7 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="game">Your game object.</param>
         /// <param name="font">The font that you want to use for the UI.</param>
-        public static void Setup(Game game, DynamicSpriteFont font) {
+        public static void Setup(Game game, FontSystem font) {
             InputHelper.Setup(game);
             Font = font;
 
@@ -172,11 +168,13 @@ namespace Apos.Gui {
         /// <param name="p">The position for the string.</param>
         /// <param name="c">The color for the string.</param>
         public static void DrawString(string t, Vector2 p, Color c) {
-            SpriteBatch.DrawString(Font, t, p, c, new Vector2(_finalScale));
+            DynamicSpriteFont font = _font.GetFont((int)(_fontSize * _virtualScale));
+            SpriteBatch.DrawString(font, t, p, c, new Vector2(_finalScale));
         }
         /// <param name="t">The string to measure.</param>
         public static Vector2 MeasureString(string t) {
-            return Font.MeasureString(t) * _finalScale;
+            DynamicSpriteFont font = _font.GetFont((int)(_fontSize * _virtualScale));
+            return font.MeasureString(t) * _finalScale;
         }
 
         // Group: Private Functions
@@ -195,15 +193,10 @@ namespace Apos.Gui {
             SpriteBatch.End();
             _beginCalled = false;
         }
-        private static void SetFontSize() {
-            if (_font != null) {
-                _font.Size = (int)(_fontSize * _virtualScale);
-            }
-        }
 
         // Group: Private Variables
 
-        private static DynamicSpriteFont _font;
+        private static FontSystem _font;
         private static int _fontSize = 30;
         private static float _scale = 1f;
         private static float _virtualScale = 1f;
