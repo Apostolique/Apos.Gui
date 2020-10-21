@@ -33,9 +33,9 @@ protected override void LoadContent() {
     using MemoryStream ms = new MemoryStream();
     TitleContainer.OpenStream($"{Content.RootDirectory}/Fonts/FontFile.ttf").CopyTo(ms);
     byte[] fontBytes = ms.ToArray();
-    var font = DynamicSpriteFont.FromTtf(fontBytes, 30);
+    var fontSystem = FontSystemFactory.Create(GraphicsDevice, fontBytes, 2048, 2048);
 
-    GuiHelper.Setup(this, font);
+    GuiHelper.Setup(this, fontSystem);
 }
 ```
 
