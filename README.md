@@ -31,7 +31,7 @@ In your game's `LoadContent()`, get the Helper classes ready:
 ```csharp
 protected override void LoadContent() {
     var fontSystem = FontSystemFactory.Create(GraphicsDevice, 2048, 2048);
-    fontSystem.AddTitleContainer.OpenStream($"{Content.RootDirectory}/Fonts/FontFile.ttf"));
+    fontSystem.AddFont(TitleContainer.OpenStream($"{Content.RootDirectory}/Fonts/FontFile.ttf"));
 
     GuiHelper.Setup(this, fontSystem);
 }
