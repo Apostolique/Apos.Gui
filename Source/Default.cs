@@ -37,29 +37,24 @@ namespace Apos.Gui {
         /// <returns>
         /// Returns true when gamepad 0's B button is released or the escape key is released.
         /// </returns>
-        public static Func<bool> ConditionBackFocus = () =>
-            _buttonBackFocus.Released();
+        public static Func<bool> ConditionBackFocus = () => _buttonBackFocus.Released();
         /// <returns>Returns true when a component is hovered and the mouse wheel is being scrolled.</returns>
         public static Func<Component, bool> IsScrolled = c => {
             return c.IsHovered && GuiHelper.ScrollWheelDelta != 0;
         };
         /// <returns>This should be strictly used on a panel so that it can be scrolled vertically.</returns>
         /// <seealso cref="IsScrolled"/>
-        public static Func<Component, bool> ScrollVertically = c => {
+        public static Action<Component> ScrollVertically = c => {
             Panel p = (Panel)c;
             int scrollWheelDelta = GuiHelper.ScrollWheelDelta;
             p.Offset = new Point(p.Offset.X, (int)Math.Min(Math.Max(p.Offset.Y + scrollWheelDelta, p.ClippingRect.Height - p.Size.Height), 0));
-
-            return true;
         };
         /// <returns>This should be strictly used on a panel so that it can be scrolled horizontally.</returns>
         /// <seealso cref="IsScrolled"/>
-        public static Func<Component, bool> ScrollHorizontally = c => {
+        public static Action<Component> ScrollHorizontally = c => {
             Panel p = (Panel)c;
             int scrollWheelDelta = GuiHelper.ScrollWheelDelta;
             p.Offset = new Point((int)Math.Min(Math.Max(p.Offset.X + scrollWheelDelta, p.ClippingRect.Width - p.Size.Width), 0), p.Offset.Y);
-
-            return true;
         };
 
         // Group: Public Functions
