@@ -73,7 +73,7 @@ namespace Apos.Gui {
         /// <param name="operation">The action that the button does when interacted with.</param>
         /// <param name="grabFocus">A way for the component to request focus.</param>
         /// <returns>Returns the button that was created.</returns>
-        public static Component CreateButton(string t, Func<Component, bool> operation, Action<Component> grabFocus) {
+        public static Component CreateButton(string t, Action<Component> operation, Action<Component> grabFocus) {
             Label l = new Label(t);
             l.ActiveColor = Color.White;
             l.NormalColor = new Color(150, 150, 150);
@@ -89,7 +89,7 @@ namespace Apos.Gui {
         /// <param name="operation">The action that the button does when interacted with.</param>
         /// <param name="grabFocus">A way for the component to request focus.</param>
         /// <returns>Returns the button that was created.</returns>
-        public static Component CreateButton(Func<string> ld, Func<Component, bool> operation, Action<Component> grabFocus) {
+        public static Component CreateButton(Func<string> ld, Action<Component> operation, Action<Component> grabFocus) {
             LabelDynamic l = new LabelDynamic(ld);
             l.ActiveColor = Color.White;
             l.NormalColor = new Color(150, 150, 150);
@@ -105,7 +105,7 @@ namespace Apos.Gui {
         /// <param name="operation">The operation that the button does when interacted with.</param>
         /// <param name="grabFocus">A way for the component to request focus.</param>
         /// <returns></returns>
-        public static Component CreateButton(Component c, Func<Component, bool> operation, Action<Component> grabFocus) {
+        public static Component CreateButton(Component c, Action<Component> operation, Action<Component> grabFocus) {
             Border border = new Border(c, 20, 20, 20, 20);
             Button b = new Button(border);
             b.ShowBox = false;

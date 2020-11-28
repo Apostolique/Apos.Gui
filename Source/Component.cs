@@ -143,7 +143,7 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="c">A condition that will trigger an action.</param>
         /// <param name="o">An action that will do something when triggered.</param>
-        public void AddAction(Func<Component, bool> c, Func<Component, bool> o) {
+        public void AddAction(Func<Component, bool> c, Action<Component> o) {
             _conditionOperations.Add(new ConditionOperation(c, o));
         }
         /// <summary>
@@ -339,7 +339,7 @@ namespace Apos.Gui {
 
             /// <param name="c">Condition</param>
             /// <param name="o">Action</param>
-            public ConditionOperation(Func<Component, bool> c, Func<Component, bool> o) {
+            public ConditionOperation(Func<Component, bool> c, Action<Component> o) {
                 Condition = c;
                 Operation = o;
             }
@@ -353,7 +353,7 @@ namespace Apos.Gui {
             /// <summary>
             /// Used to build an action over a component. Returns true when an action is blocking.
             /// </summary>
-            public Func<Component, bool> Operation;
+            public Action<Component> Operation;
         }
     }
 }
