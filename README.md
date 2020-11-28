@@ -40,7 +40,7 @@ protected override void LoadContent() {
 You can create a simple UI with the following code:
 
 ```csharp
-ComponentFocus focus;
+ComponentFocus focus = new ComponentFocus(Default.ConditionPrevFocus, Default.ConditionNextFocus);
 
 var screen = new ScreenPanel();
 screen.Layout = new LayoutVerticalCenter();
@@ -59,7 +59,7 @@ p.Add(Default.CreateButton("Quit", c => {
 }, focus.GrabFocus));
 screen.Add(p);
 
-focus = new ComponentFocus(screen, Default.ConditionPrevFocus, Default.ConditionNextFocus);
+focus.Root = screen;
 ```
 
 The above code will create 2 buttons, "Fun" and "Quit". You can use your mouse, keyboard, or gamepad to interact with them.
