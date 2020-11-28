@@ -20,7 +20,7 @@ UI library for MonoGame.
 
 ## Showcase
 
-<img src="Images/Showcase.gif" alt="Apos GUI Loop" width="800" height="480" />
+![Apos.GUI Showcase](Images/Showcase.gif)
 
 ## Usage samples
 
@@ -30,10 +30,8 @@ In your game's `LoadContent()`, get the Helper classes ready:
 
 ```csharp
 protected override void LoadContent() {
-    using MemoryStream ms = new MemoryStream();
-    TitleContainer.OpenStream($"{Content.RootDirectory}/Fonts/FontFile.ttf").CopyTo(ms);
-    byte[] fontBytes = ms.ToArray();
-    var fontSystem = FontSystemFactory.Create(GraphicsDevice, fontBytes, 2048, 2048);
+    var fontSystem = FontSystemFactory.Create(GraphicsDevice, 2048, 2048);
+    fontSystem.AddTitleContainer.OpenStream($"{Content.RootDirectory}/Fonts/FontFile.ttf"));
 
     GuiHelper.Setup(this, fontSystem);
 }
@@ -43,10 +41,6 @@ You can create a simple UI with the following code:
 
 ```csharp
 ComponentFocus focus;
-
-Action<Component> grabFocus = c => {
-    focus.Focus = c;
-};
 
 var screen = new ScreenPanel();
 screen.Layout = new LayoutVerticalCenter();
@@ -58,13 +52,11 @@ p.AddAction(Default.IsScrolled, Default.ScrollVertically);
 
 p.Add(Default.CreateButton("Fun", c => {
     Console.WriteLine("This is fun.");
-    return true;
-}, grabFocus));
+}, focus.GrabFocus));
 p.Add(Default.CreateButton("Quit", c => {
     Console.WriteLine("Quitting the game.");
     Exit();
-    return true;
-}, grabFocus));
+}, focus.GrabFocus));
 screen.Add(p);
 
 focus = new ComponentFocus(screen, Default.ConditionPrevFocus, Default.ConditionNextFocus);

@@ -25,7 +25,7 @@ namespace Apos.Gui {
             get => _item;
             set {
                 _item = value;
-                _item.Parent = Option.Some((Component)this);
+                _item.Parent = Option.Some<Component>(this);
             }
         }
         public override int PrefWidth => Item.PrefWidth + MarginLeft + MarginRight;
@@ -54,13 +54,6 @@ namespace Apos.Gui {
                 _marginBottom = value;
             }
         }
-        public override bool OldIsHovered {
-            get => base.OldIsHovered;
-            set {
-                base.OldIsHovered = value;
-                Item.OldIsHovered = value;
-            }
-        }
         public override bool IsHovered {
             get => base.IsHovered;
             set {
@@ -68,11 +61,11 @@ namespace Apos.Gui {
                 Item.IsHovered = value;
             }
         }
-        public override bool HasFocus {
-            get => base.HasFocus;
+        public override bool IsFocused {
+            get => base.IsFocused;
             set {
-                base.HasFocus = value;
-                Item.HasFocus = value;
+                base.IsFocused = value;
+                Item.IsFocused = value;
             }
         }
         public override bool IsFocusable => Item.IsFocusable;
@@ -96,12 +89,17 @@ namespace Apos.Gui {
 
             Item.UpdateSetup();
         }
-        public override bool UpdateInput() {
-            bool isUsed = base.UpdateInput();
+        public override Option<Component> FindHover() {
+            var hover = Item.FindHover();
+            if (hover.HasValue) {
+                return hover;
+            }
 
-            isUsed = isUsed || Item.UpdateInput();
-
-            return isUsed;
+            return base.FindHover();
+        }
+        public override void UpdateInput() {
+            base.UpdateInput();
+            Item.UpdateInput();
         }
         public override void Update() {
             Item.Update();

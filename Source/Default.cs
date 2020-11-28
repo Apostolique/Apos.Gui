@@ -12,15 +12,15 @@ namespace Apos.Gui {
         // Group: Public Variables
 
         /// <returns>Returns true when the mouse is inside the clip area of a component.</returns>
-        public static Func<Component, bool> ConditionHoverMouse = c => c.IsInsideClip(GuiHelper.MouseToUI());
-        /// <returns>Returns true when a component just got hovered.</returns>
-        public static Func<Component, bool> ConditionGotHovered = c => !c.OldIsHovered && c.IsHovered;
+        public static Func<Component, bool> ConditionMouseHover = c => c.IsInsideClip(GuiHelper.MouseToUI());
+        /// <returns>Returns true when the component is hovered and the mouse is released.</returns>
+        public static Func<Component, bool> ConditionMouseFocus = c => c.IsHovered && _mouseInteraction.Pressed();
         /// <returns>
         /// Returns true when gamepad 0's A button or space or enter or left mouse button are released.
         /// The left mouse button requires that the component is hovered.
         /// </returns>
         public static Func<Component, bool> ConditionInteraction = c =>
-            c.HasFocus && _buttonInteraction.Released() ||
+            c.IsFocused && _buttonInteraction.Released() ||
             c.IsHovered && _mouseInteraction.Released();
         /// <returns>
         /// Returns true when gamepad 0's left thumbstick has just been made positive or the up arrow key is released.
@@ -39,11 +39,6 @@ namespace Apos.Gui {
         /// </returns>
         public static Func<bool> ConditionBackFocus = () =>
             _buttonBackFocus.Released();
-        /// <returns>
-        /// Always returns true. This is useful when you want a condition to mark an input as used.
-        /// When an input is marked as used, the component will request to be put in focus.
-        /// </returns>
-        public static Func<Component, bool> ConsumeCondition = c => true;
         /// <returns>Returns true when a component is hovered and the mouse wheel is being scrolled.</returns>
         public static Func<Component, bool> IsScrolled = c => {
             return c.IsHovered && GuiHelper.ScrollWheelDelta != 0;
@@ -107,7 +102,7 @@ namespace Apos.Gui {
         /// Adds a border of size 20 around the component.
         /// </summary>
         /// <param name="c">The component to give to the button.</param>
-        /// <param name="operation">The action that the button does when interacted with.</param>
+        /// <param name="operation">The operation that the button does when interacted with.</param>
         /// <param name="grabFocus">A way for the component to request focus.</param>
         /// <returns></returns>
         public static Component CreateButton(Component c, Func<Component, bool> operation, Action<Component> grabFocus) {
@@ -115,9 +110,9 @@ namespace Apos.Gui {
             Button b = new Button(border);
             b.ShowBox = false;
             b.GrabFocus = grabFocus;
-            b.AddHoverCondition(ConditionHoverMouse);
+            b.AddHoverCondition(ConditionMouseHover);
+            b.AddFocusCondition(ConditionMouseFocus);
             b.AddAction(ConditionInteraction, operation);
-            b.AddAction(ConditionGotHovered, ConsumeCondition);
 
             return b;
         }

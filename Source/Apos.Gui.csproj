@@ -26,7 +26,7 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="All" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Extended" Version="3.7.0" />
-    <PackageReference Include="FontStashXNA.MonoGame" Version="0.8.5" />
+    <PackageReference Include="FontStashSharp.MonoGame" Version="0.8.7" />
     <PackageReference Include="Apos.Input" Version="1.0.1" />
     <PackageReference Include="Optional" Version="4.0.0" />
   </ItemGroup>

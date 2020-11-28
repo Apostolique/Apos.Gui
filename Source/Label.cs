@@ -46,7 +46,7 @@ namespace Apos.Gui {
         // Group: Private Functions
 
         protected virtual Color getColor() {
-            if (IsHovered || HasFocus) {
+            if (IsHovered || IsFocused) {
                 return ActiveColor;
             }
             return NormalColor;

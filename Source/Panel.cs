@@ -42,7 +42,7 @@ namespace Apos.Gui {
 
         public virtual void Add(Component e) {
             _children.Add(e);
-            e.Parent = Option.Some((Component)this);
+            e.Parent = Option.Some<Component>(this);
         }
         public virtual void Remove(Component e) {
             _children.Remove(e);
@@ -93,19 +93,21 @@ namespace Apos.Gui {
                 e.UpdateSetup();
             }
         }
-        public override bool UpdateInput() {
-            bool isUsed = false;
-
-            for (int i = _children.Count - 1; i >= 0; i--) {
-                if (_children[i].UpdateInput()) {
-                    isUsed = true;
-                    break;
+        public override Option<Component> FindHover() {
+            foreach (Component e in _children) {
+                var hover = e.FindHover();
+                if (hover.HasValue) {
+                    return hover;
                 }
             }
-            if (!isUsed) {
-                isUsed = base.UpdateInput();
+
+            return base.FindHover();
+        }
+        public override void UpdateInput() {
+            foreach (Component e in _children) {
+                e.UpdateInput();
             }
-            return isUsed;
+            base.UpdateInput();
         }
         public override void Update() {
             base.Update();

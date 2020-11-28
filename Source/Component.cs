@@ -87,13 +87,6 @@ namespace Apos.Gui {
             set;
         } = Option.None<Component>();
         /// <summary>
-        /// Holds the previous state of the IsHovered property.
-        /// </summary>
-        public virtual bool OldIsHovered {
-            get;
-            set;
-        } = false;
-        /// <summary>
         /// Represents the component's current hover state.
         /// A component needs a hover condition for this to do anything.
         /// </summary>
@@ -110,9 +103,11 @@ namespace Apos.Gui {
             set;
         } = false;
         /// <summary>
-        /// True when a component currently has focus.
+        /// Represents the component's current focus state.
+        /// A component needs a focus condition for this to do anything.
         /// </summary>
-        public virtual bool HasFocus {
+        /// <seealso cref="AddFocusCondition(Func{Component, bool})"/>
+        public virtual bool IsFocused {
             get;
             set;
         } = false;
@@ -129,9 +124,17 @@ namespace Apos.Gui {
         /// <summary>
         /// When the function is true, the component is considered hovered.
         /// </summary>
-        /// <param name="c">A function that takes a component and returns a bool.</param>
-        public void AddHoverCondition(Func<Component, bool> c) {
-            _hoverConditions.Add(c);
+        /// <param name="hc">A function that takes a component and returns a bool.</param>
+        public void AddHoverCondition(Func<Component, bool> hc) {
+            _hoverConditions.Add(hc);
+        }
+        /// <summary>
+        /// When the function is true, the component is considered focused.
+        /// </summary>
+        /// <param name="fc">A function that takes a component and returns a bool.</param>
+        public void AddFocusCondition(Func<Component, bool> fc) {
+            _focusConditions.Add(fc);
+            IsFocusable = true;
         }
         /// <summary>
         /// Provides a way to script components. Associates a condition to an action.
@@ -225,32 +228,36 @@ namespace Apos.Gui {
         /// </summary>
         public virtual void UpdateSetup() { }
         /// <summary>
+        /// Called at the start of the UpdateInput step. This is used to find which component should get the hover.
+        /// </summary>
+        /// <returns>Returns true if the component wants to be in focus.</returns>
+        public virtual Option<Component> FindHover() {
+            foreach (Func<Component, bool> c in _hoverConditions) {
+                if (c(this)) {
+                    return Option.Some(this);
+                }
+            }
+
+            return Option.None<Component>();
+        }
+        /// <summary>
         /// Called to process user inputs.
         /// Separating the logic for inputs makes it easy to freeze inputs on components or the whole UI.
         /// </summary>
         /// <returns>Returns true when an input has been consumed.</returns>
-        public virtual bool UpdateInput() {
-            bool isUsed = false;
-            OldIsHovered = IsHovered;
-            IsHovered = false;
-            foreach (Func<Component, bool> c in _hoverConditions) {
+        public virtual void UpdateInput() {
+            foreach (Func<Component, bool> c in _focusConditions) {
                 if (c(this)) {
-                    IsHovered = true;
+                    GrabFocus(this);
                     break;
                 }
             }
 
             foreach (ConditionOperation co in _conditionOperations) {
                 if (co.Condition(this)) {
-                    isUsed = co.Operation(this) || isUsed;
+                    co.Operation(this);
                 }
             }
-
-            if (!HasFocus && IsFocusable && isUsed) {
-                GrabFocus(this);
-            }
-
-            return isUsed;
         }
         /// <summary>
         /// The final update step.
@@ -315,6 +322,10 @@ namespace Apos.Gui {
         /// A list with all the condition for when a component is hovered.
         /// </summary>
         protected List<Func<Component, bool>> _hoverConditions = new List<Func<Component, bool>>();
+        /// <summary>
+        /// A list with all the condition for when a component is focused.
+        /// </summary>
+        protected List<Func<Component, bool>> _focusConditions = new List<Func<Component, bool>>();
         /// <summary>
         /// A list that holds conditions and their associated actions.
         /// </summary>

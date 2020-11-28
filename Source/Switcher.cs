@@ -29,15 +29,6 @@ namespace Apos.Gui {
                 });
             }
         }
-        public override bool OldIsHovered {
-            get => base.OldIsHovered;
-            set {
-                base.OldIsHovered = value;
-                Key.MatchSome(key => {
-                    _children[key].OldIsHovered = value;
-                });
-            }
-        }
         public override bool IsHovered {
             get => base.IsHovered;
             set {
@@ -49,12 +40,12 @@ namespace Apos.Gui {
         }
         //public override bool IsFocusable => Key.Map(key => _children[key].IsFocusable).ValueOr(false);
 
-        public override bool HasFocus {
-            get => base.HasFocus;
+        public override bool IsFocused {
+            get => base.IsFocused;
             set {
-                base.HasFocus = value;
+                base.IsFocused = value;
                 Key.MatchSome(key => {
-                    _children[key].HasFocus = value;
+                    _children[key].IsFocused = value;
                 });
             }
         }
@@ -65,7 +56,7 @@ namespace Apos.Gui {
 
         public void Add(T key, Component c) {
             _children.Add(key, c);
-            c.Parent = Option.Some((Component)this);
+            c.Parent = Option.Some<Component>(this);
         }
         public override Component GetPrev(Component c) {
             return Key.Map(key => _children[key]).ValueOr(() => Parent.Map(parent => parent.GetPrev(this)).ValueOr(this));
@@ -92,18 +83,22 @@ namespace Apos.Gui {
                 c.UpdateSetup();
             });
         }
-        public override bool UpdateInput() {
-            bool isUsed = false;
-
-            Key.MatchSome(key => {
-                isUsed = _children[key].UpdateInput();
+        public override Option<Component> FindHover() {
+            var hover = Key.FlatMap(key => {
+                return _children[key].FindHover();
             });
-
-            if (!isUsed) {
-                isUsed = base.UpdateInput();
+            if (hover.HasValue) {
+                return hover;
             }
 
-            return isUsed;
+            return base.FindHover();
+        }
+        public override void UpdateInput() {
+            Key.MatchSome(key => {
+                _children[key].UpdateInput();
+            });
+
+            base.UpdateInput();
         }
         public override void Update() {
             base.Update();

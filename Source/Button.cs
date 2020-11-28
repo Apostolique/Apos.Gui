@@ -24,13 +24,6 @@ namespace Apos.Gui {
             get;
             set;
         } = true;
-        public override bool OldIsHovered {
-            get => base.OldIsHovered;
-            set {
-                base.OldIsHovered = value;
-                Item.OldIsHovered = value;
-            }
-        }
         public override bool IsHovered {
             get => base.IsHovered;
             set {
@@ -38,18 +31,18 @@ namespace Apos.Gui {
                 Item.IsHovered = value;
             }
         }
-        public override bool HasFocus {
-            get => base.HasFocus;
+        public override bool IsFocused {
+            get => base.IsFocused;
             set {
-                base.HasFocus = value;
-                Item.HasFocus = value;
+                base.IsFocused = value;
+                Item.IsFocused = value;
             }
         }
         public virtual Component Item {
             get => _item;
             set {
                 _item = value;
-                _item.Parent = Option.Some((Component)this);
+                _item.Parent = Option.Some<Component>(this);
             }
         }
         public override int PrefWidth => Item.PrefWidth;
@@ -79,7 +72,7 @@ namespace Apos.Gui {
 
             Item.Draw();
 
-            if (ShowBox && HasFocus) {
+            if (ShowBox && IsFocused) {
                 _s.DrawRectangle(BoundingRect, Color.White, 2);
             }
 
