@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <PackageId>Apos.Gui</PackageId>
     <Title>Apos.Gui</Title>
-    <Version>0.16.2</Version>
+    <Version>0.16.3</Version>
     <Description>UI library for MonoGame.</Description>
     <Authors>Jean-David Moisan</Authors>
     <Company>Vyne Enterprise Inc.</Company>
@@ -25,8 +25,8 @@
 
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="All" Version="3.8.0.1641" />
-    <PackageReference Include="MonoGame.Extended" Version="3.7.0" />
-    <PackageReference Include="FontStashSharp.MonoGame" Version="0.8.7" />
+    <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
+    <PackageReference Include="FontStashSharp.MonoGame" Version="0.8.8" />
     <PackageReference Include="Apos.Input" Version="1.0.1" />
     <PackageReference Include="Optional" Version="4.0.0" />
   </ItemGroup>
@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <SourceRoot Include="$(MSBuildThisFileDirectory)/"/>
+    <SourceRoot Include="$(MSBuildThisFileDirectory)/" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
