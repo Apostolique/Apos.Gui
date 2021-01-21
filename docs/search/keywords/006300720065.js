@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("cre",["Function"],[["CreateButton",,[["Apos.Gui.Default",,,,0,"File:Default.cs:Apos.Gui.Default.CreateButton","CSharpClass:Apos.Gui.Default:CreateButton"]]]]);

@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("_ra",["Variable"],[["_rasterState",,[["Apos.Gui.GuiHelper",,,,0,"File:GuiHelper.cs:Apos.Gui.GuiHelper._rasterState","CSharpClass:Apos.Gui.GuiHelper:_rasterState"]]]]);

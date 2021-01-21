@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("key",["Property"],[["Key",,[["Apos.Gui.Switcher",,,,0,"File:Switcher.cs:Apos.Gui.Switcher.Key","CSharpClass:Apos.Gui.Switcher:Key"]]]]);

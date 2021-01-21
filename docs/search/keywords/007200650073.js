@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("res",["Function"],[["ResetScissor",,[["Apos.Gui.Component",,,,0,"File:Component.cs:Apos.Gui.Component.ResetScissor","CSharpClass:Apos.Gui.Component:ResetScissor"],["Apos.Gui.GuiHelper",,,,0,"File:GuiHelper.cs:Apos.Gui.GuiHelper.ResetScissor","CSharpClass:Apos.Gui.GuiHelper:ResetScissor"]]]]);

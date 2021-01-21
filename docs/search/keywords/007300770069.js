@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("swi",["Class","Constructor"],[["Switcher",,[["Apos.Gui",,,,0,"File:Switcher.cs:Apos.Gui.Switcher","CSharpClass:Apos.Gui.Switcher"],["Apos.Gui.Switcher",,,,1,"File:Switcher.cs:Apos.Gui.Switcher.Switcher","CSharpClass:Apos.Gui.Switcher:Switcher"]]]]);

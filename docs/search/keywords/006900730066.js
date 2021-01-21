@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("isf",["Property"],[["IsFocusable",,[["Apos.Gui.Border",,,,0,"File:Border.cs:Apos.Gui.Border.IsFocusable","CSharpClass:Apos.Gui.Border:IsFocusable"],["Apos.Gui.Component",,,,0,"File:Component.cs:Apos.Gui.Component.IsFocusable","CSharpClass:Apos.Gui.Component:IsFocusable"]]]]);

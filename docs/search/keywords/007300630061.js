@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("sca",["Property"],[["Scale",,[["Apos.Gui.GuiHelper",,,,0,"File:GuiHelper.cs:Apos.Gui.GuiHelper.Scale","CSharpClass:Apos.Gui.GuiHelper:Scale"]]]]);

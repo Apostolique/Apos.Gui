@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("_be",["Variable"],[["_beginCalled",,[["Apos.Gui.GuiHelper",,,,0,"File:GuiHelper.cs:Apos.Gui.GuiHelper._beginCalled","CSharpClass:Apos.Gui.GuiHelper:_beginCalled"]]]]);

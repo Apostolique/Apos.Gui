@@ -8,10 +8,9 @@ UI library for MonoGame.
 * [API](https://apostolique.github.io/Apos.Gui/)
 * [Wiki](https://github.com/Apostolique/Apos.Gui/wiki)
 
-
 ## Build
 
-### [NuGet](https://www.nuget.org/packages/Apos.Gui/) [![NuGet](https://img.shields.io/nuget/v/Apos.Gui.svg)](https://www.nuget.org/packages/Apos.Gui/) [![NuGet](https://img.shields.io/nuget/dt/Apos.Gui.svg)](https://www.nuget.org/packages/Apos.Gui/)
+[![NuGet](https://img.shields.io/nuget/v/Apos.Gui.svg)](https://www.nuget.org/packages/Apos.Gui/) [![NuGet](https://img.shields.io/nuget/dt/Apos.Gui.svg)](https://www.nuget.org/packages/Apos.Gui/)
 
 ## Features
 

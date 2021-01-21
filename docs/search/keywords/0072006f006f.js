@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("roo",["Property"],[["RootComponent",,[["Apos.Gui.ComponentFocus",,,,0,"File:ComponentFocus.cs:Apos.Gui.ComponentFocus.RootComponent","CSharpClass:Apos.Gui.ComponentFocus:RootComponent"]]]]);

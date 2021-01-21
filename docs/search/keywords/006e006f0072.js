@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("nor",["Property"],[["NormalColor",,[["Apos.Gui.Label",,,,0,"File:Label.cs:Apos.Gui.Label.NormalColor","CSharpClass:Apos.Gui.Label:NormalColor"]]]]);
