@@ -61,12 +61,11 @@ namespace Apos.Gui {
             // 4. Ping it.
             var fullName = $"button{text}{id}";
 
-            ui.TryGetValue(fullName, out Component c);
+            ui.TryGetValue(fullName, out IComponent c);
 
             if (!(c is Button)) {
                 c = new Button();
                 ui.Add(fullName, c);
-                Console.WriteLine("Created: " + fullName);
             }
             ((Button)c).Text = text;
             if (c.LastPing != InputHelper.CurrentFrame) {

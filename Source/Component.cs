@@ -64,42 +64,42 @@ namespace Apos.Gui {
         /// If this component has a parent, it will ask the parent to return this component's previous neighbor.
         /// Otherwise, it will return itself.
         /// </summary>
-        public virtual Component GetPrev() {
+        public virtual IComponent GetPrev() {
             return Parent == null ? this : Parent.GetPrev(this);
         }
         /// <summary>
         /// If this component has a parent, it will ask the parent to return this component's next neighbor.
         /// Otherwise, it will return itself.
         /// </summary>
-        public virtual Component GetNext() {
+        public virtual IComponent GetNext() {
             return Parent == null ? this : Parent.GetNext(this);
         }
         /// <summary>
         /// This function is used by components that manage children.
         /// It will try to return a child that is previous to another component.
         /// </summary>
-        public virtual Component GetPrev(Component c) {
+        public virtual IComponent GetPrev(IComponent c) {
             return GetPrev();
         }
         /// <summary>
         /// This function is used by components that manage children.
         /// It will try to return a child that is next to another component.
         /// </summary>
-        public virtual Component GetNext(Component c) {
+        public virtual IComponent GetNext(IComponent c) {
             return GetNext();
         }
         /// <summary>
         /// This is used to sink down a component hierarchy from a parent down to a child.
         /// If a parent has children, it will return the first one.
         /// </summary>
-        public virtual Component GetFirst() {
+        public virtual IComponent GetFirst() {
             return this;
         }
         /// <summary>
         /// This is used to sink down a component hierarchy from a parent down to a child.
         /// If a parent has children, it will return the last one.
         /// </summary>
-        public virtual Component GetLast() {
+        public virtual IComponent GetLast() {
             return this;
         }
 

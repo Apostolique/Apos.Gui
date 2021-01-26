@@ -1,7 +1,7 @@
 namespace Apos.Gui {
     public interface IParent : IComponent {
-        void Add(Component c);
-        void Remove(Component c);
+        void Add(IComponent c);
+        void Remove(IComponent c);
         void Reset();
         int NextIndex();
     }

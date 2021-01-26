@@ -20,11 +20,11 @@ namespace Apos.Gui {
                 if (pc.Parent != null) {
                     pc.Parent.Add(pc.Component);
                 } else {
-                    RootParents.Add(pc.Component);
+                    Roots.Add(pc.Component);
                 }
             }
 
-            foreach (var c in RootParents) {
+            foreach (var c in Roots) {
                 c.UpdatePrefSize();
                 // TODO: Update position?
                 c.Width = c.PrefWidth;
@@ -33,15 +33,15 @@ namespace Apos.Gui {
             }
         }
         public void UpdateInput() {
-            foreach (var c in RootParents)
+            foreach (var c in Roots)
                 c.UpdateInput();
         }
         public void Update() {
-            foreach (var c in RootParents)
+            foreach (var c in Roots)
                 c.Update();
         }
         public void Draw() {
-            foreach (var c in RootParents)
+            foreach (var c in Roots)
                 c.Draw();
         }
 
@@ -58,12 +58,12 @@ namespace Apos.Gui {
                 CurrentParent = null;
             }
         }
-        public void Add(string name, Component c) {
-            if (!ActiveComponents.TryGetValue(name, out Component current)) {
+        public void Add(string name, IComponent c) {
+            if (!ActiveComponents.TryGetValue(name, out IComponent current)) {
                 PendingComponents.Enqueue((name, CurrentParent, c));
             }
         }
-        public bool TryGetValue(string name, out Component c) {
+        public bool TryGetValue(string name, out IComponent c) {
             if (ActiveComponents.TryGetValue(name, out c)) {
                 return true;
             }
@@ -80,9 +80,9 @@ namespace Apos.Gui {
 
         public IParent? CurrentParent;
         private Stack<IParent> Parents = new Stack<IParent>();
-        private List<Component> RootParents = new List<Component>();
-        private Dictionary<string, Component> ActiveComponents = new Dictionary<string, Component>();
-        private Queue<(string Name, IParent? Parent, Component Component)> PendingComponents = new Queue<(string, IParent?, Component)>();
+        private List<IComponent> Roots = new List<IComponent>();
+        private Dictionary<string, IComponent> ActiveComponents = new Dictionary<string, IComponent>();
+        private Queue<(string Name, IParent? Parent, IComponent Component)> PendingComponents = new Queue<(string, IParent?, IComponent)>();
 
         private void Cleanup() {
             foreach (var kc in ActiveComponents.Reverse()) {
@@ -93,12 +93,12 @@ namespace Apos.Gui {
             CurrentParent = null;
             Parents.Clear();
         }
-        private void Remove(string name, Component c) {
+        private void Remove(string name, IComponent c) {
             ActiveComponents.Remove(name);
             if (c.Parent != null) {
                 c.Parent.Remove(c);
             } else {
-                RootParents.Remove(c);
+                Roots.Remove(c);
             }
             // TODO: Remove from PendingComponents?
         }

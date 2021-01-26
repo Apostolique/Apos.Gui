@@ -31,11 +31,11 @@ namespace Apos.Gui {
         void Draw();
 
         IParent? Parent { get; set; }
-        Component GetPrev();
-        Component GetNext();
-        Component GetPrev(Component c);
-        Component GetNext(Component c);
-        Component GetFirst();
-        Component GetLast();
+        IComponent GetPrev();
+        IComponent GetNext();
+        IComponent GetPrev(IComponent c);
+        IComponent GetNext(IComponent c);
+        IComponent GetFirst();
+        IComponent GetLast();
     }
 }

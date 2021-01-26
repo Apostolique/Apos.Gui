@@ -89,11 +89,11 @@ namespace Apos.Gui {
             // TODO: Draw scrollbars if needed.
         }
 
-        public void Add(Component c) {
+        public void Add(IComponent c) {
             c.Parent = this;
             _children.Insert(c.Index, c);
         }
-        public void Remove(Component c) {
+        public void Remove(IComponent c) {
             c.Parent = null;
             _children.Remove(c);
         }
@@ -104,7 +104,7 @@ namespace Apos.Gui {
             return _nextChildIndex++;
         }
 
-        public override Component GetPrev(Component c) {
+        public override IComponent GetPrev(IComponent c) {
             int index = _children.IndexOf(c) - 1;
             if (index >= 0 && _children.Count > 0) {
                 return _children[index];
@@ -113,7 +113,7 @@ namespace Apos.Gui {
             }
             return _children.Count > 0 ? _children.Last() : this;
         }
-        public override Component GetNext(Component c) {
+        public override IComponent GetNext(IComponent c) {
             int index = _children.IndexOf(c) + 1;
             if (index < _children.Count) {
                 return _children[index];
@@ -122,13 +122,13 @@ namespace Apos.Gui {
             }
             return _children.Count > 0 ? _children.First() : this;
         }
-        public override Component GetFirst() {
+        public override IComponent GetFirst() {
             if (_children.Count > 0) {
                 return _children.First();
             }
             return this;
         }
-        public override Component GetLast() {
+        public override IComponent GetLast() {
             if (_children.Count > 0) {
                 return _children.Last();
             }
@@ -136,7 +136,7 @@ namespace Apos.Gui {
         }
 
         protected int _nextChildIndex = 0;
-        protected List<Component> _children = new List<Component>();
+        protected List<IComponent> _children = new List<IComponent>();
 
         public static Panel Use(IMGUI ui, string name, int id = 0) {
             // 1. Check if panel with name already exists.
@@ -147,7 +147,7 @@ namespace Apos.Gui {
 
             var fullName = $"panel{name}{id}";
 
-            ui.TryGetValue(fullName, out Component? c);
+            ui.TryGetValue(fullName, out IComponent? c);
 
             if (!(c is Panel)) {
                 c = new Panel();
