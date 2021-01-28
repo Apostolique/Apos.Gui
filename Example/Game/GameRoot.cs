@@ -4,6 +4,7 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.TextureAtlases;
 
 namespace GameProject {
     public class GameRoot : Game {
@@ -31,6 +32,10 @@ namespace GameProject {
             GuiHelper.Setup(this, fontSystem);
             _ui = new IMGUI();
             GuiHelper.CurrentIMGUI = _ui;
+
+            var texture = Content.Load<Texture2D>("apos");
+
+            _apos = new TextureRegion2D(texture, 0, 0, texture.Width, texture.Height);
         }
 
         protected override void Update(GameTime gameTime) {
@@ -48,6 +53,7 @@ namespace GameProject {
             if (10 <= _counter && _counter < 12) Label.Use("Why hello, world! there.");
             if (12 <= _counter && _counter < 17) Label.Use("I see you like clicking.");
             if (20 <= _counter && _counter < 23) Label.Use("There is really no point though...");
+            if (30 <= _counter) Icon.Use(_apos);
             Panel.Pop();
 
             GuiHelper.UpdateCleanup();
@@ -73,5 +79,7 @@ namespace GameProject {
 
         IMGUI _ui;
         int _counter = 0;
+
+        TextureRegion2D _apos;
     }
 }
