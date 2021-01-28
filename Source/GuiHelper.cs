@@ -19,6 +19,10 @@ namespace Apos.Gui {
         public static void UpdateCleanup() {
             InputHelper.UpdateCleanup();
         }
+        public static IMGUI CurrentIMGUI {
+            get;
+            set;
+        } = null!;
 
         /// <value>The scale of the UI. Defaults to 1f.</value>
         public static float Scale {

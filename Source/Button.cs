@@ -19,7 +19,16 @@ namespace Apos.Gui {
             get;
             set;
         } = "";
+        public int Padding {
+            get;
+            set;
+        } = 10;
 
+        public override void UpdatePrefSize() {
+            var size = GuiHelper.MeasureString(Text, 30);
+            PrefWidth = size.X + Padding * 2;
+            PrefHeight = size.Y + Padding * 2;
+        }
         public override void UpdateSetup() {
             if (Clicked) {
                 Clicked = false;
@@ -31,6 +40,7 @@ namespace Apos.Gui {
             }
             if (_pressed) {
                 Default.MouseInteraction.HeldOnly();
+                _contained = Clip.Contains(GuiHelper.Mouse);
             }
             if (_pressed && Default.MouseInteraction.Released()) {
                 if (Clip.Contains(GuiHelper.Mouse))
@@ -42,40 +52,52 @@ namespace Apos.Gui {
         public override void Draw() {
             GuiHelper.SetScissor(Clip);
 
-            // TODO: Visually show the press down
-            Color c = Clicked ? Color.Red : _pressed ? Color.Green : Color.White;
-            GuiHelper.SpriteBatch.FillRectangle(Bounds, c * 0.5f);
+            if (Clicked) {
+                GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.5f);
+            } else if (_pressed) {
+                if (_contained) {
+                    GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.2f);
+                } else {
+                    GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.15f);
+                }
+            }
+            GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.White, 2f);
 
             var font = GuiHelper.GetFont(30);
-            GuiHelper.SpriteBatch.DrawString(font, Text, XY, Color.White, GuiHelper.FontScale);
+            GuiHelper.SpriteBatch.DrawString(font, Text, XY + new Vector2(Padding), Color.White, GuiHelper.FontScale);
 
             GuiHelper.ResetScissor();
         }
 
         private bool _pressed = false;
+        private bool _contained = false;
 
-        public static Button Use(IMGUI ui, string text, int id = 0) {
-            // 1. Check if button with name already exists.
+        public static Button Use(string text, int id = 0) {
+            // 1. Check if button with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 4. Ping it.
-            var fullName = $"button{text}{id}";
+            var fullName = $"button{(id == 0 ? GuiHelper.CurrentIMGUI.NextId() : id)}";
 
-            ui.TryGetValue(fullName, out IComponent c);
+            GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
 
-            if (!(c is Button)) {
-                c = new Button();
-                ui.Add(fullName, c);
+            Button a;
+            if (c is Button) {
+                a = (Button)c;
+            } else {
+                a = new Button();
+                GuiHelper.CurrentIMGUI.Add(fullName, a);
             }
-            ((Button)c).Text = text;
-            if (c.LastPing != InputHelper.CurrentFrame) {
-                c.LastPing = InputHelper.CurrentFrame;
-                if (ui.CurrentParent != null) {
-                    c.Index = ui.CurrentParent.NextIndex();
+
+            a.Text = text;
+            if (a.LastPing != InputHelper.CurrentFrame) {
+                a.LastPing = InputHelper.CurrentFrame;
+                if (GuiHelper.CurrentIMGUI.CurrentParent != null) {
+                    a.Index = GuiHelper.CurrentIMGUI.CurrentParent.NextIndex();
                 }
             }
 
-            return (Button)c;
+            return a;
         }
     }
 }

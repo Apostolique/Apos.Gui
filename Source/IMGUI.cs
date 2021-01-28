@@ -40,6 +40,11 @@ namespace Apos.Gui {
             foreach (var c in Roots)
                 c.Update();
         }
+        public void UpdateAll() {
+            UpdateSetup();
+            UpdateInput();
+            Update();
+        }
         public void Draw() {
             foreach (var c in Roots)
                 c.Draw();
@@ -59,9 +64,8 @@ namespace Apos.Gui {
             }
         }
         public void Add(string name, IComponent c) {
-            if (!ActiveComponents.TryGetValue(name, out IComponent current)) {
-                PendingComponents.Enqueue((name, CurrentParent, c));
-            }
+            // NOTE: This should only be called if the component hasn't already been added.
+            PendingComponents.Enqueue((name, CurrentParent, c));
         }
         public bool TryGetValue(string name, out IComponent c) {
             if (ActiveComponents.TryGetValue(name, out c)) {
@@ -77,14 +81,20 @@ namespace Apos.Gui {
 
             return false;
         }
+        public int NextId() {
+            return _lastId++;
+        }
 
         public IParent? CurrentParent;
+
         private Stack<IParent> Parents = new Stack<IParent>();
         private List<IComponent> Roots = new List<IComponent>();
         private Dictionary<string, IComponent> ActiveComponents = new Dictionary<string, IComponent>();
         private Queue<(string Name, IParent? Parent, IComponent Component)> PendingComponents = new Queue<(string, IParent?, IComponent)>();
+        private int _lastId = 0;
 
         private void Cleanup() {
+            _lastId = 0;
             foreach (var kc in ActiveComponents.Reverse()) {
                 if (kc.Value.LastPing != InputHelper.CurrentFrame - 1) {
                     Remove(kc.Key, kc.Value);

@@ -138,28 +138,40 @@ namespace Apos.Gui {
         protected int _nextChildIndex = 0;
         protected List<IComponent> _children = new List<IComponent>();
 
-        public static Panel Use(IMGUI ui, string name, int id = 0) {
-            // 1. Check if panel with name already exists.
+        public static Panel Use(int id = 0) {
+            // 1. Check if panel with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 3. Push it on the stack.
             // 4. Ping it.
 
-            var fullName = $"panel{name}{id}";
+            var fullName = $"panel{(id == 0 ? GuiHelper.CurrentIMGUI.NextId() : id)}";
 
-            ui.TryGetValue(fullName, out IComponent? c);
+            GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
 
-            if (!(c is Panel)) {
-                c = new Panel();
-                ui.Add(fullName, c);
-            }
-            ui.Push((Panel)c);
-            if (c.LastPing != InputHelper.CurrentFrame) {
-                ((Panel)c).Reset();
-                c.LastPing = InputHelper.CurrentFrame;
+            Panel a;
+            if (c is Panel) {
+                a = (Panel)c;
+            } else {
+                a = new Panel();
+                GuiHelper.CurrentIMGUI.Add(fullName, a);
             }
 
-            return (Panel)c;
+            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
+
+            GuiHelper.CurrentIMGUI.Push(a);
+            if (a.LastPing != InputHelper.CurrentFrame) {
+                a.Reset();
+                a.LastPing = InputHelper.CurrentFrame;
+                if (parent != null) {
+                    a.Index = parent.NextIndex();
+                }
+            }
+
+            return a;
+        }
+        public static void Pop() {
+            GuiHelper.CurrentIMGUI.Pop();
         }
     }
 }
