@@ -50,31 +50,42 @@ namespace Apos.Gui {
                 c.Draw();
         }
 
-        public void Push(IParent p) {
+        public void Push(IParent p, int maxChildren = 0) {
             if (CurrentParent != null) {
-                Parents.Push(CurrentParent);
+                Parents.Push((CurrentParent, MaxChildren, ChildrenCount));
             }
             CurrentParent = p;
+            MaxChildren = maxChildren;
+            ChildrenCount = 0;
         }
         public void Pop() {
             if (Parents.Count > 0) {
-                CurrentParent = Parents.Pop();
+                var pop = Parents.Pop();
+                CurrentParent = pop.Parent;
+                MaxChildren = pop.MaxChildren;
+                ChildrenCount = pop.ChildrenCount;
             } else {
                 CurrentParent = null;
+                MaxChildren = 0;
+                ChildrenCount = 0;
             }
         }
         public void Add(string name, IComponent c) {
             // NOTE: This should only be called if the component hasn't already been added.
             PendingComponents.Enqueue((name, CurrentParent, c));
+
+            CountChild();
         }
         public bool TryGetValue(string name, out IComponent c) {
             if (ActiveComponents.TryGetValue(name, out c)) {
+                CountChild();
                 return true;
             }
 
             foreach (var pc in PendingComponents) {
                 if (pc.Name == name) {
                     c = pc.Component;
+                    CountChild();
                     return true;
                 }
             }
@@ -84,10 +95,19 @@ namespace Apos.Gui {
         public int NextId() {
             return _lastId++;
         }
+        private void CountChild() {
+            ChildrenCount++;
+
+            if (CurrentParent != null && MaxChildren > 0 && ChildrenCount >= MaxChildren) {
+                Pop();
+            }
+        }
 
         public IParent? CurrentParent;
+        public int MaxChildren = 0;
+        public int ChildrenCount = 0;
 
-        private Stack<IParent> Parents = new Stack<IParent>();
+        private Stack<(IParent Parent, int MaxChildren, int ChildrenCount)> Parents = new Stack<(IParent, int, int)>();
         private List<IComponent> Roots = new List<IComponent>();
         private Dictionary<string, IComponent> ActiveComponents = new Dictionary<string, IComponent>();
         private Queue<(string Name, IParent? Parent, IComponent Component)> PendingComponents = new Queue<(string, IParent?, IComponent)>();
@@ -101,6 +121,8 @@ namespace Apos.Gui {
                 }
             }
             CurrentParent = null;
+            MaxChildren = 0;
+            ChildrenCount = 0;
             Parents.Clear();
         }
         private void Remove(string name, IComponent c) {

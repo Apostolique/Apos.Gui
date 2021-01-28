@@ -40,6 +40,7 @@ namespace Apos.Gui {
             // 4. Ping it.
             var fullName = $"icon{(id == 0 ? GuiHelper.CurrentIMGUI.NextId() : id)}";
 
+            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
             GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
 
             Icon a;
@@ -53,8 +54,8 @@ namespace Apos.Gui {
             a.Region = region;
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.LastPing = InputHelper.CurrentFrame;
-                if (GuiHelper.CurrentIMGUI.CurrentParent != null) {
-                    a.Index = GuiHelper.CurrentIMGUI.CurrentParent.NextIndex();
+                if (parent != null) {
+                    a.Index = parent.NextIndex();
                 }
             }
 

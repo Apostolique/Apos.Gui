@@ -147,6 +147,7 @@ namespace Apos.Gui {
 
             var fullName = $"panel{(id == 0 ? GuiHelper.CurrentIMGUI.NextId() : id)}";
 
+            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
             GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
 
             Panel a;
@@ -157,9 +158,6 @@ namespace Apos.Gui {
                 GuiHelper.CurrentIMGUI.Add(fullName, a);
             }
 
-            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
-
-            GuiHelper.CurrentIMGUI.Push(a);
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.Reset();
                 a.LastPing = InputHelper.CurrentFrame;
@@ -167,6 +165,8 @@ namespace Apos.Gui {
                     a.Index = parent.NextIndex();
                 }
             }
+
+            GuiHelper.CurrentIMGUI.Push(a);
 
             return a;
         }
