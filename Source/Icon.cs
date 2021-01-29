@@ -33,7 +33,7 @@ namespace Apos.Gui {
             GuiHelper.ResetScissor();
         }
 
-        public static Icon Use(TextureRegion2D region, int id = 0) {
+        public static Icon Put(TextureRegion2D region, int id = 0) {
             // 1. Check if Icon with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.

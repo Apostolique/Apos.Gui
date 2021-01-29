@@ -32,7 +32,7 @@ namespace Apos.Gui {
             GuiHelper.ResetScissor();
         }
 
-        public static Label Use(string text, int id = 0) {
+        public static Label Put(string text, int id = 0) {
             // 1. Check if Label with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.

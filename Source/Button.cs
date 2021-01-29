@@ -104,13 +104,13 @@ namespace Apos.Gui {
         private bool _pressed = false;
         private bool _contained = false;
 
-        public static Button Use(string text, int id = 0) {
-            Button b = Use(id);
-            Label.Use(text, id);
+        public static Button Put(string text, int id = 0) {
+            Button b = Put(id);
+            Label.Put(text, id);
 
             return b;
         }
-        public static Button Use(int id = 0) {
+        public static Button Put(int id = 0) {
             // 1. Check if button with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.

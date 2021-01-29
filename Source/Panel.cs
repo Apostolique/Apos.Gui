@@ -138,7 +138,7 @@ namespace Apos.Gui {
         protected int _nextChildIndex = 0;
         protected List<IComponent> _children = new List<IComponent>();
 
-        public static Panel Use(int id = 0) {
+        public static Panel Put(int id = 0) {
             // 1. Check if panel with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.

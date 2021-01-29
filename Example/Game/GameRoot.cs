@@ -46,16 +46,16 @@ namespace GameProject {
 
             _ui.UpdateAll();
 
-            Panel.Use();
-            Label.Use($"Counter: {_counter}");
-            if (Button.Use("Reset").Clicked) _counter = 0;
-            if (Button.Use("Add one").Clicked) _counter++;
-            if (10 <= _counter && _counter < 12) Label.Use("Why hello, world! there.");
-            if (12 <= _counter && _counter < 17) Label.Use("I see you like clicking.");
-            if (20 <= _counter && _counter < 23) Label.Use("There is really no point though...");
+            Panel.Put();
+            Label.Put($"Counter: {_counter}");
+            if (Button.Put("Reset").Clicked) _counter = 0;
+            if (Button.Put("Add one").Clicked) _counter++;
+            if (10 <= _counter && _counter < 12) Label.Put("Why hello, world! there.");
+            if (12 <= _counter && _counter < 17) Label.Put("I see you like clicking.");
+            if (20 <= _counter && _counter < 23) Label.Put("There is really no point though...");
             if (30 <= _counter) {
-                if (Button.Use().Clicked) _counter += 100;
-                Icon.Use(_apos);
+                if (Button.Put().Clicked) _counter += 100;
+                Icon.Put(_apos);
             }
             Panel.Pop();
 
