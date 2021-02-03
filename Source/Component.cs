@@ -7,10 +7,18 @@ namespace Apos.Gui {
     /// Used as a base class for other components.
     /// </summary>
     public class Component : IComponent {
+        public Component(string name) {
+            Name = name;
+        }
+
         public virtual uint LastPing {
             get;
             set;
         } = 0;
+        public virtual string Name {
+            get;
+            set;
+        }
         public virtual int Index {
             get;
             set;
@@ -42,6 +50,15 @@ namespace Apos.Gui {
             set;
         } = 100;
 
+        public virtual bool IsFocused {
+            get;
+            set;
+        } = false;
+        public virtual bool IsFocusable {
+            get;
+            set;
+        } = false;
+
         public virtual IParent? Parent {
             get;
             set;
@@ -65,42 +82,14 @@ namespace Apos.Gui {
         /// Otherwise, it will return itself.
         /// </summary>
         public virtual IComponent GetPrev() {
-            return Parent == null ? this : Parent.GetPrev(this);
+            return Parent != null ? Parent.GetPrev(this) : this;
         }
         /// <summary>
         /// If this component has a parent, it will ask the parent to return this component's next neighbor.
         /// Otherwise, it will return itself.
         /// </summary>
         public virtual IComponent GetNext() {
-            return Parent == null ? this : Parent.GetNext(this);
-        }
-        /// <summary>
-        /// This function is used by components that manage children.
-        /// It will try to return a child that is previous to another component.
-        /// </summary>
-        public virtual IComponent GetPrev(IComponent c) {
-            return GetPrev();
-        }
-        /// <summary>
-        /// This function is used by components that manage children.
-        /// It will try to return a child that is next to another component.
-        /// </summary>
-        public virtual IComponent GetNext(IComponent c) {
-            return GetNext();
-        }
-        /// <summary>
-        /// This is used to sink down a component hierarchy from a parent down to a child.
-        /// If a parent has children, it will return the first one.
-        /// </summary>
-        public virtual IComponent GetFirst() {
-            return this;
-        }
-        /// <summary>
-        /// This is used to sink down a component hierarchy from a parent down to a child.
-        /// If a parent has children, it will return the last one.
-        /// </summary>
-        public virtual IComponent GetLast() {
-            return this;
+            return Parent != null ? Parent.GetNext(this) : this;
         }
 
         public virtual Vector2 XY {

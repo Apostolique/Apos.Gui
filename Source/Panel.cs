@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
     public class Panel : Component, IParent {
+        public Panel(string name) : base(name) { }
+
         public float OffsetX {
             get;
             set;
@@ -104,35 +106,38 @@ namespace Apos.Gui {
             return _nextChildIndex++;
         }
 
-        public override IComponent GetPrev(IComponent c) {
-            int index = _children.IndexOf(c) - 1;
-            if (index >= 0 && _children.Count > 0) {
-                return _children[index];
-            } else if (Parent != null) {
-                return Parent.GetPrev(this);
-            }
-            return _children.Count > 0 ? _children.Last() : this;
+        /// <summary>
+        /// If this component has a parent, it will ask the parent to return this component's previous neighbor.
+        /// If it has children, it will return the last one.
+        /// Otherwise it will return itself.
+        /// </summary>
+        public override IComponent GetPrev() {
+            return Parent != null ? Parent.GetPrev(this) : _children.Count > 0 ? _children.Last() : this;
         }
-        public override IComponent GetNext(IComponent c) {
-            int index = _children.IndexOf(c) + 1;
-            if (index < _children.Count) {
-                return _children[index];
-            } else if (Parent != null) {
-                return Parent.GetNext(this);
-            }
-            return _children.Count > 0 ? _children.First() : this;
+        /// <summary>
+        /// If this component has children, it will return the first one.
+        /// If it has a parent it will ask the parent to return this component's next neighbor.
+        /// Otherwise, it will return itself.
+        /// </summary>
+        public override IComponent GetNext() {
+            return _children.Count > 0 ? _children.First() : Parent != null ? Parent.GetNext(this) : this;
         }
-        public override IComponent GetFirst() {
-            if (_children.Count > 0) {
-                return _children.First();
-            }
-            return this;
+        /// <summary>
+        /// If the child isn't the first one, it will return the child before it.
+        /// Otherwise it will return itself.
+        /// </summary>
+        public virtual IComponent GetPrev(IComponent c) {
+            int index = c.Index - 1;
+            return index >= 0 ? _children[index] : this;
         }
-        public override IComponent GetLast() {
-            if (_children.Count > 0) {
-                return _children.Last();
-            }
-            return this;
+        /// <summary>
+        /// If the child isn't the last one, it will return the child after it.
+        /// If it has a parent, it will ask the parent to return this component's next neighbor.
+        /// Otherwise it will return itself.
+        /// </summary>
+        public virtual IComponent GetNext(IComponent c) {
+            int index = c.Index + 1;
+            return index < _children.Count ? _children[index] : Parent != null ? Parent.GetNext(this) : this;
         }
 
         protected int _nextChildIndex = 0;
@@ -154,7 +159,7 @@ namespace Apos.Gui {
             if (c is Panel) {
                 a = (Panel)c;
             } else {
-                a = new Panel();
+                a = new Panel(fullName);
                 GuiHelper.CurrentIMGUI.Add(fullName, a);
             }
 

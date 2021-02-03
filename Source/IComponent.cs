@@ -5,6 +5,7 @@ namespace Apos.Gui {
     public interface IComponent {
         int Index { get; set; }
         uint LastPing { get; set; }
+        string Name { get; set; }
 
         float X { get; set; }
         float Y { get; set; }
@@ -12,6 +13,9 @@ namespace Apos.Gui {
         float Height { get; set; }
         float PrefWidth { get; set; }
         float PrefHeight { get; set; }
+
+        bool IsFocused { get; set; }
+        bool IsFocusable { get; set; }
 
         RectangleF Bounds { get; set; }
         RectangleF Clip { get; set; }
@@ -33,9 +37,5 @@ namespace Apos.Gui {
         IParent? Parent { get; set; }
         IComponent GetPrev();
         IComponent GetNext();
-        IComponent GetPrev(IComponent c);
-        IComponent GetNext(IComponent c);
-        IComponent GetFirst();
-        IComponent GetLast();
     }
 }

@@ -4,7 +4,7 @@ using MonoGame.Extended.TextureAtlases;
 
 namespace Apos.Gui {
     public class Icon : Component {
-        public Icon(TextureRegion2D region) {
+        public Icon(string name, TextureRegion2D region) : base(name) {
             Region = region;
         }
 
@@ -46,12 +46,12 @@ namespace Apos.Gui {
             Icon a;
             if (c is Icon) {
                 a = (Icon)c;
+                a.Region = region;
             } else {
-                a = new Icon(region);
+                a = new Icon(fullName, region);
                 GuiHelper.CurrentIMGUI.Add(fullName, a);
             }
 
-            a.Region = region;
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.LastPing = InputHelper.CurrentFrame;
                 if (parent != null) {

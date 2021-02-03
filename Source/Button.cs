@@ -1,15 +1,10 @@
-using System;
 using Apos.Input;
-using FontStashSharp;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
 namespace Apos.Gui {
     public class Button : Component, IParent {
-        public Button() { }
-        public Button(IComponent child) {
-            Child = child;
-        }
+        public Button(string name) : base(name) { }
 
         public bool Clicked {
             get;
@@ -19,6 +14,10 @@ namespace Apos.Gui {
             get;
             set;
         }
+        public override bool IsFocusable {
+            get;
+            set;
+        } = true;
 
         public override void UpdatePrefSize() {
             if (Child != null) {
@@ -45,10 +44,10 @@ namespace Apos.Gui {
         public override void UpdateInput() {
             if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
                 _pressed = true;
+                // TODO: Grab focus.
             }
-            if (_pressed) {
-                Default.MouseInteraction.HeldOnly();
-                _contained = Clip.Contains(GuiHelper.Mouse);
+            if (_pressed && Default.MouseInteraction.HeldOnly()) {
+                _hovered = Clip.Contains(GuiHelper.Mouse);
             }
             if (_pressed && Default.MouseInteraction.Released()) {
                 if (Clip.Contains(GuiHelper.Mouse))
@@ -72,13 +71,17 @@ namespace Apos.Gui {
             if (Clicked) {
                 GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.5f);
             } else if (_pressed) {
-                if (_contained) {
+                if (_hovered) {
                     GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.2f);
                 } else {
                     GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.15f);
                 }
             }
-            GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.White, 2f);
+            if (IsFocused) {
+                GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.Red, 2f);
+            } else {
+                GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.White, 2f);
+            }
 
             if (Child != null) {
                 Child.Draw();
@@ -101,8 +104,21 @@ namespace Apos.Gui {
         public void Reset() { }
         public int NextIndex() => 0;
 
+        public override IComponent GetPrev() {
+            return Parent != null ? Parent.GetPrev(this) : Child != null ? Child : this;
+        }
+        public override IComponent GetNext() {
+            return Child != null ? Child : Parent != null ? Parent.GetNext(this) : this;
+        }
+        public virtual IComponent GetPrev(IComponent c) {
+            return this;
+        }
+        public virtual IComponent GetNext(IComponent c) {
+            return Parent != null ? Parent.GetNext(this) : this;
+        }
+
         private bool _pressed = false;
-        private bool _contained = false;
+        private bool _hovered = false;
 
         public static Button Put(string text, int id = 0) {
             Button b = Put(id);
@@ -124,7 +140,7 @@ namespace Apos.Gui {
             if (c is Button) {
                 a = (Button)c;
             } else {
-                a = new Button();
+                a = new Button(fullName);
                 GuiHelper.CurrentIMGUI.Add(fullName, a);
             }
 

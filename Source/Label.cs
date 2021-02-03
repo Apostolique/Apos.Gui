@@ -4,8 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
     public class Label : Component {
-        public Label() { }
-        public Label(string text) {
+        public Label(string name, string text) : base(name) {
             Text = text;
         }
 
@@ -45,12 +44,12 @@ namespace Apos.Gui {
             Label a;
             if (c is Label) {
                 a = (Label)c;
+                a.Text = text;
             } else {
-                a = new Label();
+                a = new Label(fullName, text);
                 GuiHelper.CurrentIMGUI.Add(fullName, a);
             }
 
-            a.Text = text;
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.LastPing = InputHelper.CurrentFrame;
                 if (parent != null) {

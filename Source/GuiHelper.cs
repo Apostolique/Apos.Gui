@@ -65,6 +65,7 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="r">The rectangle to use for the spritebatch scissor in UI coordinates.</param>
         public static void SetScissor(RectangleF r) {
+            // TODO: Optimize begin call somehow. Maybe there is no drawing between scissor swaps?
             if (_beginCalled) {
                 End();
             }
