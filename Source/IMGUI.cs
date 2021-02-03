@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Apos.Input;
@@ -22,9 +23,6 @@ namespace Apos.Gui {
                 } else {
                     Roots.Add(pc.Component);
                 }
-            }
-            if (Focus == null) {
-                FindNextFocus();
             }
 
             // TODO: Process pending action queue. (It doesn't exist yet.)
@@ -141,25 +139,14 @@ namespace Apos.Gui {
             // TODO: Remove from PendingComponents? Probably not since that case can't happen?
         }
         private void FindPrevFocus() {
-            string? initialFocus = null;
-            if (Focus != null) {
-                initialFocus = Focus;
-            } else if (Roots.Count > 0) {
-                initialFocus = Roots.First().Name;
-            }
-            if (initialFocus != null) {
-                string newFocus = initialFocus;
-                do {
-                    var c = ActiveComponents[newFocus].GetPrev();
-                    newFocus = c.Name;
-                    if (c.IsFocusable) {
-                        Focus = newFocus;
-                        break;
-                    }
-                } while (initialFocus != newFocus);
-            }
+            FindFocus(ExtractPrev);
         }
         private void FindNextFocus() {
+            FindFocus(ExtractNext);
+        }
+        private IComponent ExtractPrev(string name) => ActiveComponents[name].GetPrev();
+        private IComponent ExtractNext(string name) => ActiveComponents[name].GetNext();
+        private void FindFocus(Func<String, IComponent> getNeighbor) {
             string? initialFocus = null;
             if (Focus != null) {
                 initialFocus = Focus;
@@ -169,7 +156,7 @@ namespace Apos.Gui {
             if (initialFocus != null) {
                 string newFocus = initialFocus;
                 do {
-                    var c = ActiveComponents[newFocus].GetNext();
+                    var c = getNeighbor(newFocus);
                     newFocus = c.Name;
                     if (c.IsFocusable) {
                         Focus = newFocus;
