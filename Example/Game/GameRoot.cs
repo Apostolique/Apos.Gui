@@ -38,13 +38,15 @@ namespace GameProject {
             _apos = new TextureRegion2D(texture, 0, 0, texture.Width, texture.Height);
         }
 
+        private string text = "Hello World!";
+
         protected override void Update(GameTime gameTime) {
             GuiHelper.UpdateSetup();
 
             if (_quit.Pressed())
                 Exit();
 
-            _ui.UpdateAll();
+            _ui.UpdateAll(gameTime);
 
             Panel.Put();
             Label.Put($"Counter: {_counter}");
@@ -57,6 +59,7 @@ namespace GameProject {
                 if (Button.Put().Clicked) _counter += 100;
                 Icon.Put(_apos);
             }
+            Textbox.Put(ref text);
             Panel.Pop();
 
             GuiHelper.UpdateCleanup();
@@ -66,7 +69,7 @@ namespace GameProject {
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Black);
 
-            _ui.Draw();
+            _ui.Draw(gameTime);
 
             base.Draw(gameTime);
         }
