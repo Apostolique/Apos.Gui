@@ -91,9 +91,13 @@ namespace Apos.Gui {
         }
 
         public void Add(IComponent c) {
-            c.Parent = this;
-            // TODO: Maybe we need to check if there's already a child and call remove on it.
-            Child = c;
+            if (c != Child) {
+                if (Child != null) {
+                    Child.Parent = null;
+                }
+                Child = c;
+                Child.Parent = this;
+            }
         }
         public void Remove(IComponent c) {
             if (Child == c) {
