@@ -80,7 +80,7 @@ namespace Apos.Gui {
             if (IsFocused) {
                 GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.White, 2f);
             } else {
-                GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.White * 0.3f, 2f);
+                GuiHelper.SpriteBatch.DrawRectangle(Bounds, new Color(76, 76, 76), 2f);
             }
 
             if (Child != null) {
