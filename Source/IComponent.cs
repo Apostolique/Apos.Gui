@@ -28,11 +28,11 @@ namespace Apos.Gui {
         float Right { get; set; }
         float Bottom { get; set; }
 
-        void UpdatePrefSize();
-        void UpdateSetup();
-        void UpdateInput();
-        void Update();
-        void Draw();
+        void UpdatePrefSize(GameTime gameTime);
+        void UpdateSetup(GameTime gameTime);
+        void UpdateInput(GameTime gameTime);
+        void Update(GameTime gameTime);
+        void Draw(GameTime gameTime);
 
         IParent? Parent { get; set; }
         IComponent GetPrev();

@@ -39,12 +39,12 @@ namespace Apos.Gui {
             }
         }
 
-        public override void UpdatePrefSize() {
+        public override void UpdatePrefSize(GameTime gameTime) {
             float maxWidth = 0;
             float maxHeight = 0;
 
             foreach (var c in _children) {
-                c.UpdatePrefSize();
+                c.UpdatePrefSize(gameTime);
                 maxWidth = MathHelper.Max(c.PrefWidth, maxWidth);
                 maxHeight += c.PrefHeight;
             }
@@ -52,7 +52,7 @@ namespace Apos.Gui {
             PrefWidth = maxWidth;
             PrefHeight = maxHeight;
         }
-        public override void UpdateSetup() {
+        public override void UpdateSetup(GameTime gameTime) {
             float maxWidth = Width;
             float maxHeight = Height;
 
@@ -66,7 +66,7 @@ namespace Apos.Gui {
                 maxWidth = MathHelper.Max(c.PrefWidth, maxWidth);
                 c.Clip = c.Bounds.Intersection(Clip);
 
-                c.UpdateSetup();
+                c.UpdateSetup(gameTime);
 
                 currentY += c.Height;
             }
@@ -74,19 +74,19 @@ namespace Apos.Gui {
             FullWidth = maxWidth;
             FullHeight = MathHelper.Max(currentY, maxHeight);
         }
-        public override void UpdateInput() {
+        public override void UpdateInput(GameTime gameTime) {
             foreach (var c in _children)
-                c.UpdateInput();
+                c.UpdateInput(gameTime);
 
             // TODO: Scrolling input.
         }
-        public override void Update() {
+        public override void Update(GameTime gameTime) {
             foreach (var c in _children)
-                c.Update();
+                c.Update(gameTime);
         }
-        public override void Draw() {
+        public override void Draw(GameTime gameTime) {
             foreach (var c in _children)
-                c.Draw();
+                c.Draw(gameTime);
 
             // TODO: Draw scrollbars if needed.
         }

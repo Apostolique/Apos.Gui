@@ -71,11 +71,11 @@ namespace Apos.Gui {
             }
         }
 
-        public virtual void UpdatePrefSize() { }
-        public virtual void UpdateSetup() { }
-        public virtual void UpdateInput() { }
-        public virtual void Update() { }
-        public virtual void Draw() { }
+        public virtual void UpdatePrefSize(GameTime gameTime) { }
+        public virtual void UpdateSetup(GameTime gameTime) { }
+        public virtual void UpdateInput(GameTime gameTime) { }
+        public virtual void Update(GameTime gameTime) { }
+        public virtual void Draw(GameTime gameTime) { }
 
         /// <summary>
         /// If this component has a parent, it will ask the parent to return this component's previous neighbor.

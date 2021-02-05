@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Apos.Input;
+using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
     // TODO: Make IMGUI implement IParent?
     public class IMGUI {
-        public void UpdateSetup() {
+        public void UpdateSetup(GameTime gameTime) {
             // 1. Cleanup last cycle
             // 2. Pending components become active.
             //      a. Set parenting.
@@ -28,16 +29,16 @@ namespace Apos.Gui {
             // TODO: Process pending action queue. (It doesn't exist yet.)
 
             foreach (var c in Roots) {
-                c.UpdatePrefSize();
+                c.UpdatePrefSize(gameTime);
                 // TODO: Update position?
                 c.Width = c.PrefWidth;
                 c.Height = c.PrefHeight;
-                c.UpdateSetup();
+                c.UpdateSetup(gameTime);
             }
         }
-        public void UpdateInput() {
+        public void UpdateInput(GameTime gameTime) {
             foreach (var c in Roots)
-                c.UpdateInput();
+                c.UpdateInput(gameTime);
 
             // TODO: Need to handle the whole lifecycle of FocusPrev and FocusNext, same as buttons. (Pressed, HeldOnly, Released)
             if (Default.FocusPrev.Released()) {
@@ -47,18 +48,18 @@ namespace Apos.Gui {
                 FindNextFocus();
             }
         }
-        public void Update() {
+        public void Update(GameTime gameTime) {
             foreach (var c in Roots)
-                c.Update();
+                c.Update(gameTime);
         }
-        public void UpdateAll() {
-            UpdateSetup();
-            UpdateInput();
-            Update();
+        public void UpdateAll(GameTime gameTime) {
+            UpdateSetup(gameTime);
+            UpdateInput(gameTime);
+            Update(gameTime);
         }
-        public void Draw() {
+        public void Draw(GameTime gameTime) {
             foreach (var c in Roots)
-                c.Draw();
+                c.Draw(gameTime);
         }
 
         public void Push(IParent p, int maxChildren = 0) {

@@ -19,15 +19,15 @@ namespace Apos.Gui {
             set;
         } = true;
 
-        public override void UpdatePrefSize() {
+        public override void UpdatePrefSize(GameTime gameTime) {
             if (Child != null) {
-                Child.UpdatePrefSize();
+                Child.UpdatePrefSize(gameTime);
 
                 PrefWidth = Child.PrefWidth;
                 PrefHeight = Child.PrefHeight;
             }
         }
-        public override void UpdateSetup() {
+        public override void UpdateSetup(GameTime gameTime) {
             if (Clicked) {
                 Clicked = false;
             }
@@ -38,10 +38,10 @@ namespace Apos.Gui {
                 Child.Width = Width;
                 Child.Height = Height;
 
-                Child.UpdateSetup();
+                Child.UpdateSetup(gameTime);
             }
         }
-        public override void UpdateInput() {
+        public override void UpdateInput(GameTime gameTime) {
             if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
                 _pressed = true;
                 // TODO: Grab focus.
@@ -56,16 +56,16 @@ namespace Apos.Gui {
             }
 
             if (Child != null) {
-                Child.UpdateInput();
+                Child.UpdateInput(gameTime);
             }
         }
-        public override void Update() {
+        public override void Update(GameTime gameTime) {
             if (Child != null) {
-                Child.Update();
+                Child.Update(gameTime);
             }
         }
 
-        public override void Draw() {
+        public override void Draw(GameTime gameTime) {
             GuiHelper.SetScissor(Clip);
 
             if (Clicked) {
@@ -84,7 +84,7 @@ namespace Apos.Gui {
             }
 
             if (Child != null) {
-                Child.Draw();
+                Child.Draw(gameTime);
             }
 
             GuiHelper.ResetScissor();

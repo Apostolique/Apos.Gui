@@ -13,11 +13,11 @@ namespace Apos.Gui {
             set;
         }
 
-        public override void UpdatePrefSize() {
+        public override void UpdatePrefSize(GameTime gametime) {
             PrefWidth = Region.Width;
             PrefHeight = Region.Height;
         }
-        public override void Draw() {
+        public override void Draw(GameTime gameTime) {
             GuiHelper.SetScissor(Clip);
 
             int halfWidth = (int)(Width / 2);

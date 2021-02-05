@@ -11,18 +11,18 @@ namespace Apos.Gui {
         public string Text {
             get;
             set;
-        } = "";
+        }
         public int Padding {
             get;
             set;
         } = 10;
 
-        public override void UpdatePrefSize() {
+        public override void UpdatePrefSize(GameTime gameTime) {
             var size = GuiHelper.MeasureString(Text, 30);
             PrefWidth = size.X + Padding * 2;
             PrefHeight = size.Y + Padding * 2;
         }
-        public override void Draw() {
+        public override void Draw(GameTime gameTime) {
             GuiHelper.SetScissor(Clip);
 
             var font = GuiHelper.GetFont(30);

@@ -22,5 +22,9 @@ namespace Apos.Gui {
                     new Track.KeyboardCondition(Keys.Down),
                     new Track.KeyboardCondition(Keys.Tab)
                 );
+            public static ICondition MoveLeft { get; set; } =
+                new Track.KeyboardCondition(Keys.Left);
+            public static ICondition MoveRight { get; set; } =
+                new Track.KeyboardCondition(Keys.Right);
     }
 }
