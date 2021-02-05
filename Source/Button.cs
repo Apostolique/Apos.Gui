@@ -44,7 +44,7 @@ namespace Apos.Gui {
         public override void UpdateInput(GameTime gameTime) {
             if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
                 _pressed = true;
-                // TODO: Grab focus.
+                GrabFocus(this);
             }
             if (_pressed && Default.MouseInteraction.HeldOnly()) {
                 _hovered = Clip.Contains(GuiHelper.Mouse);

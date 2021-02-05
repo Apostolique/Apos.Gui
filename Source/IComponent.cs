@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
@@ -37,5 +38,7 @@ namespace Apos.Gui {
         IParent? Parent { get; set; }
         IComponent GetPrev();
         IComponent GetNext();
+
+        Action<IComponent> GrabFocus { get; set; }
     }
 }

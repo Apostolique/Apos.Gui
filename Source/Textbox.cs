@@ -39,13 +39,13 @@ namespace Apos.Gui {
             PrefHeight = height + Padding * 2;
         }
         public override void UpdateInput(GameTime gameTime) {
-            if (IsFocused) {
-                if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
-                    _pressed = true;
-                    // TODO: Grab focus.
-                    Cursor = MouseToCursor(GuiHelper.Mouse.X, _text);
-                }
+            if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
+                _pressed = true;
+                Cursor = MouseToCursor(GuiHelper.Mouse.X, _text);
+                GrabFocus(this);
+            }
 
+            if (IsFocused) {
                 if (_pressed && Default.MouseInteraction.HeldOnly()) {
                     Cursor = MouseToCursor(GuiHelper.Mouse.X, _text);
                 }

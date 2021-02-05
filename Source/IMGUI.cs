@@ -85,6 +85,7 @@ namespace Apos.Gui {
         public void Add(string name, IComponent c) {
             // NOTE: This should only be called if the component hasn't already been added.
             PendingComponents.Enqueue((name, CurrentParent, c));
+            c.GrabFocus = GrabFocus;
 
             CountChild();
         }
@@ -165,6 +166,9 @@ namespace Apos.Gui {
                     }
                 } while (initialFocus != newFocus);
             }
+        }
+        private void GrabFocus(IComponent c) {
+            Focus = c.Name;
         }
 
         public IParent? CurrentParent;

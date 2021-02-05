@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
@@ -91,6 +92,11 @@ namespace Apos.Gui {
         public virtual IComponent GetNext() {
             return Parent != null ? Parent.GetNext(this) : this;
         }
+
+        public virtual Action<IComponent> GrabFocus {
+            get;
+            set;
+        } = c => {};
 
         public virtual Vector2 XY {
             get => new Vector2(X, Y);
