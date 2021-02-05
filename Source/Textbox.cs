@@ -13,8 +13,14 @@ namespace Apos.Gui {
         }
 
         public string Text {
-            get;
-            set;
+            get => _text;
+            set {
+                // TODO: Only modify the text on the next loop.
+                _text = value;
+                if (Cursor > _text.Length) {
+                    Cursor = _text.Length;
+                }
+            }
         }
         public int Padding {
             get;
@@ -26,8 +32,8 @@ namespace Apos.Gui {
         } = true;
 
         public override void UpdatePrefSize(GameTime gameTime) {
-            string extra = Text.Length == 0 ? "\n" : "";
-            Vector2 size = GuiHelper.MeasureString(Text + extra, _fontSize);
+            string extra = _text.Length == 0 ? "\n" : "";
+            Vector2 size = GuiHelper.MeasureString(_text + extra, _fontSize);
             float height = GuiHelper.MeasureString("A", 30).Y;
             PrefWidth = MathHelper.Max(size.X, 100) + Padding * 2;
             PrefHeight = height + Padding * 2;
@@ -37,15 +43,15 @@ namespace Apos.Gui {
                 if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
                     _pressed = true;
                     // TODO: Grab focus.
-                    Cursor = MouseToCursor(GuiHelper.Mouse.X, Text);
+                    Cursor = MouseToCursor(GuiHelper.Mouse.X, _text);
                 }
 
                 if (_pressed && Default.MouseInteraction.HeldOnly()) {
-                    Cursor = MouseToCursor(GuiHelper.Mouse.X, Text);
+                    Cursor = MouseToCursor(GuiHelper.Mouse.X, _text);
                 }
                 if (_pressed && Default.MouseInteraction.Released()) {
                     _pressed = false;
-                    Cursor = MouseToCursor(GuiHelper.Mouse.X, Text);
+                    Cursor = MouseToCursor(GuiHelper.Mouse.X, _text);
                 }
 
                 MoveCursor(Default.MoveLeft, -1);
@@ -56,17 +62,17 @@ namespace Apos.Gui {
                         continue;
                     } else if (te.Key == Keys.Enter) {
                     } else if (te.Key == Keys.Back) {
-                        if (Cursor > 0 && Text.Length > 0) {
-                            Text = Text.Remove(Cursor - 1, 1);
+                        if (Cursor > 0 && _text.Length > 0) {
+                            _text = _text.Remove(Cursor - 1, 1);
                             Cursor--;
                         }
                     } else if (te.Key == Keys.Delete) {
-                        if (Text.Length > 0 && Cursor < Text.Length) {
-                            Text = Text.Remove(Cursor, 1);
+                        if (_text.Length > 0 && Cursor < _text.Length) {
+                            _text = _text.Remove(Cursor, 1);
                             _cursorBlink = _cursorBlinkSpeed;
                         }
                     } else {
-                        Text = Text.Insert(Cursor, $"{te.Character}");
+                        _text = _text.Insert(Cursor, $"{te.Character}");
                         Cursor++;
                     }
                     Track.KeyboardCondition.Consume(te.Key);
@@ -94,8 +100,8 @@ namespace Apos.Gui {
                 float alignLeft = Left + Padding;
 
                 float cursorLeft = alignLeft;
-                if (Cursor > 0 && Cursor <= Text.Length) {
-                    cursorLeft = alignLeft + GuiHelper.MeasureString(Text.Substring(0, Cursor), _fontSize).X;
+                if (Cursor > 0 && Cursor <= _text.Length) {
+                    cursorLeft = alignLeft + GuiHelper.MeasureString(_text.Substring(0, Cursor), _fontSize).X;
                 }
                 if (_cursorBlink >= _cursorBlinkSpeed * 0.5) {
                     GuiHelper.SpriteBatch.FillRectangle(new RectangleF(cursorLeft, Top, 2, Height), Color.White);
@@ -105,7 +111,7 @@ namespace Apos.Gui {
             }
 
             var font = GuiHelper.GetFont(_fontSize);
-            GuiHelper.SpriteBatch.DrawString(font, Text, XY + new Vector2(Padding), new Color(200, 200, 200), GuiHelper.FontScale);
+            GuiHelper.SpriteBatch.DrawString(font, _text, XY + new Vector2(Padding), new Color(200, 200, 200), GuiHelper.FontScale);
 
             GuiHelper.ResetScissor();
         }
@@ -169,12 +175,14 @@ namespace Apos.Gui {
             return currentPosition;
         }
 
+        private string _text;
+
         private int _fontSize = 30;
         private RectangleF _cursorRect;
         private int Cursor {
             get => _cursor;
             set {
-                if (value >= 0 && value <= Text.Length && _cursor != value) {
+                if (value >= 0 && value <= _text.Length && _cursor != value) {
                     _cursor = value;
                     _cursorBlink = _cursorBlinkSpeed;
                 }
