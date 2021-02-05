@@ -57,6 +57,13 @@ namespace Apos.Gui {
                 MoveCursor(Default.MoveLeft, -1);
                 MoveCursor(Default.MoveRight, 1);
 
+                if (Default.MoveUp.Released()) {
+                    Cursor = 0;
+                }
+                if (Default.MoveDown.Released()) {
+                    Cursor = _text.Length;
+                }
+
                 foreach (var te in InputHelper.TextEvents) {
                     if (te.Key == Keys.Tab) {
                         continue;
@@ -107,7 +114,7 @@ namespace Apos.Gui {
                     GuiHelper.SpriteBatch.FillRectangle(new RectangleF(cursorLeft, Top, 2, Height), Color.White);
                 }
             } else {
-                GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.White * 0.3f, 2f);
+                GuiHelper.SpriteBatch.DrawRectangle(Bounds, new Color(76, 76, 76), 2f);
             }
 
             var font = GuiHelper.GetFont(_fontSize);
