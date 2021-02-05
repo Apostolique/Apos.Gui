@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "buildDesktopGL",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Example/Platforms/DesktopGL/DesktopGL.csproj"
+            ],
+            "problemMatcher": "$tsc"
+        },
+        {
+            "label": "buildWindowsDX",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Example/Platforms/WindowsDX/WindowsDX.csproj"
+            ],
+            "problemMatcher": "$tsc"
+        }
+    ]
+}

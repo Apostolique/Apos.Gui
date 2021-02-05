@@ -1,129 +1,182 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+using Apos.Input;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
-using Optional;
 
 namespace Apos.Gui {
-    /// <summary>
-    /// Goal: Container that can hold Components.
-    /// </summary>
-    public class Panel : Component {
+    public class Panel : Component, IParent {
+        public Panel(string name) : base(name) { }
 
-        // Group: Constructors
-
-        public Panel() : this(new Layout()) {
-        }
-        public Panel(Layout l) {
-            Layout = l;
-        }
-
-        // Group: Public Variables
-
-        public Point Offset {
+        public float OffsetX {
             get;
             set;
-        } = new Point(0, 0);
-        public Size2 Size {
+        } = 0;
+        public float OffsetY {
             get;
             set;
-        } = new Size2(0, 0);
-        public Layout Layout {
-            get => _layout;
+        } = 0;
+        public float FullWidth {
+            get;
+            set;
+        } = 100;
+        public float FullHeight {
+            get;
+            set;
+        } = 100;
+
+        public Vector2 OffsetXY {
+            get => new Vector2(OffsetX, OffsetY);
             set {
-                _layout = value;
-                _layout.Panel = this;
+                OffsetX = value.X;
+                OffsetY = value.Y;
             }
         }
-        public override int PrefWidth => (int)Size.Width;
-        public override int PrefHeight => (int)Size.Height;
-
-        // Group: Public Functions
-
-        public virtual void Add(Component e) {
-            _children.Add(e);
-            e.Parent = Option.Some<Component>(this);
-        }
-        public virtual void Remove(Component e) {
-            _children.Remove(e);
-            e.Parent = Option.None<Component>();
-        }
-        public override Component GetPrev(Component c) {
-            int index = _children.IndexOf(c) - 1;
-            if (index >= 0 && _children.Count > 0) {
-                return _children[index];
+        public Vector2 FullSize {
+            get => new Vector2(FullWidth, FullHeight);
+            set {
+                FullWidth = value.X;
+                FullHeight = value.Y;
             }
-            return Parent.Map(parent => parent.GetPrev(this)).ValueOr(() => {
-                if (_children.Count > 0) {
-                    return _children.Last();
+        }
+
+        public override void UpdatePrefSize(GameTime gameTime) {
+            float maxWidth = 0;
+            float maxHeight = 0;
+
+            foreach (var c in _children) {
+                c.UpdatePrefSize(gameTime);
+                maxWidth = MathHelper.Max(c.PrefWidth, maxWidth);
+                maxHeight += c.PrefHeight;
+            }
+
+            PrefWidth = maxWidth;
+            PrefHeight = maxHeight;
+        }
+        public override void UpdateSetup(GameTime gameTime) {
+            float maxWidth = Width;
+            float maxHeight = Height;
+
+            float currentY = 0;
+            foreach (var c in _children) {
+                c.X = X + OffsetX;
+                c.Y = currentY + Y + OffsetY;
+                c.Width = c.PrefWidth;
+                c.Height = c.PrefHeight;
+
+                maxWidth = MathHelper.Max(c.PrefWidth, maxWidth);
+                c.Clip = c.Bounds.Intersection(Clip);
+
+                c.UpdateSetup(gameTime);
+
+                currentY += c.Height;
+            }
+
+            FullWidth = maxWidth;
+            FullHeight = MathHelper.Max(currentY, maxHeight);
+        }
+        public override void UpdateInput(GameTime gameTime) {
+            foreach (var c in _children)
+                c.UpdateInput(gameTime);
+
+            // TODO: Scrolling input.
+        }
+        public override void Update(GameTime gameTime) {
+            foreach (var c in _children)
+                c.Update(gameTime);
+        }
+        public override void Draw(GameTime gameTime) {
+            foreach (var c in _children)
+                c.Draw(gameTime);
+
+            // TODO: Draw scrollbars if needed.
+        }
+
+        public void Add(IComponent c) {
+            c.Parent = this;
+            _children.Insert(c.Index, c);
+        }
+        public void Remove(IComponent c) {
+            c.Parent = null;
+            _children.Remove(c);
+        }
+        public void Reset() {
+            _nextChildIndex = 0;
+        }
+        public int NextIndex() {
+            return _nextChildIndex++;
+        }
+
+        /// <summary>
+        /// If this component has a parent, it will ask the parent to return this component's previous neighbor.
+        /// If it has children, it will return the last one.
+        /// Otherwise it will return itself.
+        /// </summary>
+        public override IComponent GetPrev() {
+            return Parent != null ? Parent.GetPrev(this) : _children.Count > 0 ? _children.Last() : this;
+        }
+        /// <summary>
+        /// If this component has children, it will return the first one.
+        /// If it has a parent it will ask the parent to return this component's next neighbor.
+        /// Otherwise, it will return itself.
+        /// </summary>
+        public override IComponent GetNext() {
+            return _children.Count > 0 ? _children.First() : Parent != null ? Parent.GetNext(this) : this;
+        }
+        /// <summary>
+        /// If the child isn't the first one, it will return the child before it.
+        /// Otherwise it will return itself.
+        /// </summary>
+        public virtual IComponent GetPrev(IComponent c) {
+            int index = c.Index - 1;
+            return index >= 0 ? _children[index] : this;
+        }
+        /// <summary>
+        /// If the child isn't the last one, it will return the child after it.
+        /// If it has a parent, it will ask the parent to return this component's next neighbor.
+        /// Otherwise it will return itself.
+        /// </summary>
+        public virtual IComponent GetNext(IComponent c) {
+            int index = c.Index + 1;
+            return index < _children.Count ? _children[index] : Parent != null ? Parent.GetNext(this) : this;
+        }
+
+        protected int _nextChildIndex = 0;
+        protected List<IComponent> _children = new List<IComponent>();
+
+        public static Panel Put(int id = 0) {
+            // 1. Check if panel with id already exists.
+            //      a. If already exists. Get it.
+            //      b  If not, create it.
+            // 3. Push it on the stack.
+            // 4. Ping it.
+
+            var fullName = $"panel{(id == 0 ? GuiHelper.CurrentIMGUI.NextId() : id)}";
+
+            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
+            GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
+
+            Panel a;
+            if (c is Panel) {
+                a = (Panel)c;
+            } else {
+                a = new Panel(fullName);
+                GuiHelper.CurrentIMGUI.Add(fullName, a);
+            }
+
+            if (a.LastPing != InputHelper.CurrentFrame) {
+                a.Reset();
+                a.LastPing = InputHelper.CurrentFrame;
+                if (parent != null) {
+                    a.Index = parent.NextIndex();
                 }
-                return this;
-            });
-        }
-        public override Component GetNext(Component c) {
-            int index = _children.IndexOf(c) + 1;
-            if (index < _children.Count) {
-                return _children[index];
-            }
-            return Parent.Map(parent => parent.GetNext(this)).ValueOr(() => {
-                if (_children.Count > 0) {
-                    return _children[0];
-                }
-                return this;
-            });
-        }
-        public override Component GetFinal() {
-            if (_children.Count > 0) {
-                return _children.First();
-            }
-            return this;
-        }
-        public override Component GetFinalInverse() {
-            if (_children.Count > 0) {
-                return _children.Last();
-            }
-            return this;
-        }
-        public override void UpdateSetup() {
-            base.UpdateSetup();
-            if (Layout != null) {
-                Layout.RecomputeChildren(_children);
-            }
-            foreach (Component e in _children) {
-                e.UpdateSetup();
-            }
-        }
-        public override Option<Component> FindHover() {
-            foreach (Component e in _children) {
-                var hover = e.FindHover();
-                if (hover.HasValue) {
-                    return hover;
-                }
             }
 
-            return base.FindHover();
-        }
-        public override void UpdateInput() {
-            foreach (Component e in _children) {
-                e.UpdateInput();
-            }
-            base.UpdateInput();
-        }
-        public override void Update() {
-            base.Update();
-            foreach (Component e in _children) {
-                e.Update();
-            }
-        }
-        public override void Draw() {
-            foreach (Component e in _children) {
-                e.Draw();
-            }
-        }
+            GuiHelper.CurrentIMGUI.Push(a);
 
-        // Group: Private Variables
-
-        protected List<Component> _children = new List<Component>();
-        protected Layout _layout;
+            return a;
+        }
+        public static void Pop() {
+            GuiHelper.CurrentIMGUI.Pop();
+        }
     }
 }

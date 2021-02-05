@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>Example</AssemblyName>
+    <MonoGamePlatform>DesktopGl</MonoGamePlatform>
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <TieredCompilation>false</TieredCompilation>
+    <RuntimeIdentifiers>win10-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.2001" />
+
+    <ProjectReference Include="../../../Source/Apos.Gui.csproj">
+      <NoWarn>CS1591</NoWarn>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="../../Game/**/*.cs">
+      <Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <MonoGameContentReference Include="../../Content/**/*.mgcb">
+      <Link>Content/%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </MonoGameContentReference>
+  </ItemGroup>
+
+</Project>

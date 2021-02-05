@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("end",["Function"],[["End",,[["Apos.Gui.GuiHelper",,,,0,"File:GuiHelper.cs:Apos.Gui.GuiHelper.End","CSharpClass:Apos.Gui.GuiHelper:End"]]]]);

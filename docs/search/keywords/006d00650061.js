@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("mea",["Function"],[["MeasureString",,[["Apos.Gui.GuiHelper",,,,0,"File:GuiHelper.cs:Apos.Gui.GuiHelper.MeasureString","CSharpClass:Apos.Gui.GuiHelper:MeasureString"]]]]);

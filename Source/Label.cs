@@ -1,61 +1,63 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
+using Apos.Input;
+using FontStashSharp;
+using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
-    /// <summary>
-    /// Goal: A text component.
-    /// </summary>
     public class Label : Component {
-
-        // Group: Constructors
-
-        public Label() : this("Text Missing") { }
-        public Label(string iText) {
-            _text = iText;
-            Width = PrefWidth;
-            Height = PrefHeight;
+        public Label(string name, string text) : base(name) {
+            Text = text;
         }
 
-        // Group: Public Variables
-
-        public Color NormalColor {
+        public string Text {
             get;
             set;
-        } = Color.White;
-        public Color ActiveColor {
+        }
+        public int Padding {
             get;
             set;
-        } = new Color(150, 150, 150);
-        public override int PrefWidth => (int)_textSize.Width;
-        public override int PrefHeight => (int)_textSize.Height;
+        } = 10;
 
-        // Group: Public Functions
+        public override void UpdatePrefSize(GameTime gameTime) {
+            var size = GuiHelper.MeasureString(Text, 30);
+            PrefWidth = size.X + Padding * 2;
+            PrefHeight = size.Y + Padding * 2;
+        }
+        public override void Draw(GameTime gameTime) {
+            GuiHelper.SetScissor(Clip);
 
-        public override void Draw() {
-            SetScissor();
-            DrawString(_text, new Vector2(Left, Top), getColor());
-            ResetScissor();
+            var font = GuiHelper.GetFont(30);
+            GuiHelper.SpriteBatch.DrawString(font, Text, XY + new Vector2(Padding), new Color(200, 200, 200), GuiHelper.FontScale);
+
+            GuiHelper.ResetScissor();
         }
 
-        // Group: Private Variables
+        public static Label Put(string text, int id = 0) {
+            // 1. Check if Label with id already exists.
+            //      a. If already exists. Get it.
+            //      b  If not, create it.
+            // 4. Ping it.
+            var fullName = $"label{(id == 0 ? GuiHelper.CurrentIMGUI.NextId() : id)}";
 
-        protected string _text = "Text Missing";
-        protected Size2 _textSize => MeasureString(_text);
+            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
+            GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
 
-        // Group: Private Functions
-
-        protected virtual Color getColor() {
-            if (IsHovered || IsFocused) {
-                return ActiveColor;
+            Label a;
+            if (c is Label) {
+                a = (Label)c;
+                a.Text = text;
+            } else {
+                a = new Label(fullName, text);
+                GuiHelper.CurrentIMGUI.Add(fullName, a);
             }
-            return NormalColor;
-        }
-        protected virtual void drawTextCentered(SpriteBatch s, string text) {
-            int halfWidth = Width / 2;
-            int halfHeight = Height / 2;
 
-            DrawString(text, new Vector2(Left + halfWidth, Top + halfHeight), getColor());
+            if (a.LastPing != InputHelper.CurrentFrame) {
+                a.LastPing = InputHelper.CurrentFrame;
+                if (parent != null) {
+                    a.Index = parent.NextIndex();
+                }
+            }
+
+            return a;
         }
     }
 }

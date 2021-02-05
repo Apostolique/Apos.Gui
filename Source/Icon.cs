@@ -1,43 +1,65 @@
-﻿using Microsoft.Xna.Framework;
+using Apos.Input;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended.TextureAtlases;
 
 namespace Apos.Gui {
-    /// <summary>
-    /// Goal: Just a simple Gui element that displays a texture.
-    /// </summary>
     public class Icon : Component {
-
-        // Group: Constructors
-
-        public Icon(TextureRegion2D iRegion) {
-            _region = iRegion;
+        public Icon(string name, TextureRegion2D region) : base(name) {
+            Region = region;
         }
 
-        // Group: Public Variables
+        public TextureRegion2D Region {
+            get;
+            set;
+        }
 
-        public override int PrefWidth => _region.Width;
-        public override int PrefHeight => _region.Height;
+        public override void UpdatePrefSize(GameTime gametime) {
+            PrefWidth = Region.Width;
+            PrefHeight = Region.Height;
+        }
+        public override void Draw(GameTime gameTime) {
+            GuiHelper.SetScissor(Clip);
 
-        // Group: Public Functions
+            int halfWidth = (int)(Width / 2);
+            int iconHalfWidth = (int)(PrefWidth / 2);
 
-        public override void Draw() {
-            SetScissor();
-
-            int halfWidth = Width / 2;
-            int iconHalfWidth = PrefWidth / 2;
-
-            int halfHeight = Height / 2;
-            int iconHalfHeight = PrefHeight / 2;
+            int halfHeight = (int)(Height / 2);
+            int iconHalfHeight = (int)(PrefHeight / 2);
 
             Vector2 pos = new Vector2(Left + halfWidth - iconHalfWidth, Top + halfHeight - iconHalfHeight);
 
-            _s.Draw(_region, pos, Color.White);
+            GuiHelper.SpriteBatch.Draw(Region, pos, Color.White);
 
-            ResetScissor();
+            GuiHelper.ResetScissor();
         }
 
-        // Group: Private Variables
+        public static Icon Put(TextureRegion2D region, int id = 0) {
+            // 1. Check if Icon with id already exists.
+            //      a. If already exists. Get it.
+            //      b  If not, create it.
+            // 4. Ping it.
+            var fullName = $"icon{(id == 0 ? GuiHelper.CurrentIMGUI.NextId() : id)}";
 
-        protected TextureRegion2D _region;
+            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
+            GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
+
+            Icon a;
+            if (c is Icon) {
+                a = (Icon)c;
+                a.Region = region;
+            } else {
+                a = new Icon(fullName, region);
+                GuiHelper.CurrentIMGUI.Add(fullName, a);
+            }
+
+            if (a.LastPing != InputHelper.CurrentFrame) {
+                a.LastPing = InputHelper.CurrentFrame;
+                if (parent != null) {
+                    a.Index = parent.NextIndex();
+                }
+            }
+
+            return a;
+        }
     }
 }

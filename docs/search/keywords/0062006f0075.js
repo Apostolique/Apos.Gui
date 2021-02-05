@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("bou",["Property"],[["BoundingRect",,[["Apos.Gui.Component",,,,0,"File:Component.cs:Apos.Gui.Component.BoundingRect","CSharpClass:Apos.Gui.Component:BoundingRect"]]]]);

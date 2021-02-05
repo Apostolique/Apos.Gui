@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("nex",["Property"],[["NextFocusAction",,[["Apos.Gui.ComponentFocus",,,,0,"File:ComponentFocus.cs:Apos.Gui.ComponentFocus.NextFocusAction","CSharpClass:Apos.Gui.ComponentFocus:NextFocusAction"]]],["NextLoopActions",,[["Apos.Gui.GuiHelper",,,,0,"File:GuiHelper.cs:Apos.Gui.GuiHelper.NextLoopActions","CSharpClass:Apos.Gui.GuiHelper:NextLoopActions"]]]]);

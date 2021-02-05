@@ -1,1 +1,0 @@
-NDSearch.OnPrefixDataLoaded("set",["Function"],[["SetScissor",,[["Apos.Gui.Component",,,,0,"File:Component.cs:Apos.Gui.Component.SetScissor","CSharpClass:Apos.Gui.Component:SetScissor"],["Apos.Gui.GuiHelper",,,,0,"File:GuiHelper.cs:Apos.Gui.GuiHelper.SetScissor","CSharpClass:Apos.Gui.GuiHelper:SetScissor"]]]]);

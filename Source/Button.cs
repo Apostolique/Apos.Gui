@@ -1,86 +1,163 @@
-﻿using Microsoft.Xna.Framework;
+using Apos.Input;
+using Microsoft.Xna.Framework;
 using MonoGame.Extended;
-using Optional;
 
 namespace Apos.Gui {
-    /// <summary>
-    /// Goal: A button component that handles actions.
-    /// </summary>
-    public class Button : Component {
+    public class Button : Component, IParent {
+        public Button(string name) : base(name) { }
 
-        // Group: Constructors
-
-        public Button() : this(new Component()) { }
-        public Button(Component c) {
-            Item = c;
-            IsFocusable = true;
-            Width = Item.PrefWidth;
-            Height = Item.PrefHeight;
+        public bool Clicked {
+            get;
+            set;
+        } = false;
+        public IComponent? Child {
+            get;
+            set;
         }
-
-        // Group: Public Variables
-
-        public virtual bool ShowBox {
+        public override bool IsFocusable {
             get;
             set;
         } = true;
-        public override bool IsHovered {
-            get => base.IsHovered;
-            set {
-                base.IsHovered = value;
-                Item.IsHovered = value;
+
+        public override void UpdatePrefSize(GameTime gameTime) {
+            if (Child != null) {
+                Child.UpdatePrefSize(gameTime);
+
+                PrefWidth = Child.PrefWidth;
+                PrefHeight = Child.PrefHeight;
             }
         }
-        public override bool IsFocused {
-            get => base.IsFocused;
-            set {
-                base.IsFocused = value;
-                Item.IsFocused = value;
+        public override void UpdateSetup(GameTime gameTime) {
+            if (Clicked) {
+                Clicked = false;
+            }
+
+            if (Child != null) {
+                Child.X = X;
+                Child.Y = Y;
+                Child.Width = Width;
+                Child.Height = Height;
+
+                Child.UpdateSetup(gameTime);
             }
         }
-        public virtual Component Item {
-            get => _item;
-            set {
-                _item = value;
-                _item.Parent = Option.Some<Component>(this);
+        public override void UpdateInput(GameTime gameTime) {
+            if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
+                _pressed = true;
+                GrabFocus(this);
+            }
+            if (_pressed && Default.MouseInteraction.HeldOnly()) {
+                _hovered = Clip.Contains(GuiHelper.Mouse);
+            }
+            if (_pressed && Default.MouseInteraction.Released()) {
+                if (Clip.Contains(GuiHelper.Mouse))
+                    Clicked = true;
+                _pressed = false;
+            }
+
+            if (Child != null) {
+                Child.UpdateInput(gameTime);
             }
         }
-        public override int PrefWidth => Item.PrefWidth;
-        public override int PrefHeight => Item.PrefHeight;
-
-        // Group: Public Functions
-
-        public override void UpdateSetup() {
-            base.UpdateSetup();
-
-            Item.Width = Width;
-            Item.Height = Height;
-            Item.Position = Position;
-            Item.ClippingRect = ClippingRect;
-
-            Item.UpdateSetup();
+        public override void Update(GameTime gameTime) {
+            if (Child != null) {
+                Child.Update(gameTime);
+            }
         }
-        public override void Draw() {
-            SetScissor();
-            if (ShowBox) {
-                if (IsHovered) {
-                    _s.FillRectangle(BoundingRect, new Color(20, 20, 20));
+
+        public override void Draw(GameTime gameTime) {
+            GuiHelper.SetScissor(Clip);
+
+            if (Clicked) {
+                GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.5f);
+            } else if (_pressed) {
+                if (_hovered) {
+                    GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.2f);
                 } else {
-                    _s.FillRectangle(BoundingRect, Color.Black);
+                    GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.15f);
+                }
+            }
+            if (IsFocused) {
+                GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.White, 2f);
+            } else {
+                GuiHelper.SpriteBatch.DrawRectangle(Bounds, new Color(76, 76, 76), 2f);
+            }
+
+            if (Child != null) {
+                Child.Draw(gameTime);
+            }
+
+            GuiHelper.ResetScissor();
+        }
+
+        public void Add(IComponent c) {
+            if (c != Child) {
+                if (Child != null) {
+                    Child.Parent = null;
+                }
+                Child = c;
+                Child.Parent = this;
+            }
+        }
+        public void Remove(IComponent c) {
+            if (Child == c) {
+                Child.Parent = null;
+                Child = null;
+            }
+        }
+        public void Reset() { }
+        public int NextIndex() => 0;
+
+        public override IComponent GetPrev() {
+            return Parent != null ? Parent.GetPrev(this) : Child != null ? Child : this;
+        }
+        public override IComponent GetNext() {
+            return Child != null ? Child : Parent != null ? Parent.GetNext(this) : this;
+        }
+        public virtual IComponent GetPrev(IComponent c) {
+            return this;
+        }
+        public virtual IComponent GetNext(IComponent c) {
+            return Parent != null ? Parent.GetNext(this) : this;
+        }
+
+        private bool _pressed = false;
+        private bool _hovered = false;
+
+        public static Button Put(string text, int id = 0) {
+            Button b = Put(id);
+            Label.Put(text, id);
+
+            return b;
+        }
+        public static Button Put(int id = 0) {
+            // 1. Check if button with id already exists.
+            //      a. If already exists. Get it.
+            //      b  If not, create it.
+            // 4. Ping it.
+            var fullName = $"button{(id == 0 ? GuiHelper.CurrentIMGUI.NextId() : id)}";
+
+            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
+            GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
+
+            Button a;
+            if (c is Button) {
+                a = (Button)c;
+            } else {
+                a = new Button(fullName);
+                GuiHelper.CurrentIMGUI.Add(fullName, a);
+            }
+
+            if (a.LastPing != InputHelper.CurrentFrame) {
+                a.LastPing = InputHelper.CurrentFrame;
+                if (parent != null) {
+                    a.Index = parent.NextIndex();
                 }
             }
 
-            Item.Draw();
+            GuiHelper.CurrentIMGUI.Push(a, 1);
 
-            if (ShowBox && IsFocused) {
-                _s.DrawRectangle(BoundingRect, Color.White, 2);
-            }
-
-            ResetScissor();
+            return a;
         }
-
-        // Group: Private Variables
-
-        protected Component _item;
     }
 }
