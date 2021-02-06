@@ -8,14 +8,8 @@ namespace Apos.Gui {
             Text = text;
         }
 
-        public string Text {
-            get;
-            set;
-        }
-        public int Padding {
-            get;
-            set;
-        } = 10;
+        public string Text { get; set; }
+        public int Padding { get; set; } = 10;
 
         public override void UpdatePrefSize(GameTime gameTime) {
             var size = GuiHelper.MeasureString(Text, 30);

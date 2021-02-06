@@ -6,18 +6,9 @@ namespace Apos.Gui {
     public class Button : Component, IParent {
         public Button(string name) : base(name) { }
 
-        public bool Clicked {
-            get;
-            set;
-        } = false;
-        public IComponent? Child {
-            get;
-            set;
-        }
-        public override bool IsFocusable {
-            get;
-            set;
-        } = true;
+        public bool Clicked { get; set; } = false;
+        public IComponent? Child { get; set; }
+        public override bool IsFocusable { get; set; } = true;
 
         public override void UpdatePrefSize(GameTime gameTime) {
             if (Child != null) {

@@ -7,22 +7,10 @@ namespace Apos.Gui {
     public class Panel : Component, IParent {
         public Panel(string name) : base(name) { }
 
-        public float OffsetX {
-            get;
-            set;
-        } = 0;
-        public float OffsetY {
-            get;
-            set;
-        } = 0;
-        public float FullWidth {
-            get;
-            set;
-        } = 100;
-        public float FullHeight {
-            get;
-            set;
-        } = 100;
+        public float OffsetX { get; set; } = 0;
+        public float OffsetY { get; set; } = 0;
+        public float FullWidth { get; set; } = 100;
+        public float FullHeight { get; set; } = 100;
 
         public Vector2 OffsetXY {
             get => new Vector2(OffsetX, OffsetY);

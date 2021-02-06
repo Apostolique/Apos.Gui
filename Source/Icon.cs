@@ -8,10 +8,7 @@ namespace Apos.Gui {
             Region = region;
         }
 
-        public TextureRegion2D Region {
-            get;
-            set;
-        }
+        public TextureRegion2D Region { get; set; }
 
         public override void UpdatePrefSize(GameTime gametime) {
             PrefWidth = Region.Width;

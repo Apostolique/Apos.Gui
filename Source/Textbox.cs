@@ -22,10 +22,7 @@ namespace Apos.Gui {
                 }
             }
         }
-        public int Padding {
-            get;
-            set;
-        } = 10;
+        public int Padding { get; set; } = 10;
         public override bool IsFocused {
             get => base.IsFocused;
             set {
@@ -33,10 +30,7 @@ namespace Apos.Gui {
                 _cursorBlink = _cursorBlinkSpeed;
             }
         }
-        public override bool IsFocusable {
-            get;
-            set;
-        } = true;
+        public override bool IsFocusable { get; set; } = true;
 
         public override void UpdatePrefSize(GameTime gameTime) {
             string extra = _text.Length == 0 ? "\n" : "";

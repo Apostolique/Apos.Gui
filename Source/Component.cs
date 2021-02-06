@@ -12,58 +12,22 @@ namespace Apos.Gui {
             Name = name;
         }
 
-        public virtual uint LastPing {
-            get;
-            set;
-        } = 0;
-        public virtual string Name {
-            get;
-            set;
-        }
-        public virtual int Index {
-            get;
-            set;
-        } = 0;
+        public virtual uint LastPing { get; set; } = 0;
+        public virtual string Name { get; set; }
+        public virtual int Index { get; set; } = 0;
 
-        public virtual float X {
-            get;
-            set;
-        } = 0;
-        public virtual float Y {
-            get;
-            set;
-        } = 0;
-        public virtual float Width {
-            get;
-            set;
-        } = 100;
-        public virtual float Height {
-            get;
-            set;
-        } = 100;
+        public virtual float X { get; set; } = 0;
+        public virtual float Y { get; set; } = 0;
+        public virtual float Width { get; set; } = 100;
+        public virtual float Height { get; set; } = 100;
 
-        public virtual float PrefWidth {
-            get;
-            set;
-        } = 100;
-        public virtual float PrefHeight {
-            get;
-            set;
-        } = 100;
+        public virtual float PrefWidth { get; set; } = 100;
+        public virtual float PrefHeight { get; set; } = 100;
 
-        public virtual bool IsFocused {
-            get;
-            set;
-        } = false;
-        public virtual bool IsFocusable {
-            get;
-            set;
-        } = false;
+        public virtual bool IsFocused { get; set; } = false;
+        public virtual bool IsFocusable { get; set; } = false;
 
-        public virtual IParent? Parent {
-            get;
-            set;
-        }
+        public virtual IParent? Parent { get; set; }
 
         public virtual RectangleF Clip {
             get => _clip != null ? _clip.Value : Bounds;
@@ -93,10 +57,7 @@ namespace Apos.Gui {
             return Parent != null ? Parent.GetNext(this) : this;
         }
 
-        public virtual Action<IComponent> GrabFocus {
-            get;
-            set;
-        } = c => {};
+        public virtual Action<IComponent> GrabFocus { get; set; } = c => { };
 
         public virtual Vector2 XY {
             get => new Vector2(X, Y);

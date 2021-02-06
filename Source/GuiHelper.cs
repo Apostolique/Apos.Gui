@@ -19,10 +19,7 @@ namespace Apos.Gui {
         public static void UpdateCleanup() {
             InputHelper.UpdateCleanup();
         }
-        public static IMGUI CurrentIMGUI {
-            get;
-            set;
-        } = null!;
+        public static IMGUI CurrentIMGUI { get; set; } = null!;
 
         /// <value>The scale of the UI. Defaults to 1f.</value>
         public static float Scale {
@@ -38,19 +35,10 @@ namespace Apos.Gui {
         public static Matrix UIMatrix => Matrix.CreateScale(Scale, Scale, 1);
         public static Vector2 Mouse => Vector2.Transform(InputHelper.NewMouse.Position.ToVector2(), Matrix.Invert(UIMatrix));
 
-        public static SpriteBatch SpriteBatch {
-            get;
-            set;
-        } = null!;
-        public static FontSystem FontSystem {
-            get;
-            set;
-        } = null!;
+        public static SpriteBatch SpriteBatch { get; set; } = null!;
+        public static FontSystem FontSystem { get; set; } = null!;
         /// <value>Defaults to LinearClamp.</value>
-        public static SamplerState GuiSampler {
-            get;
-            set;
-        } = SamplerState.LinearClamp;
+        public static SamplerState GuiSampler { get; set; } = SamplerState.LinearClamp;
 
         public static DynamicSpriteFont GetFont(int size) {
             return FontSystem.GetFont((int)(size * _virtualScale));
