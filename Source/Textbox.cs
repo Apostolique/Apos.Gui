@@ -26,6 +26,13 @@ namespace Apos.Gui {
             get;
             set;
         } = 10;
+        public override bool IsFocused {
+            get => base.IsFocused;
+            set {
+                base.IsFocused = value;
+                _cursorBlink = _cursorBlinkSpeed;
+            }
+        }
         public override bool IsFocusable {
             get;
             set;
