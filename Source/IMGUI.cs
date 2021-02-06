@@ -129,7 +129,7 @@ namespace Apos.Gui {
         }
         private void Remove(string name, IComponent c) {
             if (_focus == name) {
-                FindPrevFocus();
+                _focus = null;
             }
 
             ActiveComponents.Remove(name);
@@ -183,7 +183,7 @@ namespace Apos.Gui {
         private string? Focus {
             get => _focus;
             set {
-                if (_focus != null) {
+                if (_focus != null && ActiveComponents.ContainsKey(_focus)) {
                     ActiveComponents[_focus].IsFocused = false;
                 }
                 _focus = value;
