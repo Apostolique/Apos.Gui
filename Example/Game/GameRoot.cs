@@ -1,4 +1,5 @@
-﻿using Apos.Gui;
+﻿using System;
+using Apos.Gui;
 using Apos.Input;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
@@ -38,7 +39,8 @@ namespace GameProject {
             _apos = new TextureRegion2D(texture, 0, 0, texture.Width, texture.Height);
         }
 
-        private string text = "Hello World!";
+        private string _name = "no name";
+        private float _slider = 0.5f;
 
         protected override void Update(GameTime gameTime) {
             GuiHelper.UpdateSetup();
@@ -48,23 +50,36 @@ namespace GameProject {
 
             _ui.UpdateAll(gameTime);
 
-            Panel.Put();
-            Label.Put($"Counter: {_counter}");
-            if (Button.Put("Reset").Clicked) _counter = 0;
-            if (Button.Put("Add one").Clicked) _counter++;
-            if (10 <= _counter && _counter < 12) Label.Put("Why hello, world! there.");
-            if (12 <= _counter && _counter < 17) Label.Put("I see you like clicking.");
-            if (20 <= _counter && _counter < 23) Label.Put("There is really no point though...");
-            if (30 <= _counter) {
-                if (Button.Put().Clicked) _counter += 100;
+            Panel.Put().XY = new Vector2(100, 100);
+            if (_menu == Menu.Main) {
+                Label.Put("Main Menu");
+                Label.Put($"Your name is '{_name}'");
+                if (Button.Put("Settings").Clicked) _menu = Menu.Settings;
+                if (Button.Put("Quit").Clicked) _menu = Menu.Quit;
+            } else if (_menu == Menu.Settings) {
+                Label.Put("What is your name?");
+                Textbox.Put(ref _name);
+                Slider.Put(ref _slider, 0f, 1f, 0.1f);
+                Label.Put($"{Math.Round(_slider, 3)}");
                 Icon.Put(_apos);
+                if (Button.Put("Back").Clicked) _menu = Menu.Main;
+            } else if (_menu == Menu.Quit) {
+                Label.Put("Quit Menu");
+                if (Button.Put("Yes").Clicked) Exit();
+                if (Button.Put("No").Clicked) _menu = Menu.Main;
             }
-            Textbox.Put(ref text);
             Panel.Pop();
 
             GuiHelper.UpdateCleanup();
             base.Update(gameTime);
         }
+
+        enum Menu {
+            Main,
+            Settings,
+            Quit
+        }
+        Menu _menu = Menu.Main;
 
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Black);
