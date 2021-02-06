@@ -43,16 +43,30 @@ namespace Apos.Gui {
         }
         public override void UpdateInput(GameTime gameTime) {
             if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
-                _pressed = true;
+                _mousePressed = true;
                 GrabFocus(this);
             }
-            if (_pressed && Default.MouseInteraction.HeldOnly()) {
-                _hovered = Clip.Contains(GuiHelper.Mouse);
-            }
-            if (_pressed && Default.MouseInteraction.Released()) {
-                if (Clip.Contains(GuiHelper.Mouse))
-                    Clicked = true;
-                _pressed = false;
+            if (IsFocused) {
+                if (_mousePressed && Default.MouseInteraction.HeldOnly()) {
+                    _hovered = Clip.Contains(GuiHelper.Mouse);
+                }
+                if (_mousePressed && Default.MouseInteraction.Released()) {
+                    if (Clip.Contains(GuiHelper.Mouse))
+                        Clicked = true;
+                    _mousePressed = false;
+                }
+
+                if (Default.ButtonInteraction.Pressed()) {
+                    _buttonPressed = true;
+                }
+                if (_buttonPressed) {
+                    if (Default.ButtonInteraction.Released()) {
+                        Clicked = true;
+                        _buttonPressed = false;
+                    } else {
+                        Default.ButtonInteraction.Consume();
+                    }
+                }
             }
 
             if (Child != null) {
@@ -70,8 +84,8 @@ namespace Apos.Gui {
 
             if (Clicked) {
                 GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.5f);
-            } else if (_pressed) {
-                if (_hovered) {
+            } else if (_mousePressed || _buttonPressed) {
+                if (_hovered || _buttonPressed) {
                     GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.2f);
                 } else {
                     GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.15f);
@@ -121,7 +135,8 @@ namespace Apos.Gui {
             return Parent != null ? Parent.GetNext(this) : this;
         }
 
-        private bool _pressed = false;
+        private bool _mousePressed = false;
+        private bool _buttonPressed = false;
         private bool _hovered = false;
 
         public static Button Put(string text, int id = 0) {

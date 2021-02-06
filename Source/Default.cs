@@ -6,6 +6,12 @@ namespace Apos.Gui {
     public static class Default {
             public static ICondition MouseInteraction { get; set; } =
                 new Track.MouseCondition(MouseButton.LeftButton);
+            public static ICondition ButtonInteraction { get; set; } =
+                new AnyCondition(
+                    new Track.KeyboardCondition(Keys.Space),
+                    new Track.KeyboardCondition(Keys.Enter),
+                    new Track.GamePadCondition(GamePadButton.A, 0)
+                );
             public static ICondition FocusPrev { get; set; } =
                 new AnyCondition(
                     new Track.KeyboardCondition(Keys.Up),
@@ -15,12 +21,14 @@ namespace Apos.Gui {
                             new KeyboardCondition(Keys.RightShift)
                         ),
                         new Track.KeyboardCondition(Keys.Tab)
-                    )
+                    ),
+                    new Track.GamePadCondition(GamePadButton.Up, 0)
                 );
             public static ICondition FocusNext { get; set; } =
                 new AnyCondition(
                     new Track.KeyboardCondition(Keys.Down),
-                    new Track.KeyboardCondition(Keys.Tab)
+                    new Track.KeyboardCondition(Keys.Tab),
+                    new Track.GamePadCondition(GamePadButton.Down, 0)
                 );
             public static ICondition MoveLeft { get; set; } =
                 new Track.KeyboardCondition(Keys.Left);
