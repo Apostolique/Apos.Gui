@@ -30,9 +30,9 @@ namespace Apos.Gui {
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 4. Ping it.
-            var fullName = $"label{(id == 0 ? GuiHelper.CurrentIMGUI.NextId() : id)}";
-
             IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
+            var fullName = GuiHelper.GenerateName(parent, "label", id);
+
             GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
 
             Label a;

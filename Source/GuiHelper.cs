@@ -79,6 +79,9 @@ namespace Apos.Gui {
             SpriteBatch.GraphicsDevice.ScissorRectangle = _scissorStack.Pop();
             Begin();
         }
+        public static string GenerateName(IParent? parent, string prefix, int id) {
+            return $"{(parent != null ? parent.Name : string.Empty)}{prefix}{(id == 0 ? GuiHelper.CurrentIMGUI.NextId() : id)}";
+        }
 
         /// <summary>
         /// Calls begin on the spritebatch with the UI rasterizer state, transform matrix and sampler state.
