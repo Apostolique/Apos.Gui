@@ -47,19 +47,20 @@ namespace Apos.Gui {
                 GrabFocus(this);
             }
             if (IsFocused) {
-                if (_mousePressed && Default.MouseInteraction.HeldOnly()) {
-                    _hovered = Clip.Contains(GuiHelper.Mouse);
-                }
-                if (_mousePressed && Default.MouseInteraction.Released()) {
-                    if (Clip.Contains(GuiHelper.Mouse))
-                        Clicked = true;
-                    _mousePressed = false;
+                if (_mousePressed) {
+                    if (Default.MouseInteraction.Released()) {
+                        if (Clip.Contains(GuiHelper.Mouse))
+                            Clicked = true;
+                        _mousePressed = false;
+                    } else {
+                        Default.MouseInteraction.Consume();
+                        _hovered = Clip.Contains(GuiHelper.Mouse);
+                    }
                 }
 
                 if (Default.ButtonInteraction.Pressed()) {
                     _buttonPressed = true;
-                }
-                if (_buttonPressed) {
+                } else if (_buttonPressed) {
                     if (Default.ButtonInteraction.Released()) {
                         Clicked = true;
                         _buttonPressed = false;
