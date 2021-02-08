@@ -106,7 +106,7 @@ namespace Apos.Gui {
             return a;
         }
 
-        private void SlideValue(ICondition condition, int direction) {
+        protected void SlideValue(ICondition condition, int direction) {
             if (condition.Pressed()) {
                 Value = MathHelper.Max(MathHelper.Min(Value + direction * Step.Value, Max), Min);
                 _inputDelay = _inputDelayInitialSpeed;
@@ -119,13 +119,13 @@ namespace Apos.Gui {
             }
         }
 
-        private float _thickness = 4;
-        private float _handleThickness = 8;
-        private bool _isPressed = false;
-        private float? _step;
+        protected float _thickness = 4;
+        protected float _handleThickness = 8;
+        protected bool _isPressed = false;
+        protected float? _step;
 
-        private int _inputDelay = 0;
-        private int _inputDelaySpeed = 50;
-        private int _inputDelayInitialSpeed = 400;
+        protected int _inputDelay = 0;
+        protected int _inputDelaySpeed = 50;
+        protected int _inputDelayInitialSpeed = 400;
     }
 }

@@ -157,7 +157,7 @@ namespace Apos.Gui {
             return a;
         }
 
-        private void MoveCursor(ICondition condition, int direction) {
+        protected void MoveCursor(ICondition condition, int direction) {
             if (condition.Pressed()) {
                 Cursor += direction;
                 _inputDelay = _inputDelayInitialSpeed;
@@ -169,7 +169,7 @@ namespace Apos.Gui {
                 }
             }
         }
-        private int MouseToCursor(float x, string text) {
+        protected int MouseToCursor(float x, string text) {
             float left = Left + Padding;
             float currentOffset = left;
             int currentPosition = 0;
@@ -183,11 +183,11 @@ namespace Apos.Gui {
             return currentPosition;
         }
 
-        private string _text;
+        protected string _text;
 
-        private int _fontSize = 30;
-        private RectangleF _cursorRect;
-        private int Cursor {
+        protected int _fontSize = 30;
+        protected RectangleF _cursorRect;
+        protected int Cursor {
             get => _cursor;
             set {
                 if (value >= 0 && value <= _text.Length && _cursor != value) {
@@ -196,14 +196,14 @@ namespace Apos.Gui {
                 }
             }
         }
-        private int _cursor;
+        protected int _cursor;
 
-        private int _inputDelay = 0;
-        private int _inputDelaySpeed = 50;
-        private int _inputDelayInitialSpeed = 400;
-        private int _cursorBlink = 0;
-        private int _cursorBlinkSpeed = 1500;
+        protected int _inputDelay = 0;
+        protected int _inputDelaySpeed = 50;
+        protected int _inputDelayInitialSpeed = 400;
+        protected int _cursorBlink = 0;
+        protected int _cursorBlinkSpeed = 1500;
 
-        private bool _pressed = false;
+        protected bool _pressed = false;
     }
 }

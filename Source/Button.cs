@@ -127,9 +127,9 @@ namespace Apos.Gui {
             return Parent != null ? Parent.GetNext(this) : this;
         }
 
-        private bool _mousePressed = false;
-        private bool _buttonPressed = false;
-        private bool _hovered = false;
+        protected bool _mousePressed = false;
+        protected bool _buttonPressed = false;
+        protected bool _hovered = false;
 
         public static Button Put(string text, int id = 0) {
             Button b = Put(id);
