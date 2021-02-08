@@ -43,8 +43,12 @@ namespace Apos.Gui {
         public static DynamicSpriteFont GetFont(int size) {
             return FontSystem.GetFont((int)(size * _virtualScale));
         }
-        public static Vector2 MeasureString(string text, int size) {
+        public static Vector2 MeasureStringTight(string text, int size) {
             return GetFont(size).MeasureString(text) * _finalScale;
+        }
+        public static Vector2 MeasureString(string text, int size) {
+            var font = GetFont(size);
+            return new Vector2(font.MeasureString(text).X, font.FontSize * CountLines(text)) * _finalScale;
         }
         public static Vector2 FontScale => new Vector2(_finalScale);
         /// <summary>
@@ -96,6 +100,18 @@ namespace Apos.Gui {
         private static void End() {
             SpriteBatch.End();
             _beginCalled = false;
+        }
+        private static int CountLines(string text) {
+            // https://stackoverflow.com/a/40928366/1710293
+            // Defaults to 1 because in a UI, you want the text to always have some height.
+            if (text == null || text == string.Empty)
+                return 1;
+            int index = -1;
+            int count = 0;
+            while (-1 != (index = text.IndexOf('\n', index + 1)))
+                count++;
+
+        return count + 1;
         }
 
         private static float _scale = 1f;
