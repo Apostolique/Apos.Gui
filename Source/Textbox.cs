@@ -16,9 +16,12 @@ namespace Apos.Gui {
             get => _text;
             set {
                 // TODO: Only modify the text on the next loop.
-                _text = value;
-                if (Cursor > _text.Length) {
-                    Cursor = _text.Length;
+                if (_text != value) {
+                    _text = value;
+                    _size = GuiHelper.MeasureString(_text, 30);
+                    if (Cursor > _text.Length) {
+                        Cursor = _text.Length;
+                    }
                 }
             }
         }
@@ -33,11 +36,8 @@ namespace Apos.Gui {
         public override bool IsFocusable { get; set; } = true;
 
         public override void UpdatePrefSize(GameTime gameTime) {
-            string extra = _text.Length == 0 ? "\n" : "";
-            Vector2 size = GuiHelper.MeasureString(_text + extra, _fontSize);
-            float height = GuiHelper.MeasureString("A", 30).Y;
-            PrefWidth = MathHelper.Max(size.X, 100) + Padding * 2;
-            PrefHeight = height + Padding * 2;
+            PrefWidth = MathHelper.Max(_size.X, 100) + Padding * 2;
+            PrefHeight = _size.Y + Padding * 2;
         }
         public override void UpdateInput(GameTime gameTime) {
             if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
@@ -109,7 +109,7 @@ namespace Apos.Gui {
 
                 float cursorLeft = alignLeft;
                 if (Cursor > 0 && Cursor <= _text.Length) {
-                    cursorLeft = alignLeft + GuiHelper.MeasureString(_text.Substring(0, Cursor), _fontSize).X;
+                    cursorLeft = alignLeft + GuiHelper.MeasureStringTight(_text.Substring(0, Cursor), _fontSize).X;
                 }
                 if (_cursorBlink >= _cursorBlinkSpeed * 0.5) {
                     GuiHelper.SpriteBatch.FillRectangle(new RectangleF(cursorLeft, Top, 2, Height), Color.White);
@@ -178,12 +178,13 @@ namespace Apos.Gui {
                     break;
                 }
                 currentPosition++;
-                currentOffset = left + GuiHelper.MeasureString(text.Substring(0, currentPosition), _fontSize).X;
+                currentOffset = left + GuiHelper.MeasureStringTight(text.Substring(0, currentPosition), _fontSize).X;
             }
             return currentPosition;
         }
 
         protected string _text;
+        protected Vector2 _size;
 
         protected int _fontSize = 30;
         protected RectangleF _cursorRect;

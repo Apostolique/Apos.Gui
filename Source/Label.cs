@@ -8,13 +8,20 @@ namespace Apos.Gui {
             Text = text;
         }
 
-        public string Text { get; set; }
+        public string Text {
+            get => _text;
+            set {
+                if (value != _text) {
+                    _text = value;
+                    _size = GuiHelper.MeasureString(_text, 30);
+                }
+            }
+        }
         public int Padding { get; set; } = 10;
 
         public override void UpdatePrefSize(GameTime gameTime) {
-            var size = GuiHelper.MeasureString(Text, 30);
-            PrefWidth = size.X + Padding * 2;
-            PrefHeight = size.Y + Padding * 2;
+            PrefWidth = _size.X + Padding * 2;
+            PrefHeight = _size.Y + Padding * 2;
         }
         public override void Draw(GameTime gameTime) {
             GuiHelper.SetScissor(Clip);
@@ -53,5 +60,8 @@ namespace Apos.Gui {
 
             return a;
         }
+
+        protected string _text;
+        protected Vector2 _size;
     }
 }
