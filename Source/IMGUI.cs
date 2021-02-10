@@ -153,6 +153,8 @@ namespace Apos.Gui {
             if (Focus != null) {
                 initialFocus = Focus;
             } else if (Roots.Count > 0) {
+                // TODO: Figure out what should be done if there are multiple Roots.
+                //       This is why it might be a good idea for IMGUI to implement IParent.
                 initialFocus = Roots.First().Name;
             }
             if (initialFocus != null) {
