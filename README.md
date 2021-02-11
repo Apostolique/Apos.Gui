@@ -5,8 +5,7 @@ UI library for MonoGame.
 
 ## Documentation
 
-* [API](https://apostolique.github.io/Apos.Gui/)
-* [Wiki](https://github.com/Apostolique/Apos.Gui/wiki)
+* [Getting started](https://apostolique.github.io/Apos.Gui/getting-started/)
 
 ## Build
 
@@ -16,12 +15,13 @@ UI library for MonoGame.
 
 * Mouse, Keyboard, Gamepad, Touchscreen
 * UI scaling
+* Used like IMGUI but components can be coded like a retained UI
 
 ## Showcase
 
 ![Apos.GUI Showcase](Images/Showcase.gif)
 
-## Usage samples
+## Usage Example
 
 First, find a font ttf file to use (Call it FontFile.ttf), put it in a subfolder called "Fonts" in your content folder. Add it to the MonoGame content pipeline and select ***copy*** in "Build Action" instead of ~build~.
 
@@ -30,35 +30,27 @@ In your game's `LoadContent()`, get the Helper classes ready:
 ```csharp
 protected override void LoadContent() {
     var fontSystem = FontSystemFactory.Create(GraphicsDevice, 2048, 2048);
-    fontSystem.AddFont(TitleContainer.OpenStream($"{Content.RootDirectory}/Fonts/FontFile.ttf"));
+    fontSystem.AddFont(TitleContainer.OpenStream($"{Content.RootDirectory}/FontFile.ttf"));
 
     GuiHelper.Setup(this, fontSystem);
+
+    _ui = new IMGUI();
+    GuiHelper.CurrentIMGUI = _ui;
 }
+
+IMGUI _ui;
 ```
 
-You can create a simple UI with the following code:
+You can create a simple UI with the following code that you'll put in the Update call:
 
 ```csharp
-ComponentFocus focus = new ComponentFocus(Default.ConditionPrevFocus, Default.ConditionNextFocus);
-
-var screen = new ScreenPanel();
-screen.Layout = new LayoutVerticalCenter();
-
-var p = new Panel();
-p.Layout = new LayoutVerticalCenter();
-p.AddHoverCondition(Default.ConditionHoverMouse);
-p.AddAction(Default.IsScrolled, Default.ScrollVertically);
-
-p.Add(Default.CreateButton("Fun", c => {
+Panel.Put();
+if (Button.Put("Fun")) Console.WriteLine("This is fun.");
+if (Button.Put("Quit")) {
     Console.WriteLine("This is fun.");
-}, focus.GrabFocus));
-p.Add(Default.CreateButton("Quit", c => {
-    Console.WriteLine("Quitting the game.");
     Exit();
-}, focus.GrabFocus));
-screen.Add(p);
-
-focus.Root = screen;
+}
+Panel.Pop();
 ```
 
 The above code will create 2 buttons, "Fun" and "Quit". You can use your mouse, keyboard, or gamepad to interact with them.
@@ -67,14 +59,20 @@ In your `Update(GameTime gameTime)`, call the following functions:
 
 ```csharp
 protected override void Update(GameTime gametime) {
-    //Call UpdateSetup at the start.
+    // Call UpdateSetup at the start.
     GuiHelper.UpdateSetup();
+    _ui.UpdateAll();
 
-    focus.UpdateSetup();
-    focus.UpdateInput();
-    focus.Update();
+    // Create your UI.
+    Panel.Put();
+    if (Button.Put("Fun")) Console.WriteLine("This is fun.");
+    if (Button.Put("Quit")) {
+        Console.WriteLine("This is fun.");
+        Exit();
+    }
+    Panel.Pop();
 
-    //Call UpdateCleanup at the end.
+    // Call UpdateCleanup at the end.
     GuiHelper.UpdateCleanup();
 }
 ```
@@ -84,7 +82,9 @@ In your `Draw(GameTime gameTime)`, call:
 ```csharp
 protected override void Draw(GameTime gameTime) {
     GraphicsDevice.Clear(Color.Black);
-    focus.Draw();
+
+    _ui.Draw();
+
     base.Draw(gameTime);
 }
 ```
