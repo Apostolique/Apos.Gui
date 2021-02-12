@@ -169,8 +169,12 @@ namespace Apos.Gui {
                 } while (initialFocus != newFocus);
             }
         }
-        private void GrabFocus(IComponent c) {
-            Focus = c.Name;
+        public void GrabFocus(IComponent c) {
+            if (c == null) {
+                Focus = null;
+            } else {
+                Focus = c.Name;
+            }
         }
 
         public IParent? CurrentParent;
