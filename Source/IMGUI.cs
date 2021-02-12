@@ -189,7 +189,7 @@ namespace Apos.Gui {
         private string? Focus {
             get => _focus;
             set {
-                if (_focus != null && ActiveComponents.ContainsKey(_focus)) {
+                if (_focus != null) {
                     ActiveComponents[_focus].IsFocused = false;
                 }
                 _focus = value;
