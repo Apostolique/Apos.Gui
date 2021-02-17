@@ -169,7 +169,7 @@ namespace Apos.Gui {
                 } while (initialFocus != newFocus);
             }
         }
-        public void GrabFocus(IComponent c) {
+        public void GrabFocus(IComponent? c) {
             if (c == null) {
                 Focus = null;
             } else {
