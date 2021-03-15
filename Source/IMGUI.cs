@@ -18,7 +18,7 @@ namespace Apos.Gui {
             Cleanup();
             while (PendingComponents.Count > 0) {
                 var pc = PendingComponents.Dequeue();
-                ActiveComponents.Add(pc.Name, pc.Component);
+                ActiveComponents.Add(pc.Id, pc.Component);
                 if (pc.Parent != null) {
                     pc.Parent.Add(pc.Component);
                 } else {
@@ -63,60 +63,58 @@ namespace Apos.Gui {
         }
 
         public void Push(IParent p, int maxChildren = 0) {
-            if (CurrentParent != null) {
-                Parents.Push((CurrentParent, MaxChildren, ChildrenCount));
-            }
+            Parents.Push((CurrentParent, MaxChildren, ChildrenCount));
             CurrentParent = p;
             MaxChildren = maxChildren;
             ChildrenCount = 0;
+            PushId(p.Id);
         }
         public void Pop() {
-            if (Parents.Count > 0) {
-                var pop = Parents.Pop();
-                CurrentParent = pop.Parent;
-                MaxChildren = pop.MaxChildren;
-                ChildrenCount = pop.ChildrenCount;
-            } else {
-                CurrentParent = null;
-                MaxChildren = 0;
-                ChildrenCount = 0;
-            }
+            var pop = Parents.Pop();
+            CurrentParent = pop.Parent;
+            MaxChildren = pop.MaxChildren;
+            ChildrenCount = pop.ChildrenCount;
+            PopId();
         }
-        public void Add(string name, IComponent c) {
+        public void PushId(int id) {
+            IdStack.Push(id);
+            // TODO: Compute the top id.
+        }
+        public void PopId() {
+            IdStack.Pop();
+            // TODO: Compute the top id.
+        }
+        public void Add(int id, IComponent c) {
             // NOTE: This should only be called if the component hasn't already been added.
-            PendingComponents.Enqueue((name, CurrentParent, c));
+            PendingComponents.Enqueue((id, CurrentParent, c));
             c.GrabFocus = GrabFocus;
-
-            CountChild();
         }
-        public bool TryGetValue(string name, out IComponent c) {
-            if (ActiveComponents.TryGetValue(name, out c)) {
-                CountChild();
+        public bool TryGetValue(int id, out IComponent c) {
+            if (ActiveComponents.TryGetValue(id, out c)) {
                 return true;
             }
 
             foreach (var pc in PendingComponents) {
-                if (pc.Name == name) {
+                if (pc.Id == id) {
                     c = pc.Component;
-                    CountChild();
                     return true;
                 }
             }
 
             return false;
         }
-        public int NextId() {
-            return _lastId++;
-        }
-        private void CountChild() {
+        public IParent? GrabParent() {
             ChildrenCount++;
+
+            IParent? current = CurrentParent;
 
             if (CurrentParent != null && MaxChildren > 0 && ChildrenCount >= MaxChildren) {
                 Pop();
             }
+
+            return current;
         }
         private void Cleanup() {
-            _lastId = 0;
             foreach (var kc in ActiveComponents.Reverse()) {
                 if (kc.Value.LastPing != InputHelper.CurrentFrame - 1) {
                     Remove(kc.Key, kc.Value);
@@ -127,12 +125,12 @@ namespace Apos.Gui {
             ChildrenCount = 0;
             Parents.Clear();
         }
-        private void Remove(string name, IComponent c) {
-            if (_focus == name) {
+        private void Remove(int id, IComponent c) {
+            if (_focus == id) {
                 _focus = null;
             }
 
-            ActiveComponents.Remove(name);
+            ActiveComponents.Remove(id);
             if (c.Parent != null) {
                 c.Parent.Remove(c);
             } else {
@@ -146,22 +144,22 @@ namespace Apos.Gui {
         private void FindNextFocus() {
             FindFocus(ExtractNext);
         }
-        private IComponent ExtractPrev(string name) => ActiveComponents[name].GetPrev();
-        private IComponent ExtractNext(string name) => ActiveComponents[name].GetNext();
-        private void FindFocus(Func<String, IComponent> getNeighbor) {
-            string? initialFocus = null;
+        private IComponent ExtractPrev(int id) => ActiveComponents[id].GetPrev();
+        private IComponent ExtractNext(int id) => ActiveComponents[id].GetNext();
+        private void FindFocus(Func<int, IComponent> getNeighbor) {
+            int? initialFocus = null;
             if (Focus != null) {
                 initialFocus = Focus;
             } else if (Roots.Count > 0) {
                 // TODO: Figure out what should be done if there are multiple Roots.
                 //       This is why it might be a good idea for IMGUI to implement IParent.
-                initialFocus = Roots.First().Name;
+                initialFocus = Roots.First().Id;
             }
             if (initialFocus != null) {
-                string newFocus = initialFocus;
+                int newFocus = initialFocus.Value;
                 do {
                     var c = getNeighbor(newFocus);
-                    newFocus = c.Name;
+                    newFocus = c.Id;
                     if (c.IsFocusable) {
                         Focus = newFocus;
                         break;
@@ -173,31 +171,44 @@ namespace Apos.Gui {
             if (c == null) {
                 Focus = null;
             } else {
-                Focus = c.Name;
+                Focus = c.Id;
+            }
+        }
+        public int GetIdStack() {
+            // TODO: We can precompute the top id.
+            unchecked {
+                int hash = 17;
+
+                foreach (var e in IdStack) {
+                    hash *= 31 + e.GetHashCode();
+                }
+
+                return hash;
             }
         }
 
-        public IParent? CurrentParent;
-        public int MaxChildren = 0;
-        public int ChildrenCount = 0;
+        private Stack<int> IdStack = new Stack<int>();
 
-        private Stack<(IParent Parent, int MaxChildren, int ChildrenCount)> Parents = new Stack<(IParent, int, int)>();
+        private Stack<(IParent? Parent, int MaxChildren, int ChildrenCount)> Parents = new Stack<(IParent?, int, int)>();
         private List<IComponent> Roots = new List<IComponent>();
-        private Dictionary<string, IComponent> ActiveComponents = new Dictionary<string, IComponent>();
-        private Queue<(string Name, IParent? Parent, IComponent Component)> PendingComponents = new Queue<(string, IParent?, IComponent)>();
+        private Dictionary<int, IComponent> ActiveComponents = new Dictionary<int, IComponent>();
+        private Queue<(int Id, IParent? Parent, IComponent Component)> PendingComponents = new Queue<(int, IParent?, IComponent)>();
         private int _lastId = 0;
-        private string? Focus {
+        private int? Focus {
             get => _focus;
             set {
                 if (_focus != null) {
-                    ActiveComponents[_focus].IsFocused = false;
+                    ActiveComponents[_focus.Value].IsFocused = false;
                 }
                 _focus = value;
                 if (_focus != null) {
-                    ActiveComponents[_focus].IsFocused = true;
+                    ActiveComponents[_focus.Value].IsFocused = true;
                 }
             }
         }
-        private string? _focus;
+        private int? _focus;
+        private IParent? CurrentParent = null;
+        private int MaxChildren = 0;
+        private int ChildrenCount = 0;
     }
 }

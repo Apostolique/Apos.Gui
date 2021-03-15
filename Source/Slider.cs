@@ -1,10 +1,11 @@
+using System.Runtime.CompilerServices;
 using Apos.Input;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
 namespace Apos.Gui {
     public class Slider : Component {
-        public Slider(string name, float value, float min, float max, float? step) : base(name) {
+        public Slider(int id, float value, float min, float max, float? step) : base(id) {
             Value = value;
             Min = min;
             Max = max;
@@ -70,15 +71,13 @@ namespace Apos.Gui {
             GuiHelper.ResetScissor();
         }
 
-        public static Slider Put(ref float value, float min, float max, float? step = null, int id = 0) {
+        public static Slider Put(ref float value, float min, float max, float? step = null, [CallerLineNumber] int id = 0) {
             // 1. Check if Textbox with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 4. Ping it.
-            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
-            var fullName = GuiHelper.GenerateName(parent, "slider", id);
-
-            GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
+            id = GuiHelper.CombineHash(GuiHelper.CurrentIMGUI.GetIdStack(), id);
+            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
             Slider a;
             if (c is Slider) {
@@ -92,9 +91,11 @@ namespace Apos.Gui {
                     a.Step = step;
                 }
             } else {
-                a = new Slider(fullName, value, min, max, step);
-                GuiHelper.CurrentIMGUI.Add(fullName, a);
+                a = new Slider(id, value, min, max, step);
+                GuiHelper.CurrentIMGUI.Add(id, a);
             }
+
+            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent();
 
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.LastPing = InputHelper.CurrentFrame;

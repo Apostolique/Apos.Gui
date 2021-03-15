@@ -4,11 +4,12 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using FontStashSharp;
 using MonoGame.Extended;
+using System.Runtime.CompilerServices;
 
 namespace Apos.Gui {
     // TODO: Scroll / Follow cursor when there's too much text.
     public class Textbox : Component {
-        public Textbox(string name, string text) : base(name) {
+        public Textbox(int id, string text) : base(id) {
             Text = text;
         }
 
@@ -124,15 +125,13 @@ namespace Apos.Gui {
             GuiHelper.ResetScissor();
         }
 
-        public static Textbox Put(ref string text, int id = 0) {
+        public static Textbox Put(ref string text, [CallerLineNumber] int id = 0) {
             // 1. Check if Textbox with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 4. Ping it.
-            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
-            var fullName = GuiHelper.GenerateName(parent, "textbox", id);
-
-            GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
+            id = GuiHelper.CombineHash(GuiHelper.CurrentIMGUI.GetIdStack(), id);
+            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
             Textbox a;
             if (c is Textbox) {
@@ -143,9 +142,11 @@ namespace Apos.Gui {
                     a.Text = text;
                 }
             } else {
-                a = new Textbox(fullName, text);
-                GuiHelper.CurrentIMGUI.Add(fullName, a);
+                a = new Textbox(id, text);
+                GuiHelper.CurrentIMGUI.Add(id, a);
             }
+
+            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent();
 
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.LastPing = InputHelper.CurrentFrame;

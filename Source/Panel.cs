@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Apos.Input;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
     public class Panel : Component, IParent {
-        public Panel(string name) : base(name) { }
+        public Panel(int id) : base(id) { }
 
         public float OffsetX { get; set; } = 0;
         public float OffsetY { get; set; } = 0;
@@ -131,24 +132,24 @@ namespace Apos.Gui {
         protected int _nextChildIndex = 0;
         protected List<IComponent> _children = new List<IComponent>();
 
-        public static Panel Put(int id = 0) {
+        public static Panel Push([CallerLineNumber] int id = 0) {
             // 1. Check if panel with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 3. Push it on the stack.
             // 4. Ping it.
-            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
-            var fullName = GuiHelper.GenerateName(parent, "panel", id);
-
-            GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
+            id = GuiHelper.CombineHash(GuiHelper.CurrentIMGUI.GetIdStack(), id);
+            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
             Panel a;
             if (c is Panel) {
                 a = (Panel)c;
             } else {
-                a = new Panel(fullName);
-                GuiHelper.CurrentIMGUI.Add(fullName, a);
+                a = new Panel(id);
+                GuiHelper.CurrentIMGUI.Add(id, a);
             }
+
+            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent();
 
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.Reset();

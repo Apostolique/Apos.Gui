@@ -83,9 +83,6 @@ namespace Apos.Gui {
             SpriteBatch.GraphicsDevice.ScissorRectangle = _scissorStack.Pop();
             Begin();
         }
-        public static string GenerateName(IParent? parent, string prefix, int id) {
-            return $"{(parent != null ? parent.Name : string.Empty)}{prefix}{(id == 0 ? GuiHelper.CurrentIMGUI.NextId() : id)}";
-        }
 
         /// <summary>
         /// Calls begin on the spritebatch with the UI rasterizer state, transform matrix and sampler state.
@@ -111,7 +108,16 @@ namespace Apos.Gui {
             while (-1 != (index = text.IndexOf('\n', index + 1)))
                 count++;
 
-        return count + 1;
+            return count + 1;
+        }
+        public static int CombineHash<T1, T2>(T1 value1, T2 value2) {
+            unchecked {
+                int hash = 17;
+                hash *= 31 + value1!.GetHashCode();
+                hash *= 31 + value2!.GetHashCode();
+
+                return hash;
+            }
         }
 
         private static float _scale = 1f;

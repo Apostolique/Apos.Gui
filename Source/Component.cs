@@ -8,12 +8,12 @@ namespace Apos.Gui {
     /// Used as a base class for other components.
     /// </summary>
     public class Component : IComponent {
-        public Component(string name) {
-            Name = name;
+        public Component(int id) {
+            Id = id;
         }
 
         public virtual uint LastPing { get; set; } = 0;
-        public virtual string Name { get; set; }
+        public virtual int Id { get; set; }
         public virtual int Index { get; set; } = 0;
 
         public virtual float X { get; set; } = 0;

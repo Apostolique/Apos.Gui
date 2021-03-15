@@ -1,10 +1,11 @@
+using System.Runtime.CompilerServices;
 using Apos.Input;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
 namespace Apos.Gui {
     public class Button : Component, IParent {
-        public Button(string name) : base(name) { }
+        public Button(int id) : base(id) { }
 
         public bool Clicked { get; set; } = false;
         public IComponent? Child { get; set; }
@@ -131,29 +132,29 @@ namespace Apos.Gui {
         protected bool _buttonPressed = false;
         protected bool _hovered = false;
 
-        public static Button Put(string text, int id = 0) {
+        public static Button Put(string text, [CallerLineNumber] int id = 0) {
             Button b = Put(id);
-            Label.Put(text, id);
+            Label.Put(text);
 
             return b;
         }
-        public static Button Put(int id = 0) {
+        public static Button Put([CallerLineNumber] int id = 0) {
             // 1. Check if button with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 4. Ping it.
-            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
-            var fullName = GuiHelper.GenerateName(parent, "button", id);
-
-            GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
+            id = GuiHelper.CombineHash(GuiHelper.CurrentIMGUI.GetIdStack(), id);
+            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
             Button a;
             if (c is Button) {
                 a = (Button)c;
             } else {
-                a = new Button(fullName);
-                GuiHelper.CurrentIMGUI.Add(fullName, a);
+                a = new Button(id);
+                GuiHelper.CurrentIMGUI.Add(id, a);
             }
+
+            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent();
 
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.LastPing = InputHelper.CurrentFrame;

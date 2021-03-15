@@ -50,7 +50,7 @@ namespace GameProject {
 
             _ui.UpdateAll(gameTime);
 
-            Panel.Put().XY = new Vector2(100, 100);
+            Panel.Push().XY = new Vector2(100, 100);
             if (_menu == Menu.Main) {
                 Label.Put("Main Menu");
                 Label.Put($"Your name is '{_name}'");

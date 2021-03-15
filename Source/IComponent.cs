@@ -6,7 +6,7 @@ namespace Apos.Gui {
     public interface IComponent {
         int Index { get; set; }
         uint LastPing { get; set; }
-        string Name { get; set; }
+        int Id { get; set; }
 
         float X { get; set; }
         float Y { get; set; }

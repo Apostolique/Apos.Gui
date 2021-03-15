@@ -1,10 +1,11 @@
+using System.Runtime.CompilerServices;
 using Apos.Input;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.TextureAtlases;
 
 namespace Apos.Gui {
     public class Icon : Component {
-        public Icon(string name, TextureRegion2D region) : base(name) {
+        public Icon(int id, TextureRegion2D region) : base(id) {
             Region = region;
         }
 
@@ -30,24 +31,24 @@ namespace Apos.Gui {
             GuiHelper.ResetScissor();
         }
 
-        public static Icon Put(TextureRegion2D region, int id = 0) {
+        public static Icon Put(TextureRegion2D region, [CallerLineNumber] int id = 0) {
             // 1. Check if Icon with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 4. Ping it.
-            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
-            var fullName = GuiHelper.GenerateName(parent, "icon", id);
-
-            GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
+            id = GuiHelper.CombineHash(GuiHelper.CurrentIMGUI.GetIdStack(), id);
+            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
             Icon a;
             if (c is Icon) {
                 a = (Icon)c;
                 a.Region = region;
             } else {
-                a = new Icon(fullName, region);
-                GuiHelper.CurrentIMGUI.Add(fullName, a);
+                a = new Icon(id, region);
+                GuiHelper.CurrentIMGUI.Add(id, a);
             }
+
+            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent();
 
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.LastPing = InputHelper.CurrentFrame;

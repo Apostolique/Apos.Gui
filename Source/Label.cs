@@ -1,10 +1,11 @@
+using System.Runtime.CompilerServices;
 using Apos.Input;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
     public class Label : Component {
-        public Label(string name, string text) : base(name) {
+        public Label(int id, string text) : base(id) {
             Text = text;
         }
 
@@ -32,24 +33,24 @@ namespace Apos.Gui {
             GuiHelper.ResetScissor();
         }
 
-        public static Label Put(string text, int id = 0) {
+        public static Label Put(string text, [CallerLineNumber] int id = 0) {
             // 1. Check if Label with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 4. Ping it.
-            IParent? parent = GuiHelper.CurrentIMGUI.CurrentParent;
-            var fullName = GuiHelper.GenerateName(parent, "label", id);
-
-            GuiHelper.CurrentIMGUI.TryGetValue(fullName, out IComponent c);
+            id = GuiHelper.CombineHash(GuiHelper.CurrentIMGUI.GetIdStack(), id);
+            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
             Label a;
             if (c is Label) {
                 a = (Label)c;
                 a.Text = text;
             } else {
-                a = new Label(fullName, text);
-                GuiHelper.CurrentIMGUI.Add(fullName, a);
+                a = new Label(id, text);
+                GuiHelper.CurrentIMGUI.Add(id, a);
             }
+
+            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent();
 
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.LastPing = InputHelper.CurrentFrame;
