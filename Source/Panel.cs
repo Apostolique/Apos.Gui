@@ -80,18 +80,18 @@ namespace Apos.Gui {
             // TODO: Draw scrollbars if needed.
         }
 
-        public void Add(IComponent c) {
+        public virtual void Add(IComponent c) {
             c.Parent = this;
             _children.Insert(c.Index, c);
         }
-        public void Remove(IComponent c) {
+        public virtual void Remove(IComponent c) {
             c.Parent = null;
             _children.Remove(c);
         }
-        public void Reset() {
+        public virtual void Reset() {
             _nextChildIndex = 0;
         }
-        public int NextIndex() {
+        public virtual int NextIndex() {
             return _nextChildIndex++;
         }
 
@@ -129,16 +129,13 @@ namespace Apos.Gui {
             return index < _children.Count ? _children[index] : Parent != null ? Parent.GetNext(this) : this;
         }
 
-        protected int _nextChildIndex = 0;
-        protected List<IComponent> _children = new List<IComponent>();
-
         public static Panel Push([CallerLineNumber] int id = 0) {
             // 1. Check if panel with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 3. Push it on the stack.
             // 4. Ping it.
-            id = GuiHelper.CombineHash(GuiHelper.CurrentIMGUI.GetIdStack(), id);
+            id = GuiHelper.CurrentIMGUI.CreateId(id);
             GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
             Panel a;
@@ -146,10 +143,9 @@ namespace Apos.Gui {
                 a = (Panel)c;
             } else {
                 a = new Panel(id);
-                GuiHelper.CurrentIMGUI.Add(id, a);
             }
 
-            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent();
+            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent(a);
 
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.Reset();
@@ -166,5 +162,8 @@ namespace Apos.Gui {
         public static void Pop() {
             GuiHelper.CurrentIMGUI.Pop();
         }
+
+        protected int _nextChildIndex = 0;
+        protected List<IComponent> _children = new List<IComponent>();
     }
 }

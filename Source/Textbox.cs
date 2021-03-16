@@ -130,7 +130,7 @@ namespace Apos.Gui {
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 4. Ping it.
-            id = GuiHelper.CombineHash(GuiHelper.CurrentIMGUI.GetIdStack(), id);
+            id = GuiHelper.CurrentIMGUI.CreateId(id);
             GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
             Textbox a;
@@ -143,10 +143,9 @@ namespace Apos.Gui {
                 }
             } else {
                 a = new Textbox(id, text);
-                GuiHelper.CurrentIMGUI.Add(id, a);
             }
 
-            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent();
+            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent(a);
 
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.LastPing = InputHelper.CurrentFrame;
