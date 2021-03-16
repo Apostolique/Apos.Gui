@@ -46,7 +46,7 @@ IMGUI _ui;
 You can create a simple UI with the following code that you'll put in the Update call:
 
 ```csharp
-Panel.Put();
+Panel.Push();
 if (Button.Put("Fun")) Console.WriteLine("This is fun.");
 if (Button.Put("Quit")) {
     Console.WriteLine("This is fun.");
@@ -66,7 +66,7 @@ protected override void Update(GameTime gametime) {
     _ui.UpdateAll();
 
     // Create your UI.
-    Panel.Put();
+    Panel.Push();
     if (Button.Put("Fun")) Console.WriteLine("This is fun.");
     if (Button.Put("Quit")) {
         Console.WriteLine("This is fun.");
