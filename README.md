@@ -47,8 +47,8 @@ You can create a simple UI with the following code that you'll put in the Update
 
 ```csharp
 Panel.Push();
-if (Button.Put("Fun")) Console.WriteLine("This is fun.");
-if (Button.Put("Quit")) {
+if (Button.Put("Fun").Clicked) Console.WriteLine("This is fun.");
+if (Button.Put("Quit").Clicked) {
     Console.WriteLine("This is fun.");
     Exit();
 }
@@ -67,8 +67,8 @@ protected override void Update(GameTime gametime) {
 
     // Create your UI.
     Panel.Push();
-    if (Button.Put("Fun")) Console.WriteLine("This is fun.");
-    if (Button.Put("Quit")) {
+    if (Button.Put("Fun").Clicked) Console.WriteLine("This is fun.");
+    if (Button.Put("Quit").Clicked) {
         Console.WriteLine("This is fun.");
         Exit();
     }
