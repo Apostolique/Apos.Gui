@@ -56,6 +56,9 @@ namespace Apos.Gui {
         public virtual IComponent GetNext() {
             return Parent != null ? Parent.GetNext(this) : this;
         }
+        public virtual IComponent GetLast() {
+            return this;
+        }
 
         public virtual Action<IComponent> GrabFocus { get; set; } = c => { };
 

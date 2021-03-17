@@ -38,6 +38,7 @@ namespace Apos.Gui {
         IParent? Parent { get; set; }
         IComponent GetPrev();
         IComponent GetNext();
+        IComponent GetLast();
 
         Action<IComponent> GrabFocus { get; set; }
     }

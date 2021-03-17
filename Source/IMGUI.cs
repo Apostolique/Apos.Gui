@@ -9,17 +9,21 @@ namespace Apos.Gui {
     public class IMGUI : Panel {
         public IMGUI() : base(0) {
             CurrentParent = this;
+            ActiveComponents.Add(Id, this);
         }
 
         public override void UpdatePrefSize(GameTime gameTime) { }
         public override void UpdateSetup(GameTime gameTime) {
             // 1. Cleanup last cycle
-            // 2. Pending components become active.
+            // 2. Ping ourself
+            // 3. Pending components become active.
             //      a. Set parenting.
-            // 3. Update pref sizes.
-            // 4. Apply pref sizes.
-            // 5. Update setup.
+            // 4. Update pref sizes.
+            // 5. Apply pref sizes.
+            // 6. Update setup.
             Cleanup();
+            LastPing = InputHelper.CurrentFrame;
+            _idsUsedThisFrame.Add(Id, 1);
             while (PendingComponents.Count > 0) {
                 var pc = PendingComponents.Dequeue();
                 if (pc.Component.Parent == null) {
@@ -45,7 +49,7 @@ namespace Apos.Gui {
             foreach (var c in _children)
                 c.UpdateInput(gameTime);
 
-            // TODO: Need to handle the whole lifecycle of FocusPrev and FocusNext, same as buttons. (Pressed, HeldOnly, Released)
+            // FIXME: Need to handle the whole lifecycle of FocusPrev and FocusNext, same as buttons. (Pressed, HeldOnly, Released)
             if (Default.FocusPrev.Released()) {
                 FindPrevFocus();
             }
@@ -133,8 +137,8 @@ namespace Apos.Gui {
             _idsUsedThisFrame.Clear();
         }
         private void Remove(int id, IComponent c) {
-            if (_focus == id) {
-                _focus = null;
+            if (Focus == id) {
+                Focus = null;
             }
 
             ActiveComponents.Remove(id);
@@ -154,25 +158,19 @@ namespace Apos.Gui {
         private IComponent ExtractPrev(int id) => ActiveComponents[id].GetPrev();
         private IComponent ExtractNext(int id) => ActiveComponents[id].GetNext();
         private void FindFocus(Func<int, IComponent> getNeighbor) {
-            int? initialFocus = null;
+            int initialFocus = Id;
             if (Focus != null) {
-                initialFocus = Focus;
-            } else if (_children.Count > 0) {
-                // TODO: Figure out what should be done if there are multiple _children.
-                //       This is why it might be a good idea for IMGUI to implement IParent.
-                initialFocus = _children.First().Id;
+                initialFocus = Focus.Value;
             }
-            if (initialFocus != null) {
-                int newFocus = initialFocus.Value;
-                do {
-                    var c = getNeighbor(newFocus);
-                    newFocus = c.Id;
-                    if (c.IsFocusable) {
-                        Focus = newFocus;
-                        break;
-                    }
-                } while (initialFocus != newFocus);
-            }
+            int newFocus = initialFocus;
+            do {
+                var c = getNeighbor(newFocus);
+                newFocus = c.Id;
+                if (c.IsFocusable) {
+                    Focus = newFocus;
+                    return;
+                }
+            } while (initialFocus != newFocus);
         }
         public void GrabFocus(IComponent? c) {
             if (c == null) {

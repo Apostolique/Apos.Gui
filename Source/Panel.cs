@@ -101,7 +101,7 @@ namespace Apos.Gui {
         /// Otherwise it will return itself.
         /// </summary>
         public override IComponent GetPrev() {
-            return Parent != null ? Parent.GetPrev(this) : _children.Count > 0 ? _children.Last() : this;
+            return Parent != null ? Parent.GetPrev(this) : _children.Count > 0 ? _children.Last().GetLast() : this;
         }
         /// <summary>
         /// If this component has children, it will return the first one.
@@ -117,7 +117,7 @@ namespace Apos.Gui {
         /// </summary>
         public virtual IComponent GetPrev(IComponent c) {
             int index = c.Index - 1;
-            return index >= 0 ? _children[index] : this;
+            return index >= 0 ? _children[index].GetLast() : this;
         }
         /// <summary>
         /// If the child isn't the last one, it will return the child after it.
@@ -127,6 +127,9 @@ namespace Apos.Gui {
         public virtual IComponent GetNext(IComponent c) {
             int index = c.Index + 1;
             return index < _children.Count ? _children[index] : Parent != null ? Parent.GetNext(this) : this;
+        }
+        public virtual IComponent GetLast() {
+            return _children.Count > 0 ? _children.Last().GetLast() : this;
         }
 
         public static Panel Push([CallerLineNumber] int id = 0) {
