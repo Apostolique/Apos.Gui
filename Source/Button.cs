@@ -128,22 +128,18 @@ namespace Apos.Gui {
             return Parent != null ? Parent.GetNext(this) : this;
         }
 
-        protected bool _mousePressed = false;
-        protected bool _buttonPressed = false;
-        protected bool _hovered = false;
-
-        public static Button Put(string text, [CallerLineNumber] int id = 0) {
-            Button b = Put(id);
-            Label.Put(text, id);
+        public static Button Put(string text, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+            Button b = Put(id, isAbsoluteId);
+            Label.Put(text, id, isAbsoluteId);
 
             return b;
         }
-        public static Button Put([CallerLineNumber] int id = 0) {
+        public static Button Put([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             // 1. Check if button with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 4. Ping it.
-            id = GuiHelper.CurrentIMGUI.CreateId(id);
+            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
             GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
             Button a;
@@ -166,5 +162,9 @@ namespace Apos.Gui {
 
             return a;
         }
+
+        protected bool _mousePressed = false;
+        protected bool _buttonPressed = false;
+        protected bool _hovered = false;
     }
 }

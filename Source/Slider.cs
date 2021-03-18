@@ -71,12 +71,12 @@ namespace Apos.Gui {
             GuiHelper.ResetScissor();
         }
 
-        public static Slider Put(ref float value, float min, float max, float? step = null, [CallerLineNumber] int id = 0) {
+        public static Slider Put(ref float value, float min, float max, float? step = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             // 1. Check if Textbox with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 4. Ping it.
-            id = GuiHelper.CurrentIMGUI.CreateId(id);
+            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
             GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
             Slider a;

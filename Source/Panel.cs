@@ -128,17 +128,20 @@ namespace Apos.Gui {
             int index = c.Index + 1;
             return index < _children.Count ? _children[index] : Parent != null ? Parent.GetNext(this) : this;
         }
+        /// <summary>
+        /// Returns the last child in this component tree.
+        /// </summary>
         public virtual IComponent GetLast() {
             return _children.Count > 0 ? _children.Last().GetLast() : this;
         }
 
-        public static Panel Push([CallerLineNumber] int id = 0) {
+        public static Panel Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             // 1. Check if panel with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 3. Push it on the stack.
             // 4. Ping it.
-            id = GuiHelper.CurrentIMGUI.CreateId(id);
+            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
             GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
             Panel a;

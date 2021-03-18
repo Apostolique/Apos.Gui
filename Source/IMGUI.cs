@@ -192,13 +192,14 @@ namespace Apos.Gui {
             }
         }
         /// <summary>
-        /// Garenteed to return a unique id during the span of a frame.
+        /// Garenteed to return a unique id during the span of the current frame.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public int CreateId(int id) {
-            // TODO: Add ability to skip id stack.
-            id = CombineHash(GetIdStack(), id);
+        /// <param name="id">An id that should be part of the generation process.</param>
+        /// <param name="isAbsoluteId">Whether to use the current parent for the id generation.</param>
+        public int CreateId(int id, bool isAbsoluteId) {
+            if (!isAbsoluteId) {
+                id = CombineHash(GetIdStack(), id);
+            }
 
             if (_idsUsedThisFrame.TryGetValue(id, out int count)) {
                 count++;

@@ -33,12 +33,12 @@ namespace Apos.Gui {
             GuiHelper.ResetScissor();
         }
 
-        public static Label Put(string text, [CallerLineNumber] int id = 0) {
+        public static Label Put(string text, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             // 1. Check if Label with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 4. Ping it.
-            id = GuiHelper.CurrentIMGUI.CreateId(id);
+            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
             GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
             Label a;
