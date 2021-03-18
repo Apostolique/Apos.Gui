@@ -49,12 +49,28 @@ namespace Apos.Gui {
             foreach (var c in _children)
                 c.UpdateInput(gameTime);
 
-            // FIXME: Need to handle the whole lifecycle of FocusPrev and FocusNext, same as buttons. (Pressed, HeldOnly, Released)
-            if (Default.FocusPrev.Released()) {
-                FindPrevFocus();
+            if (!_nextPressed && Default.FocusPrev.Pressed()) {
+                _prevPressed = true;
             }
-            if (Default.FocusNext.Released()) {
-                FindNextFocus();
+            if (_prevPressed) {
+                if (Default.FocusPrev.Released()) {
+                    FindPrevFocus();
+                    _prevPressed = false;
+                } else {
+                    Default.FocusPrev.Consume();
+                }
+            }
+
+            if (!_prevPressed && Default.FocusNext.Pressed()) {
+                _nextPressed = true;
+            }
+            if (_nextPressed) {
+                if (Default.FocusNext.Released()) {
+                    FindNextFocus();
+                    _nextPressed = false;
+                } else {
+                    Default.FocusNext.Consume();
+                }
             }
         }
         public override void Update(GameTime gameTime) {
@@ -244,5 +260,8 @@ namespace Apos.Gui {
         private int MaxChildren = 0;
         private int ChildrenCount = 0;
         private Dictionary<int, int> _idsUsedThisFrame = new Dictionary<int, int>();
+
+        private bool _prevPressed = false;
+        private bool _nextPressed = false;
     }
 }
