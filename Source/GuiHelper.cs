@@ -75,7 +75,6 @@ namespace Apos.Gui {
         /// <summary>
         /// Uses a rectangle to limit the area that the spritebatch is allowed to draw to.
         /// </summary>
-        /// <param name="r">The rectangle to use for the spritebatch scissor in screen coordinates.</param>
         public static void ResetScissor() {
             if (_beginCalled) {
                 End();
@@ -119,9 +118,7 @@ namespace Apos.Gui {
         private static float _scale = 1f;
         private static float _virtualScale = 1f;
         private static float _finalScale = 1f;
-        private static RasterizerState _rasterState = new RasterizerState {
-            ScissorTestEnable = true
-        };
+        private static RasterizerState _rasterState = new RasterizerState { ScissorTestEnable = true };
         private static bool _beginCalled = false;
         private static Stack<(Rectangle, bool)> _scissorStack = new Stack<(Rectangle, bool)>();
     }
