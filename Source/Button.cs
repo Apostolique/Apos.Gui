@@ -134,7 +134,7 @@ namespace Apos.Gui {
 
         public static Button Put(string text, [CallerLineNumber] int id = 0) {
             Button b = Put(id);
-            Label.Put(text);
+            Label.Put(text, id);
 
             return b;
         }
