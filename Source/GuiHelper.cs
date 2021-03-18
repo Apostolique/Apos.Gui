@@ -58,7 +58,8 @@ namespace Apos.Gui {
         /// <param name="r">The rectangle to use for the spritebatch scissor in UI coordinates.</param>
         public static void SetScissor(RectangleF r) {
             // TODO: Optimize begin call somehow. Maybe there is no drawing between scissor swaps?
-            if (_beginCalled) {
+            bool wasBeginCalled = _beginCalled;
+            if (wasBeginCalled) {
                 End();
             }
 
@@ -67,7 +68,7 @@ namespace Apos.Gui {
             int w = (int)(r.Width * Scale);
             int h = (int)(r.Height * Scale);
 
-            _scissorStack.Push(SpriteBatch.GraphicsDevice.ScissorRectangle);
+            _scissorStack.Push((SpriteBatch.GraphicsDevice.ScissorRectangle, wasBeginCalled));
             SpriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(x, y, w, h);
             Begin();
         }
@@ -80,8 +81,12 @@ namespace Apos.Gui {
                 End();
             }
 
-            SpriteBatch.GraphicsDevice.ScissorRectangle = _scissorStack.Pop();
-            Begin();
+            bool wasBeginCalled;
+
+            (SpriteBatch.GraphicsDevice.ScissorRectangle, wasBeginCalled) = _scissorStack.Pop();
+            if (wasBeginCalled) {
+                Begin();
+            }
         }
 
         /// <summary>
@@ -110,15 +115,6 @@ namespace Apos.Gui {
 
             return count + 1;
         }
-        public static int CombineHash<T1, T2>(T1 value1, T2 value2) {
-            unchecked {
-                int hash = 17;
-                hash *= 31 + value1!.GetHashCode();
-                hash *= 31 + value2!.GetHashCode();
-
-                return hash;
-            }
-        }
 
         private static float _scale = 1f;
         private static float _virtualScale = 1f;
@@ -127,6 +123,6 @@ namespace Apos.Gui {
             ScissorTestEnable = true
         };
         private static bool _beginCalled = false;
-        private static Stack<Rectangle> _scissorStack = new Stack<Rectangle>();
+        private static Stack<(Rectangle, bool)> _scissorStack = new Stack<(Rectangle, bool)>();
     }
 }

@@ -198,17 +198,26 @@ namespace Apos.Gui {
         /// <returns></returns>
         public int CreateId(int id) {
             // TODO: Add ability to skip id stack.
-            // id = GuiHelper.CombineHash(GetIdStack(), id);
+            id = CombineHash(GetIdStack(), id);
 
             if (_idsUsedThisFrame.TryGetValue(id, out int count)) {
                 count++;
                 _idsUsedThisFrame[id] = count;
-                id = GuiHelper.CombineHash(id, count);
+                id = CombineHash(id, count);
             } else {
                 _idsUsedThisFrame.Add(id, 1);
             }
 
             return id;
+        }
+        private static int CombineHash<T1, T2>(T1 value1, T2 value2) {
+            unchecked {
+                int hash = 17;
+                hash *= 31 + value1!.GetHashCode();
+                hash *= 31 + value2!.GetHashCode();
+
+                return hash;
+            }
         }
 
         private Stack<int> IdStack = new Stack<int>();
