@@ -10,19 +10,21 @@ namespace Apos.Gui {
         public IMGUI() : base(0) {
             CurrentParent = this;
             ActiveComponents.Add(Id, this);
+
+            GuiHelper.CurrentIMGUI = this;
         }
 
         public override void UpdatePrefSize(GameTime gameTime) { }
         public override void UpdateSetup(GameTime gameTime) {
-            // 1. Cleanup last cycle
-            // 2. Ping ourself
+            // 1. Ping ourself to prevent cleanup.
+            // 2. Cleanup last cycle
             // 3. Pending components become active.
             //      a. Set parenting.
             // 4. Update pref sizes.
             // 5. Apply pref sizes.
             // 6. Update setup.
+            LastPing = InputHelper.CurrentFrame - 1;
             Cleanup();
-            LastPing = InputHelper.CurrentFrame;
             _idsUsedThisFrame.Add(Id, 1);
             while (PendingComponents.Count > 0) {
                 var pc = PendingComponents.Dequeue();
