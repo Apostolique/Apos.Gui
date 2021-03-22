@@ -35,7 +35,9 @@ namespace Apos.Gui {
                 pc.Component.GrabFocus = GrabFocus;
             }
 
-            // TODO: Process pending action queue. (It doesn't exist yet.)
+            while (_nextTick.Count > 0) {
+                _nextTick.Dequeue().Invoke();
+            }
 
             foreach (var c in _children) {
                 c.UpdatePrefSize(gameTime);
@@ -123,7 +125,6 @@ namespace Apos.Gui {
 
             return false;
         }
-
         public IParent? GrabParent(IComponent c) {
             IParent current = CurrentParent;
 
@@ -139,6 +140,49 @@ namespace Apos.Gui {
 
             return current;
         }
+        public void GrabFocus(IComponent? c) {
+            if (c == null) {
+                Focus = null;
+            } else {
+                Focus = c.Id;
+            }
+        }
+        public int GetIdStack() {
+            // TODO: We can precompute the top id.
+            unchecked {
+                int hash = 17;
+
+                foreach (var e in IdStack) {
+                    hash *= 31 + e.GetHashCode();
+                }
+
+                return hash;
+            }
+        }
+        /// <summary>
+        /// Garenteed to return a unique id during the span of the current frame.
+        /// </summary>
+        /// <param name="id">An id that should be part of the generation process.</param>
+        /// <param name="isAbsoluteId">Whether to use the current parent for the id generation.</param>
+        public int CreateId(int id, bool isAbsoluteId) {
+            if (!isAbsoluteId) {
+                id = CombineHash(GetIdStack(), id);
+            }
+
+            if (_idsUsedThisFrame.TryGetValue(id, out int count)) {
+                count++;
+                _idsUsedThisFrame[id] = count;
+                id = CombineHash(id, count);
+            } else {
+                _idsUsedThisFrame.Add(id, 1);
+            }
+
+            return id;
+        }
+        public void QueueNextTick(Action a) {
+            _nextTick.Enqueue(a);
+        }
+
         private void Cleanup() {
             Reset();
             foreach (var kc in ActiveComponents.Reverse()) {
@@ -188,45 +232,6 @@ namespace Apos.Gui {
                 }
             } while (initialFocus != newFocus);
         }
-        public void GrabFocus(IComponent? c) {
-            if (c == null) {
-                Focus = null;
-            } else {
-                Focus = c.Id;
-            }
-        }
-        public int GetIdStack() {
-            // TODO: We can precompute the top id.
-            unchecked {
-                int hash = 17;
-
-                foreach (var e in IdStack) {
-                    hash *= 31 + e.GetHashCode();
-                }
-
-                return hash;
-            }
-        }
-        /// <summary>
-        /// Garenteed to return a unique id during the span of the current frame.
-        /// </summary>
-        /// <param name="id">An id that should be part of the generation process.</param>
-        /// <param name="isAbsoluteId">Whether to use the current parent for the id generation.</param>
-        public int CreateId(int id, bool isAbsoluteId) {
-            if (!isAbsoluteId) {
-                id = CombineHash(GetIdStack(), id);
-            }
-
-            if (_idsUsedThisFrame.TryGetValue(id, out int count)) {
-                count++;
-                _idsUsedThisFrame[id] = count;
-                id = CombineHash(id, count);
-            } else {
-                _idsUsedThisFrame.Add(id, 1);
-            }
-
-            return id;
-        }
         private static int CombineHash<T1, T2>(T1 value1, T2 value2) {
             unchecked {
                 int hash = 17;
@@ -263,5 +268,7 @@ namespace Apos.Gui {
 
         private bool _prevPressed = false;
         private bool _nextPressed = false;
+
+        private Queue<Action> _nextTick = new Queue<Action>();
     }
 }
