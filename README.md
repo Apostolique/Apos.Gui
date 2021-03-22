@@ -15,7 +15,7 @@ Note: Version 1 is currently in alpha. It is a full rewrite. This readme is upda
 
 ## Features
 
-* Mouse, Keyboard, Gamepad, Touchscreen
+* Mouse, Keyboard, Gamepad
 * UI scaling
 * Used like IMGUI but components can be coded like a retained UI
 
@@ -25,73 +25,25 @@ Note: Version 1 is currently in alpha. It is a full rewrite. This readme is upda
 
 ## Usage Example
 
-First, find a font ttf file to use (Call it FontFile.ttf), put it in a subfolder called "Fonts" in your content folder. Add it to the MonoGame content pipeline and select ***copy*** in "Build Action" instead of ~build~.
-
-In your game's `LoadContent()`, get the Helper classes ready:
-
-```csharp
-protected override void LoadContent() {
-    var fontSystem = FontSystemFactory.Create(GraphicsDevice, 2048, 2048);
-    fontSystem.AddFont(TitleContainer.OpenStream($"{Content.RootDirectory}/FontFile.ttf"));
-
-    GuiHelper.Setup(this, fontSystem);
-
-    _ui = new IMGUI();
-    GuiHelper.CurrentIMGUI = _ui;
-}
-
-IMGUI _ui;
-```
-
 You can create a simple UI with the following code that you'll put in the Update call:
 
 ```csharp
 Panel.Push();
-if (Button.Put("Fun").Clicked) Console.WriteLine("This is fun.");
+if (Button.Put("Show fun").Clicked) {
+    _showFun = !_showFun;
+}
+if (_showFun) {
+    Label.Put("This is fun!");
+}
 if (Button.Put("Quit").Clicked) {
-    Console.WriteLine("This is fun.");
     Exit();
 }
 Panel.Pop();
 ```
 
-The code above will create 2 buttons, "Fun" and "Quit". You can use your mouse, keyboard, or gamepad to interact with them.
+The code above will create 2 buttons, "Show Fun" and "Quit". You can use your mouse, keyboard, or gamepad to interact with them. Clicking on "Show Fun" will insert a label in between them with the text "This is fun!".
 
-In your `Update(GameTime gameTime)`, call the following functions:
-
-```csharp
-protected override void Update(GameTime gametime) {
-    // Call UpdateSetup at the start.
-    GuiHelper.UpdateSetup();
-    _ui.UpdateAll();
-
-    // Create your UI.
-    Panel.Push();
-    if (Button.Put("Fun").Clicked) Console.WriteLine("This is fun.");
-    if (Button.Put("Quit").Clicked) {
-        Console.WriteLine("This is fun.");
-        Exit();
-    }
-    Panel.Pop();
-
-    // Call UpdateCleanup at the end.
-    GuiHelper.UpdateCleanup();
-}
-```
-
-In your `Draw(GameTime gameTime)`, call:
-
-```csharp
-protected override void Draw(GameTime gameTime) {
-    GraphicsDevice.Clear(Color.Black);
-
-    _ui.Draw();
-
-    base.Draw(gameTime);
-}
-```
-
-Working usage code can be found in the [AposGameStarter](https://github.com/Apostolique/AposGameStarter) project. Look into [menu.cs](https://github.com/Apostolique/AposGameStarter/blob/master/Game/Layer1/Menu.cs).
+You can read more in the [Getting started](https://apostolique.github.io/Apos.Gui/getting-started/) guide.
 
 ## Other projects you might like
 
