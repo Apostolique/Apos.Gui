@@ -7,18 +7,35 @@ using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
 namespace Apos.Gui {
+    /// <summary>
+    /// Unorganized helper functions for Apos.Gui.
+    /// </summary>
     public static class GuiHelper {
+        /// <summary>
+        /// Usually called once in a game's LoadContent.
+        /// </summary>
+        /// <param name="game">Game instance.</param>
+        /// <param name="fontSystem">The font system to use for the UI.</param>
         public static void Setup(Game game, FontSystem fontSystem) {
             InputHelper.Setup(game);
             FontSystem = fontSystem;
             SpriteBatch = new SpriteBatch(game.GraphicsDevice);
         }
+        /// <summary>
+        /// Called at the start of an update loop.
+        /// </summary>
         public static void UpdateSetup() {
             InputHelper.UpdateSetup();
         }
+        /// <summary>
+        /// Called at the end of an update loop.
+        /// </summary>
         public static void UpdateCleanup() {
             InputHelper.UpdateCleanup();
         }
+        /// <summary>
+        /// Currently selected IMGUI. This is the IMGUI to use when adding components.
+        /// </summary>
         public static IMGUI CurrentIMGUI { get; set; } = null!;
 
         /// <value>The scale of the UI. Defaults to 1f.</value>
@@ -32,24 +49,36 @@ namespace Apos.Gui {
                 }
             }
         }
+        /// <summary>
+        /// Used to convert between the screen and UI coordinate system.
+        /// </summary>
         public static Matrix UIMatrix => Matrix.CreateScale(Scale, Scale, 1);
+        /// <summary>
+        ///
+        /// </summary>
         public static Vector2 Mouse => Vector2.Transform(InputHelper.NewMouse.Position.ToVector2(), Matrix.Invert(UIMatrix));
 
+        /// <summary>SpriteBatch used to draw the UI.</summary>
         public static SpriteBatch SpriteBatch { get; set; } = null!;
+        /// <summary>FontSystem used in the UI.</summary>
         public static FontSystem FontSystem { get; set; } = null!;
-        /// <value>Defaults to LinearClamp.</value>
+        /// <summary>Defaults to LinearClamp.</summary>
         public static SamplerState GuiSampler { get; set; } = SamplerState.LinearClamp;
 
+        /// <summary>Returns a font with a given size.</summary>
         public static DynamicSpriteFont GetFont(int size) {
             return FontSystem.GetFont((int)(size * _virtualScale));
         }
+        /// <summary>Measures text using a font with a given size. The size is as tight as possible to the text.</summary>
         public static Vector2 MeasureStringTight(string text, int size) {
             return GetFont(size).MeasureString(text) * _finalScale;
         }
+        /// <summary>Measures text using a font with a given size. The line height is the same no matter the text content.</summary>
         public static Vector2 MeasureString(string text, int size) {
             var font = GetFont(size);
             return new Vector2(font.MeasureString(text).X, font.FontSize * CountLines(text)) * _finalScale;
         }
+        /// <summary>Used when drawing text to the screen. The text has to be scaled by this value.</summary>
         public static Vector2 FontScale => new Vector2(_finalScale);
         /// <summary>
         /// Uses a rectangle to limit the area that the spritebatch is allowed to draw to.
