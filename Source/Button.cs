@@ -10,6 +10,17 @@ namespace Apos.Gui {
         public bool Clicked { get; set; } = false;
         public IComponent? Child { get; set; }
         public override bool IsFocusable { get; set; } = true;
+        public override bool IsFocused {
+            get => base.IsFocused;
+            set {
+                base.IsFocused = value;
+                if (!value) {
+                    _mousePressed = false;
+                    _hovered = false;
+                    _buttonPressed = false;
+                }
+            }
+        }
 
         public override void UpdatePrefSize(GameTime gameTime) {
             if (Child != null) {
@@ -38,6 +49,7 @@ namespace Apos.Gui {
                 _mousePressed = true;
                 GrabFocus(this);
             }
+
             if (IsFocused) {
                 if (_mousePressed) {
                     if (Default.MouseInteraction.Released()) {
@@ -77,12 +89,10 @@ namespace Apos.Gui {
 
             if (Clicked) {
                 GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.5f);
-            } else if (_mousePressed || _buttonPressed) {
-                if (_hovered || _buttonPressed) {
-                    GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.2f);
-                } else {
-                    GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.15f);
-                }
+            } else if (_mousePressed && _hovered || _buttonPressed) {
+                GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.2f);
+            } else if (_mousePressed) {
+                GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.15f);
             }
             if (IsFocused) {
                 GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.White, 2f);
