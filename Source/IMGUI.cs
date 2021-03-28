@@ -145,7 +145,7 @@ namespace Apos.Gui {
         public void GrabFocus(IComponent? c) {
             if (c == null) {
                 Focus = null;
-            } else {
+            } else if (Focus != c.Id) {
                 Focus = c.Id;
             }
         }
