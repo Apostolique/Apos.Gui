@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
-    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.2001" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
 
     <ProjectReference Include="../../../Source/Apos.Gui.csproj">
       <NoWarn>CS1591</NoWarn>
