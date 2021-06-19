@@ -5,7 +5,7 @@
 Install using the following dotnet command:
 
 ```
-dotnet add package Apos.Input
+dotnet add package Apos.Gui --prerelease
 ```
 
 ## Setup
