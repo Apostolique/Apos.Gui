@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework.Input;
 using Track = Apos.Input.Track;
 
 namespace Apos.Gui {
+    /// <summary>
+    /// Layer for tracking the keyboard, Mouse & Controller Position?
+    /// </summary>
     public static class Default {
         public static ICondition MouseInteraction { get; set; } =
             new Track.MouseCondition(MouseButton.LeftButton);

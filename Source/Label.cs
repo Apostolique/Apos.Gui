@@ -20,9 +20,14 @@ namespace Apos.Gui {
         }
         public int Padding { get; set; } = 10;
 
+        /// <summary>
+        /// I'm guessing the *2 is because later the component itself will be moved by 1 * padding
+        /// on both axis.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void UpdatePrefSize(GameTime gameTime) {
-            PrefWidth = _size.X + Padding * 2;
-            PrefHeight = _size.Y + Padding * 2;
+            PrefWidth = _size.X + (Padding * 2);
+            PrefHeight = _size.Y + (Padding * 2);
         }
         public override void Draw(GameTime gameTime) {
             GuiHelper.SetScissor(Clip);

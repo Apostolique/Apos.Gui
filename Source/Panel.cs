@@ -5,14 +5,34 @@ using Apos.Input;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
+    /// <summary>
+    /// A parent object to hold components.
+    /// </summary>
     public class Panel : Component, IParent {
+
+        /// <param name="id"></param>
         public Panel(int id) : base(id) { }
 
+        /// <summary>
+        /// The X position relative to the parent.
+        /// </summary>
         public float OffsetX { get; set; } = 0;
+        /// <summary>
+        /// The Y position relative to the parent.
+        /// </summary>
         public float OffsetY { get; set; } = 0;
+        /// <summary>
+        /// The width of the Panel.
+        /// </summary>
         public float FullWidth { get; set; } = 100;
+        /// <summary>
+        /// The height of the Panel.
+        /// </summary>
         public float FullHeight { get; set; } = 100;
 
+        /// <summary>
+        /// Helper to set both the X and Y relative to the Parent.
+        /// </summary>
         public Vector2 OffsetXY {
             get => new Vector2(OffsetX, OffsetY);
             set {
@@ -20,6 +40,10 @@ namespace Apos.Gui {
                 OffsetY = value.Y;
             }
         }
+
+        /// <summary>
+        /// Helper to set the width and height of the Panel.
+        /// </summary>
         public Vector2 FullSize {
             get => new Vector2(FullWidth, FullHeight);
             set {
@@ -28,19 +52,34 @@ namespace Apos.Gui {
             }
         }
 
+        /// <summary>
+        /// To update parent size based on children.
+        /// Should run every frame.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void UpdatePrefSize(GameTime gameTime) {
             float maxWidth = 0;
             float maxHeight = 0;
 
             foreach (var c in _children) {
                 c.UpdatePrefSize(gameTime);
+
+                // get the biggest component's width.
+                // this means we cant have components next to each other tho.
                 maxWidth = MathHelper.Max(c.PrefWidth, maxWidth);
+
+                // Add all sizes together to get the max height.
+                // We are missing some checks to see if we dont go outside the game screen window?
                 maxHeight += c.PrefHeight;
             }
 
             PrefWidth = maxWidth;
             PrefHeight = maxHeight;
         }
+        /// <summary>
+        /// Set all the components positions based on the parent position.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void UpdateSetup(GameTime gameTime) {
             float maxWidth = Width;
             float maxHeight = Height;
@@ -165,6 +204,10 @@ namespace Apos.Gui {
 
             return a;
         }
+
+        /// <summary>
+        /// Since first in last out this pops the last one in the ImGUI.
+        /// </summary>
         public static void Pop() {
             GuiHelper.CurrentIMGUI.Pop();
         }
