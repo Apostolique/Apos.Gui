@@ -127,15 +127,25 @@ namespace Apos.Gui {
 
             return false;
         }
+        /// <summary>
+        /// Get the current parent, which should always be set..?
+        /// Why is this nullable tho? Doesnt everything have atleast the IMGUI as parent if all else fails?
+        /// 
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
         public IParent? GrabParent(IComponent c) {
             IParent current = CurrentParent;
 
+            // if the component doesn't have this as a parent. add the component to this parent.
             if (c.Parent != current) {
                 PendingComponents.Enqueue((c.Id, CurrentParent, c));
             }
 
             ChildrenCount++;
 
+            // remove the first element if the list is full. Which is dangerous right?
+            // As you wouldn't realize you are removing stuff untill you start the game.
             if (MaxChildren > 0 && ChildrenCount >= MaxChildren) {
                 Pop();
             }
@@ -162,7 +172,7 @@ namespace Apos.Gui {
             }
         }
         /// <summary>
-        /// Garenteed to return a unique id during the span of the current frame.
+        /// Guaranteed to return a unique id during the span of the current frame.
         /// </summary>
         /// <param name="id">An id that should be part of the generation process.</param>
         /// <param name="isAbsoluteId">Whether to use the current parent for the id generation.</param>

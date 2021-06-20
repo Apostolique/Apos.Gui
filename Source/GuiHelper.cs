@@ -34,7 +34,7 @@ namespace Apos.Gui {
             InputHelper.UpdateCleanup();
         }
         /// <summary>
-        /// Currently selected IMGUI. This is the IMGUI to use when adding components.
+        /// IMGUI to use when adding components. Used by components to add their id to this IMGUI.
         /// </summary>
         public static IMGUI CurrentIMGUI { get; set; } = null!;
 

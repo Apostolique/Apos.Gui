@@ -12,7 +12,11 @@ namespace Apos.Gui {
             Id = id;
         }
 
+        /// <summary>
+        /// Ping to know if component was already called in the current Frame.
+        /// </summary>
         public virtual uint LastPing { get; set; } = 0;
+
         public virtual int Id { get; set; }
         public virtual int Index { get; set; } = 0;
 

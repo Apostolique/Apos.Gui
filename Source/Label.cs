@@ -32,18 +32,21 @@ namespace Apos.Gui {
 
             GuiHelper.ResetScissor();
         }
-
+        /// <summary>
+        /// Get or Add a label based on if the id's component already exists as an label &
+        /// add it to the parent list.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="id"></param>
+        /// <param name="isAbsoluteId"></param>
+        /// <returns></returns>
         public static Label Put(string text, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            // 1. Check if Label with id already exists.
-            //      a. If already exists. Get it.
-            //      b  If not, create it.
-            // 4. Ping it.
             id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
             GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
             Label a;
-            if (c is Label) {
-                a = (Label)c;
+            if (c is Label label) {
+                a = label;
                 a.Text = text;
             } else {
                 a = new Label(id, text);
@@ -54,7 +57,8 @@ namespace Apos.Gui {
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.LastPing = InputHelper.CurrentFrame;
                 if (parent != null) {
-                    a.Index = parent.NextIndex();
+                    a.Index = parent.NextIndex(); 
+                    // I am pretty sure we always get from Panel. So this just sets _nextChildIndex++
                 }
             }
 
