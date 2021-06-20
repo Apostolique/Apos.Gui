@@ -25,18 +25,18 @@ namespace Apos.Gui {
 		/// <summary>
 		/// List of child components in this parent Panel.
 		/// </summary>
-		protected List<IComponent> _Children = new();
+		protected List<IComponent> _Children = new List<IComponent>();
 
 		/// <summary>
 		/// The Panel in form of floatable Ractangle.
 		/// </summary>
-		public RectangleF Panel { get; set; } = new(0, 0, 100, 100);
+		public RectangleF Panel { get; set; } = new RectangleF(0, 0, 100, 100);
 
 		/// <summary>
 		/// Helper to set both the X and Y relative to the Parent.
 		/// </summary>
 		public Point2 OffsetXY {
-			get => new(Panel.X, Panel.Y);
+			get => new Point2(Panel.X, Panel.Y);
 			private set { }
 		}
 
@@ -44,8 +44,8 @@ namespace Apos.Gui {
 		/// Helper to set the width and height of the Panel.
 		/// </summary>
 		public Point2 FullSize {
-			get => new(Panel.Width, Panel.Height);
-			private set { } 
+			get => new Point2(Panel.Width, Panel.Height);
+			private set { }
 		}
 
 		#endregion
@@ -60,7 +60,7 @@ namespace Apos.Gui {
 		}
 
 		/// <summary>
-		/// To update all children based on new size.
+		/// Update the Preffered with and Height of the GridPanel based on how the sizes of the children.
 		/// Should run every frame.
 		/// </summary>
 		/// <param name="gameTime"></param>
@@ -71,11 +71,7 @@ namespace Apos.Gui {
 			var count = 0;
 			foreach (var c in _Children) {
 				c.UpdatePrefSize(gameTime);
-				UpdateWidthBasedOnComponentSize(gameTime, ref maxWidth, ref count, c);
-
-				// Add all sizes together to get the max height.
-				// We are missing some checks to see if we dont go outside the game screen window?
-				maxHeight += c.PrefHeight;
+				UpdateWidthBasedOnComponentSize(gameTime, ref maxHeight, ref maxWidth, ref count, c);
 			}
 
 			PrefHeight = maxHeight;
@@ -89,14 +85,16 @@ namespace Apos.Gui {
 		/// <param name="maxWidth"></param>
 		/// <param name="count"></param>
 		/// <param name="c"></param>
-		private void UpdateWidthBasedOnComponentSize(GameTime gameTime, ref float maxWidth, ref int count, IComponent c) {
+		private void UpdateWidthBasedOnComponentSize(GameTime gameTime, ref float maxHeight, ref float maxWidth, ref int count, IComponent c) {
 			count++;
-			if (count < _ComponentsInWidth) {
+			if (count <= _ComponentsInWidth) {
 				maxWidth += c.PrefWidth;
+				maxHeight = MathHelper.Max(maxHeight, c.PrefHeight);
 			} else {
 				PrefWidth = MathHelper.Max(maxWidth, PrefWidth);
 				count = 0;
 				maxWidth = 0;
+				maxHeight += c.PrefHeight;
 			}
 		}
 
@@ -116,7 +114,7 @@ namespace Apos.Gui {
 
 				// to update the Y pos
 				count++;
-				if (count < _ComponentsInWidth) {
+				if (count <= _ComponentsInWidth) {
 					currentX += c.Width; // this might need  + Y + offset.Y
 				} else {
 					count = 0;
