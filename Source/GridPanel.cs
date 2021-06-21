@@ -65,37 +65,12 @@ namespace Apos.Gui {
 		/// </summary>
 		/// <param name="gameTime"></param>
 		public override void UpdatePrefSize(GameTime gameTime) {
-			float maxWidth = 0;
-			float maxHeight = 0;
-
-			var count = 0;
 			foreach (var c in _Children) {
+				// set the sizes of components to be their children atleast. Default 100
 				c.UpdatePrefSize(gameTime);
-				UpdateWidthBasedOnComponentSize(gameTime, ref maxHeight, ref maxWidth, ref count, c);
 			}
 
-			PrefHeight = maxHeight;
-		}
-
-		/// <summary>
-		///for every 2 items. Add their width together.
-		/// then check if the prefWidth is lower than the cur maxwidth
-		/// </summary>
-		/// <param name="gameTime"></param>
-		/// <param name="maxWidth"></param>
-		/// <param name="count"></param>
-		/// <param name="c"></param>
-		private void UpdateWidthBasedOnComponentSize(GameTime gameTime, ref float maxHeight, ref float maxWidth, ref int count, IComponent c) {
-			count++;
-			if (count <= _ComponentsInWidth) {
-				maxWidth += c.PrefWidth;
-				maxHeight = MathHelper.Max(maxHeight, c.PrefHeight);
-			} else {
-				PrefWidth = MathHelper.Max(maxWidth, PrefWidth);
-				count = 0;
-				maxWidth = 0;
-				maxHeight += c.PrefHeight;
-			}
+			UpdateSetup(gameTime);
 		}
 
 		/// <summary>
@@ -103,36 +78,81 @@ namespace Apos.Gui {
 		/// </summary>
 		/// <param name="gameTime"></param>
 		public override void UpdateSetup(GameTime gameTime) {
-			var maxWidth = Width;
-			var maxHeight = Height;
+			var colWidths = GetColumnSizes();
+			SetEachComponent(colWidths, gameTime);
+		}
 
-			var count = 0;
+		/// <summary>
+		/// Set the x & y coordinate based on the columnWidths and max rows.
+		/// </summary>
+		/// <param name="colWidths"></param>
+		private void SetEachComponent(float[] colWidths, GameTime gameTime) {
 
-			var currentX = X + OffsetXY.X;
-			var currentY = Y + OffsetXY.Y;
-			foreach (var c in _Children) {
+			float posX = 0;
+			float posY = 0;
 
-				// to update the Y pos
-				count++;
-				if (count <= _ComponentsInWidth) {
-					currentX += c.Width; // this might need  + Y + offset.Y
-				} else {
-					count = 0;
-					currentX = X + OffsetXY.X;
+			for (var i = 0; i < _Children.Count; i++) {
+				var col = i % _ComponentsInWidth;
+
+				_Children[i].Width = colWidths[col];
+				_Children[i].Height = _Children[i].PrefHeight;
+
+				if (col == 0 && i != 0) { // not the first row.
+					posX = 0;
+					posY += _Children[i].PrefHeight;
 				}
 
-				c.X = currentX;
-				c.Y = currentY + Y + OffsetXY.Y;
-				c.Width = c.PrefWidth;
-				c.Height = c.PrefHeight;
+				_Children[i].Y = posY;
+				_Children[i].X = posX;
+				_Children[i].Clip = _Children[i].Bounds.Intersection(Clip);
+				_Children[i].UpdateSetup(gameTime);
 
-				c.Clip = c.Bounds.Intersection(Clip);
-				c.UpdateSetup(gameTime);
-
-				currentY += c.Height;
+				posX += colWidths[col];
 			}
 
-			Panel = new RectangleF(OffsetXY, new Point2(MathHelper.Max(currentX, maxWidth), MathHelper.Max(currentY, maxHeight)));
+			var maxWidth = 0f;
+			for (var i = 0; i < colWidths.Length; i++) {
+				maxWidth += colWidths[i];
+			}
+
+			var maxHeight = 0f;
+			var rowSizes = GetRowSizes();
+			for (var i = 0; i < rowSizes.Length; i++) {
+				maxHeight += rowSizes[i];
+			}
+
+			PrefWidth = maxWidth;
+			PrefHeight = maxHeight;
+
+			Panel = new RectangleF(OffsetXY, new Point2(maxWidth, maxHeight));
+		}
+
+		/// <summary>
+		/// Get the size of each column
+		/// </summary>
+		/// <returns></returns>
+		private float[] GetColumnSizes() {
+			var colWidths = new float[_ComponentsInWidth];
+			for (var i = 0; i < _Children.Count; i++) {
+				var col = i % _ComponentsInWidth;
+				colWidths[col] = MathHelper.Max(_Children[i].PrefWidth, colWidths[col]);
+			}
+			return colWidths;
+		}
+
+		/// <summary>
+		/// Get the size of each Row
+		/// </summary>
+		/// <returns></returns>
+		private float[] GetRowSizes() {
+			var count = (int)MathF.Ceiling((float)_Children.Count / _ComponentsInWidth);
+			var rowsHeights = new float[count];
+
+			for (var i = 0; i < _Children.Count; i++) {
+				var row = i / _ComponentsInWidth; // row index
+				rowsHeights[row] = MathHelper.Max(_Children[i].PrefHeight, rowsHeights[row]);
+			}
+			return rowsHeights;
 		}
 
 		#region Component updaters
