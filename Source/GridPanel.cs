@@ -1,5 +1,4 @@
 ﻿using Apos.Input;
-using KTale_RPG;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using System;
@@ -17,7 +16,7 @@ namespace Apos.Gui {
 		/// <summary>
 		/// The amount of components that should be put next to each other.
 		/// </summary>
-		private int _ComponentsInWidth = 2;
+		public int ComponentsInWidth { get; set; }
 
 		/// <summary>
 		/// Indexer for the next child in the _Children list.
@@ -56,9 +55,7 @@ namespace Apos.Gui {
 		/// </summary>
 		/// <param name="id"></param>
 		/// <param name="componentsInWidth"></param>
-		public GridPanel(int id, int componentsInWidth = 2) : base(id) {
-			_ComponentsInWidth = componentsInWidth;
-		}
+		public GridPanel(int id) : base(id) { }
 
 		/// <summary>
 		/// Update the Preffered with and Height of the GridPanel based on how the sizes of the children.
@@ -71,7 +68,7 @@ namespace Apos.Gui {
 				c.UpdatePrefSize(gameTime);
 			}
 
-			UpdateSetup(gameTime);
+			//UpdateSetup(gameTime);
 		}
 
 		/// <summary>
@@ -93,7 +90,7 @@ namespace Apos.Gui {
 			float posY = 0;
 
 			for (var i = 0; i < _Children.Count; i++) {
-				var col = i % _ComponentsInWidth;
+				var col = i % ComponentsInWidth;
 
 				_Children[i].Width = colWidths[col];
 				_Children[i].Height = _Children[i].PrefHeight;
@@ -102,7 +99,7 @@ namespace Apos.Gui {
 
 				posY = ChangePosYBasedOnPreviousRowHeights(posY, i, col);
 
-				_Children[i].Y = posY;
+				_Children[i].Y = posY + Y + OffsetXY.Y;
 				_Children[i].X = posX;
 				_Children[i].Clip = _Children[i].Bounds.Intersection(Clip);
 				_Children[i].UpdateSetup(gameTime);
@@ -148,10 +145,10 @@ namespace Apos.Gui {
 		/// <returns></returns>
 		private float ChangePosYBasedOnPreviousRowHeights(float posY, int i, int col) {
 			var test = GetRowSizes();
-			if (col == 0 && i > _ComponentsInWidth - 1) {
+			if (col == 0 && i > ComponentsInWidth - 1) {
 				posY = 0;
 
-				var row = i / _ComponentsInWidth;
+				var row = i / ComponentsInWidth;
 
 				for (var t = 0; t < test.Length; t++) {
 					if (t < row) {
@@ -160,7 +157,7 @@ namespace Apos.Gui {
 				}
 			}
 
-			return posY + Y + OffsetXY.Y;
+			return posY;
 		}
 
 		/// <summary>
@@ -168,9 +165,9 @@ namespace Apos.Gui {
 		/// </summary>
 		/// <returns></returns>
 		private float[] GetColumnSizes() {
-			var colWidths = new float[_ComponentsInWidth];
+			var colWidths = new float[ComponentsInWidth];
 			for (var i = 0; i < _Children.Count; i++) {
-				var col = i % _ComponentsInWidth;
+				var col = i % ComponentsInWidth;
 				colWidths[col] = MathHelper.Max(_Children[i].PrefWidth, colWidths[col]);
 			}
 			return colWidths;
@@ -181,11 +178,11 @@ namespace Apos.Gui {
 		/// </summary>
 		/// <returns></returns>
 		private float[] GetRowSizes() {
-			var count = (int)MathF.Ceiling((float)_Children.Count / _ComponentsInWidth);
+			var count = (int)MathF.Ceiling((float)_Children.Count / ComponentsInWidth);
 			var rowsHeights = new float[count];
 
 			for (var i = 0; i < _Children.Count; i++) {
-				var row = i / _ComponentsInWidth; // row index
+				var row = i / ComponentsInWidth; // row index
 				rowsHeights[row] = MathHelper.Max(_Children[i].PrefHeight, rowsHeights[row]);
 			}
 			return rowsHeights;
@@ -255,13 +252,15 @@ namespace Apos.Gui {
 		/// <param name="id"></param>
 		/// <param name="isAbsoluteId"></param>
 		/// <returns></returns>
-		public static GridPanel Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+		public static GridPanel Push(int componentsInWidth = 2, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
 			// create the hash and check if a component with this hash exists.
 			id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
 			GuiHelper.CurrentIMGUI.TryGetValue(id, out var c);
 
 			// if component is a panel. return it else create a new panel.
 			var a = c is GridPanel panel ? panel : new GridPanel(id);
+
+			a.ComponentsInWidth = componentsInWidth;
 
 			a.PingIfNotDoneThisFrame(a);
 
