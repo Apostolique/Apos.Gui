@@ -1,4 +1,5 @@
 ﻿using Apos.Input;
+using KTale_RPG;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 using System;
@@ -97,10 +98,9 @@ namespace Apos.Gui {
 				_Children[i].Width = colWidths[col];
 				_Children[i].Height = _Children[i].PrefHeight;
 
-				if (col == 0 && i != 0) { // not the first row.
-					posX = 0;
-					posY += _Children[i].PrefHeight;
-				}
+				if (col == 0) posX = 0 + X + OffsetXY.X; // reset the X when next row.
+
+				posY = ChangePosYBasedOnPreviousRowHeights(posY, i, col);
 
 				_Children[i].Y = posY;
 				_Children[i].X = posX;
@@ -110,12 +110,26 @@ namespace Apos.Gui {
 				posX += colWidths[col];
 			}
 
-			var maxWidth = 0f;
+			SetPanelWidthHeightBasedOnChildrenRowsAndColumns(colWidths, out var maxWidth, out var maxHeight);
+
+			Panel = new RectangleF(OffsetXY, new Point2(maxWidth, maxHeight));
+		}
+
+		/// <summary>
+		/// The width and height of the Panel is based on the biggest height
+		/// of each row and biggest width of each column.
+		/// And we get the sum of that.
+		/// </summary>
+		/// <param name="colWidths"></param>
+		/// <param name="maxWidth"></param>
+		/// <param name="maxHeight"></param>
+		private void SetPanelWidthHeightBasedOnChildrenRowsAndColumns(float[] colWidths, out float maxWidth, out float maxHeight) {
+			maxWidth = 0f;
 			for (var i = 0; i < colWidths.Length; i++) {
 				maxWidth += colWidths[i];
 			}
 
-			var maxHeight = 0f;
+			maxHeight = 0f;
 			var rowSizes = GetRowSizes();
 			for (var i = 0; i < rowSizes.Length; i++) {
 				maxHeight += rowSizes[i];
@@ -123,8 +137,30 @@ namespace Apos.Gui {
 
 			PrefWidth = maxWidth;
 			PrefHeight = maxHeight;
+		}
 
-			Panel = new RectangleF(OffsetXY, new Point2(maxWidth, maxHeight));
+		/// <summary>
+		/// Basicly get the sum of all previous rows to know the next starting Pos.
+		/// </summary>
+		/// <param name="posY"></param>
+		/// <param name="i"></param>
+		/// <param name="col"></param>
+		/// <returns></returns>
+		private float ChangePosYBasedOnPreviousRowHeights(float posY, int i, int col) {
+			var test = GetRowSizes();
+			if (col == 0 && i > _ComponentsInWidth - 1) {
+				posY = 0;
+
+				var row = i / _ComponentsInWidth;
+
+				for (var t = 0; t < test.Length; t++) {
+					if (t < row) {
+						posY += test[t];
+					}
+				}
+			}
+
+			return posY + Y + OffsetXY.Y;
 		}
 
 		/// <summary>
