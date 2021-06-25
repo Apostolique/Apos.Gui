@@ -72,7 +72,7 @@ Finally, in your draw loop:
 protected override void Draw(GameTime gameTime) {
     GraphicsDevice.Clear(Color.Black);
 
-    _ui.Draw();
+    _ui.Draw(gameTime);
 
     base.Draw(gameTime);
 }
