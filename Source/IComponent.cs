@@ -40,6 +40,6 @@ namespace Apos.Gui {
         IComponent GetNext();
         IComponent GetLast();
 
-        Action<IComponent> GrabFocus { get; set; }
+        Action<IComponent?> GrabFocus { get; set; }
     }
 }
