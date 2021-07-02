@@ -159,13 +159,11 @@ namespace Apos.Gui {
                 a = new Button(id);
             }
 
-            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent(a);
+            IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
 
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.LastPing = InputHelper.CurrentFrame;
-                if (parent != null) {
-                    a.Index = parent.NextIndex();
-                }
+                a.Index = parent.NextIndex();
             }
 
             GuiHelper.CurrentIMGUI.Push(a, 1);

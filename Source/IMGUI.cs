@@ -127,7 +127,7 @@ namespace Apos.Gui {
 
             return false;
         }
-        public IParent? GrabParent(IComponent c) {
+        public IParent GrabParent(IComponent c) {
             IParent current = CurrentParent;
 
             if (c.Parent != current) {
