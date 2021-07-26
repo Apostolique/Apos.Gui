@@ -55,8 +55,9 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="gameTime">Current gametime.</param>
         public override void UpdateInput(GameTime gameTime) {
-            foreach (var c in _children)
-                c.UpdateInput(gameTime);
+            for (int i = _children.Count - 1; i >= 0; i--) {
+                _children[i].UpdateInput(gameTime);
+            }
 
             if (!_nextPressed && Default.FocusPrev.Pressed()) {
                 _prevPressed = true;

@@ -64,8 +64,9 @@ namespace Apos.Gui {
             FullHeight = MathHelper.Max(currentY, maxHeight);
         }
         public override void UpdateInput(GameTime gameTime) {
-            foreach (var c in _children)
-                c.UpdateInput(gameTime);
+            for (int i = _children.Count - 1; i >= 0; i--) {
+                _children[i].UpdateInput(gameTime);
+            }
 
             // TODO: Scrolling input.
         }
