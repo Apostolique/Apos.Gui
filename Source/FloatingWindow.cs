@@ -8,6 +8,7 @@ namespace Apos.Gui {
         public FloatingWindow(int id) : base(id) { }
 
         public override bool IsFocusable { get; set; } = true;
+        public override bool IsFloatable { get; set; } = true;
 
         public override void UpdatePrefSize(GameTime gameTime) {
             base.UpdatePrefSize(gameTime);

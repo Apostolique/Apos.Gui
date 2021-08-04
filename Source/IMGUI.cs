@@ -55,8 +55,8 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="gameTime">Current gametime.</param>
         public override void UpdateInput(GameTime gameTime) {
-            for (int i = _children.Count - 1; i >= 0; i--) {
-                _children[i].UpdateInput(gameTime);
+            for (int i = _childrenRenderOrder.Count - 1; i >= 0; i--) {
+                _childrenRenderOrder[i].UpdateInput(gameTime);
             }
 
             if (!_nextPressed && Default.FocusPrev.Pressed()) {
@@ -109,7 +109,7 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="gameTime">Current gametime.</param>
         public override void Draw(GameTime gameTime) {
-            foreach (var c in _children)
+            foreach (var c in _childrenRenderOrder)
                 c.Draw(gameTime);
         }
 
@@ -201,6 +201,7 @@ namespace Apos.Gui {
                 Focus = null;
             } else if (Focus != c.Id) {
                 Focus = c.Id;
+                c.SendToTop();
             }
         }
         /// <summary>
@@ -251,11 +252,7 @@ namespace Apos.Gui {
             }
 
             _activeComponents.Remove(id);
-            if (c.Parent != null) {
-                c.Parent.Remove(c);
-            } else {
-                _children.Remove(c);
-            }
+            c.Parent?.Remove(c);
             // TODO: Remove from PendingComponents? Probably not since that case can't happen?
         }
         private void FindPrevFocus() {

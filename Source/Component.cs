@@ -26,6 +26,7 @@ namespace Apos.Gui {
 
         public virtual bool IsFocused { get; set; } = false;
         public virtual bool IsFocusable { get; set; } = false;
+        public virtual bool IsFloatable { get; set; } = false;
 
         public virtual IParent? Parent { get; set; }
 
@@ -61,6 +62,9 @@ namespace Apos.Gui {
         }
 
         public virtual Action<IComponent> GrabFocus { get; set; } = c => { };
+        public virtual void SendToTop() {
+            Parent?.SendToTop(this);
+        }
 
         public virtual Vector2 XY {
             get => new Vector2(X, Y);

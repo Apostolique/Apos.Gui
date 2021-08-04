@@ -138,6 +138,10 @@ namespace Apos.Gui {
             return Parent != null ? Parent.GetNext(this) : this;
         }
 
+        public virtual void SendToTop(IComponent c) {
+            Parent?.SendToTop(this);
+        }
+
         public static Button Put(string text, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             Button b = Put(id, isAbsoluteId);
             Label.Put(text, id, isAbsoluteId);

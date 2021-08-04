@@ -64,8 +64,8 @@ namespace Apos.Gui {
             FullHeight = MathHelper.Max(currentY, maxHeight);
         }
         public override void UpdateInput(GameTime gameTime) {
-            for (int i = _children.Count - 1; i >= 0; i--) {
-                _children[i].UpdateInput(gameTime);
+            for (int i = _childrenRenderOrder.Count - 1; i >= 0; i--) {
+                _childrenRenderOrder[i].UpdateInput(gameTime);
             }
 
             // TODO: Scrolling input.
@@ -75,7 +75,7 @@ namespace Apos.Gui {
                 c.Update(gameTime);
         }
         public override void Draw(GameTime gameTime) {
-            foreach (var c in _children)
+            foreach (var c in _childrenRenderOrder)
                 c.Draw(gameTime);
 
             // TODO: Draw scrollbars if needed.
@@ -84,10 +84,25 @@ namespace Apos.Gui {
         public virtual void Add(IComponent c) {
             c.Parent = this;
             _children.Insert(c.Index, c);
+
+            // TODO: Optimize this?
+            _childrenRenderOrder.Add(c);
+            _childrenRenderOrder.Sort((a, b) => {
+                if (a.IsFloatable && b.IsFloatable) {
+                    return 0;
+                } else if (!a.IsFloatable && !b.IsFloatable) {
+                    return a.Index.CompareTo(b.Index);
+                } else if (a.IsFloatable) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            });
         }
         public virtual void Remove(IComponent c) {
             c.Parent = null;
             _children.Remove(c);
+            _childrenRenderOrder.Remove(c);
         }
         public virtual void Reset() {
             _nextChildIndex = 0;
@@ -136,6 +151,15 @@ namespace Apos.Gui {
             return _children.Count > 0 ? _children.Last().GetLast() : this;
         }
 
+        public virtual void SendToTop(IComponent c) {
+            if (c.IsFloatable) {
+                _childrenRenderOrder.Remove(c);
+                _childrenRenderOrder.Add(c);
+            }
+
+            Parent?.SendToTop(this);
+        }
+
         public static Panel Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             // 1. Check if panel with id already exists.
             //      a. If already exists. Get it.
@@ -170,5 +194,6 @@ namespace Apos.Gui {
 
         protected int _nextChildIndex = 0;
         protected List<IComponent> _children = new List<IComponent>();
+        protected List<IComponent> _childrenRenderOrder = new List<IComponent>();
     }
 }

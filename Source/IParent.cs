@@ -6,5 +6,6 @@ namespace Apos.Gui {
         int NextIndex();
         IComponent GetPrev(IComponent c);
         IComponent GetNext(IComponent c);
+        void SendToTop(IComponent c);
     }
 }

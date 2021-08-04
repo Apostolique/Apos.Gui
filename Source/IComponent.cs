@@ -17,6 +17,7 @@ namespace Apos.Gui {
 
         bool IsFocused { get; set; }
         bool IsFocusable { get; set; }
+        bool IsFloatable { get; set; }
 
         RectangleF Bounds { get; set; }
         RectangleF Clip { get; set; }
@@ -41,5 +42,6 @@ namespace Apos.Gui {
         IComponent GetLast();
 
         Action<IComponent?> GrabFocus { get; set; }
+        void SendToTop();
     }
 }
