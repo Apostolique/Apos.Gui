@@ -72,16 +72,16 @@ namespace Apos.Gui {
                     } else if (te.Key == Keys.Enter) {
                     } else if (te.Key == Keys.Back) {
                         if (Cursor > 0 && _text.Length > 0) {
-                            _text = _text.Remove(Cursor - 1, 1);
                             Cursor--;
+                            Text = _text.Remove(Cursor, 1);
                         }
                     } else if (te.Key == Keys.Delete) {
                         if (_text.Length > 0 && Cursor < _text.Length) {
-                            _text = _text.Remove(Cursor, 1);
+                            Text = _text.Remove(Cursor, 1);
                             _cursorBlink = _cursorBlinkSpeed;
                         }
                     } else {
-                        _text = _text.Insert(Cursor, $"{te.Character}");
+                        Text = _text.Insert(Cursor, $"{te.Character}");
                         Cursor++;
                     }
                     Track.KeyboardCondition.Consume(te.Key);
