@@ -40,6 +40,7 @@ namespace Apos.Gui {
                 Child.Y = Y;
                 Child.Width = Width;
                 Child.Height = Height;
+                Child.Clip = Child.Bounds.Intersection(Clip);
 
                 Child.UpdateSetup(gameTime);
             }
