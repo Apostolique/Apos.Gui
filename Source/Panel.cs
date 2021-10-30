@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Apos.Input;
+using Track = Apos.Input.Track;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace Apos.Gui {
     public class Panel : Component, IParent {
@@ -68,7 +70,9 @@ namespace Apos.Gui {
                 _childrenRenderOrder[i].UpdateInput(gameTime);
             }
 
-            // TODO: Scrolling input.
+            if (Clip.Contains(GuiHelper.Mouse) && Track.MouseCondition.Scrolled()) {
+                OffsetY = MathHelper.Min(MathHelper.Max(OffsetY + Math.Sign(MouseCondition.ScrollDelta) * 20f, Clip.Height - FullHeight), 0);
+            }
         }
         public override void Update(GameTime gameTime) {
             foreach (var c in _children)
