@@ -14,8 +14,13 @@ namespace Apos.Gui {
             GuiHelper.CurrentIMGUI = this;
         }
 
-        public override void UpdatePrefSize(GameTime gameTime) { }
+        /// <summary>
         /// Only call this if you didn't call UpdateAll. This should be called at the start of your update loop.
+        /// </summary>
+        public override void UpdatePrefSize(GameTime gameTime) { }
+        /// <summary>
+        /// Only call this if you didn't call UpdateAll. This should be called after UpdatePrefSize.
+        /// </summary>
         public override void UpdateSetup(GameTime gameTime) {
             // 1. Ping ourself to prevent cleanup.
             // 2. Cleanup last cycle
@@ -47,6 +52,9 @@ namespace Apos.Gui {
                 // TODO: Update position?
                 c.Width = c.PrefWidth;
                 c.Height = c.PrefHeight;
+
+                // TODO: Set clip limit to the window?
+
                 c.UpdateSetup(gameTime);
             }
         }
@@ -61,8 +69,7 @@ namespace Apos.Gui {
 
             if (!_nextPressed && Default.FocusPrev.Pressed()) {
                 _prevPressed = true;
-            }
-            if (_prevPressed) {
+            } else if (_prevPressed) {
                 if (Default.FocusPrev.Released()) {
                     FindPrevFocus();
                     _prevPressed = false;
@@ -73,8 +80,7 @@ namespace Apos.Gui {
 
             if (!_prevPressed && Default.FocusNext.Pressed()) {
                 _nextPressed = true;
-            }
-            if (_nextPressed) {
+            } else if (_nextPressed) {
                 if (Default.FocusNext.Released()) {
                     FindNextFocus();
                     _nextPressed = false;
@@ -273,7 +279,7 @@ namespace Apos.Gui {
                 var c = getNeighbor(newFocus);
                 newFocus = c.Id;
                 if (c.IsFocusable) {
-                    Focus = newFocus;
+                    GrabFocus(c);
                     return;
                 }
             } while (initialFocus != newFocus);

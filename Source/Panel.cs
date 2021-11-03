@@ -87,7 +87,7 @@ namespace Apos.Gui {
             }
 
             if (Clip.Contains(GuiHelper.Mouse) && Track.MouseCondition.Scrolled()) {
-                _targetOffsetY = MathHelper.Min(MathHelper.Max(_targetOffsetY + Math.Sign(MouseCondition.ScrollDelta) * ScrollIncrement, Clip.Height - FullHeight), 0);
+                _targetOffsetY = MathHelper.Min(MathHelper.Max(_targetOffsetY + Math.Sign(MouseCondition.ScrollDelta) * ScrollIncrement, Height - FullHeight), 0);
             }
         }
         public override void Update(GameTime gameTime) {
@@ -175,6 +175,17 @@ namespace Apos.Gui {
             if (c.IsFloatable) {
                 _childrenRenderOrder.Remove(c);
                 _childrenRenderOrder.Add(c);
+            }
+
+            if (c.Y < Y) {
+                float yDiff = Y - c.Y;
+                float oDiff = _targetOffsetY - _offsetY;
+                _targetOffsetY += yDiff - oDiff;
+            }
+            if (c.Bottom > Bottom) {
+                float yDiff = Bottom - c.Bottom;
+                float oDiff = _targetOffsetY - _offsetY;
+                _targetOffsetY += yDiff - oDiff;
             }
 
             Parent?.SendToTop(this);
