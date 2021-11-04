@@ -3,7 +3,7 @@ name: Build documentation
 on:
   push:
     branches:
-    - 'master'
+    - 'main'
     paths:
     - 'docs/**'
     - 'README.md'
@@ -12,7 +12,7 @@ env:
   TITLE: Apos.Gui
   DESCRIPTION: UI library for MonoGame.
   BASE: Apos.Gui
-  REPO: https://github.com/Apostolique/Apos.Gui/tree/master/
+  REPO: https://github.com/Apostolique/Apos.Gui/tree/main/
 
 jobs:
   build:
