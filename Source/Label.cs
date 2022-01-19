@@ -57,10 +57,11 @@ namespace Apos.Gui {
                 a = new Label(id, text);
             }
 
-            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent(a);
+            IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
 
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.LastPing = InputHelper.CurrentFrame;
+
                 if (parent != null) {
                     a.Index = parent.NextIndex(); 
                     // I am pretty sure we always get from Panel. So this just sets _nextChildIndex++

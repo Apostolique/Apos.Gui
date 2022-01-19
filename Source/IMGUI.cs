@@ -8,13 +8,19 @@ namespace Apos.Gui {
     // NOTE: IMGUI is NOT recursive. It should always be the top level component.
     public class IMGUI : Panel {
         public IMGUI() : base(0) {
-            CurrentParent = this;
-            ActiveComponents.Add(Id, this);
+            _currentParent = this;
+            _activeComponents.Add(Id, this);
 
             GuiHelper.CurrentIMGUI = this;
         }
 
+        /// <summary>
+        /// Only call this if you didn't call UpdateAll. This should be called at the start of your update loop.
+        /// </summary>
         public override void UpdatePrefSize(GameTime gameTime) { }
+        /// <summary>
+        /// Only call this if you didn't call UpdateAll. This should be called after UpdatePrefSize.
+        /// </summary>
         public override void UpdateSetup(GameTime gameTime) {
             // 1. Ping ourself to prevent cleanup.
             // 2. Cleanup last cycle
@@ -26,10 +32,10 @@ namespace Apos.Gui {
             LastPing = InputHelper.CurrentFrame - 1;
             Cleanup();
             _idsUsedThisFrame.Add(Id, 1);
-            while (PendingComponents.Count > 0) {
-                var pc = PendingComponents.Dequeue();
+            while (_pendingComponents.Count > 0) {
+                var pc = _pendingComponents.Dequeue();
                 if (pc.Component.Parent == null) {
-                    ActiveComponents.Add(pc.Id, pc.Component);
+                    _activeComponents.Add(pc.Id, pc.Component);
                 } else {
                     pc.Component.Parent.Remove(pc.Component);
                 }
@@ -46,17 +52,24 @@ namespace Apos.Gui {
                 // TODO: Update position?
                 c.Width = c.PrefWidth;
                 c.Height = c.PrefHeight;
+
+                // TODO: Set clip limit to the window?
+
                 c.UpdateSetup(gameTime);
             }
         }
+        /// <summary>
+        /// Only call this if you didn't call UpdateAll. This should be called after UpdateSetup.
+        /// </summary>
+        /// <param name="gameTime">Current gametime.</param>
         public override void UpdateInput(GameTime gameTime) {
-            foreach (var c in _children)
-                c.UpdateInput(gameTime);
+            for (int i = _childrenRenderOrder.Count - 1; i >= 0; i--) {
+                _childrenRenderOrder[i].UpdateInput(gameTime);
+            }
 
             if (!_nextPressed && Default.FocusPrev.Pressed()) {
                 _prevPressed = true;
-            }
-            if (_prevPressed) {
+            } else if (_prevPressed) {
                 if (Default.FocusPrev.Released()) {
                     FindPrevFocus();
                     _prevPressed = false;
@@ -67,8 +80,7 @@ namespace Apos.Gui {
 
             if (!_prevPressed && Default.FocusNext.Pressed()) {
                 _nextPressed = true;
-            }
-            if (_nextPressed) {
+            } else if (_nextPressed) {
                 if (Default.FocusNext.Released()) {
                     FindNextFocus();
                     _nextPressed = false;
@@ -77,48 +89,89 @@ namespace Apos.Gui {
                 }
             }
         }
+        /// <summary>
+        /// Only call this if you didn't call UpdateAll. This should be called after UpdateInput.
+        /// </summary>
+        /// <param name="gameTime">Current gametime</param>
         public override void Update(GameTime gameTime) {
             foreach (var c in _children)
                 c.Update(gameTime);
         }
-        public void UpdateAll(GameTime gameTime) {
+
+        /// <summary>
+        /// Call this at the start of your update loop.
+        /// It calls UpdateSetup, UpdateInput, and Update.
+        /// </summary>
+        /// <param name="gameTime">Current gametime.</param>
+        /// <param name="callUpdateInput">false will skip UpdateInput.</param>
+        public void UpdateAll(GameTime gameTime, bool callUpdateInput = true) {
             UpdateSetup(gameTime);
-            UpdateInput(gameTime);
+            if (callUpdateInput)
+                UpdateInput(gameTime);
             Update(gameTime);
         }
+        /// <summary>
+        /// Draws all components in the UI.
+        /// </summary>
+        /// <param name="gameTime">Current gametime.</param>
         public override void Draw(GameTime gameTime) {
-            foreach (var c in _children)
+            foreach (var c in _childrenRenderOrder)
                 c.Draw(gameTime);
         }
 
+        /// <summary>
+        /// Inserts a parent at the top of the parent stack.
+        /// </summary>
+        /// <param name="p">The parent to insert.</param>
+        /// <param name="maxChildren">The parent's max amount of children, 0 means infinite.</param>
         public void Push(IParent p, int maxChildren = 0) {
-            Parents.Push((CurrentParent, MaxChildren, ChildrenCount));
-            CurrentParent = p;
-            MaxChildren = maxChildren;
-            ChildrenCount = 0;
+            _parents.Push((_currentParent, _maxChildren, _childrenCount));
+            _currentParent = p;
+            _maxChildren = maxChildren;
+            _childrenCount = 0;
             PushId(p.Id);
         }
-        public void Pop() {
-            var pop = Parents.Pop();
-            CurrentParent = pop.Parent;
-            MaxChildren = pop.MaxChildren;
-            ChildrenCount = pop.ChildrenCount;
+        /// <summary>
+        /// Removes a parent from the top of the parent stack.
+        /// </summary>
+        public new void Pop() {
+            var pop = _parents.Pop();
+            _currentParent = pop.Parent;
+            _maxChildren = pop.MaxChildren;
+            _childrenCount = pop.ChildrenCount;
             PopId();
         }
+        /// <summary>
+        /// Inserts an id at the top of the id stack.
+        /// </summary>
+        /// <param name="id">The id to push onto the id stack.</param>
         public void PushId(int id) {
-            IdStack.Push(id);
-            // TODO: Compute the top id.
+            _idStack.Push(id);
+
+            ComputeIdStack();
         }
+        /// <summary>
+        /// Removes an id from the top of the id stack.
+        /// </summary>
         public void PopId() {
-            IdStack.Pop();
-            // TODO: Compute the top id.
+            int id = _idStack.Pop();
+
+            ComputeIdStack();
         }
+        /// <summary>
+        /// Tries to get the component with the given id if it exists.
+        /// </summary>
+        /// <param name="id">The id of the component to get.</param>
+        /// <param name="c">When this method returns, contains the component associated with the specified id.</param>
+        /// <returns>true if the component with the specified id is found; otherwise false.</returns>
         public bool TryGetValue(int id, out IComponent c) {
-            if (ActiveComponents.TryGetValue(id, out c)) {
+            if (_activeComponents.TryGetValue(id, out c)) {
                 return true;
             }
 
-            foreach (var pc in PendingComponents) {
+            // TODO: Verify that this is still required.
+            //       This is usually called after CreateId which will always return a new unique id for this frame.
+            foreach (var pc in _pendingComponents) {
                 if (pc.Id == id) {
                     c = pc.Component;
                     return true;
@@ -128,47 +181,38 @@ namespace Apos.Gui {
             return false;
         }
         /// <summary>
-        /// Get the current parent, which should always be set..?
-        /// Why is this nullable tho? Doesnt everything have atleast the IMGUI as parent if all else fails?
-        /// 
+
+        /// Returns the current top parent. Used for parenting a child component to a parent.
+        /// If a child already has a parent, it will be marked for a parent change.
         /// </summary>
-        /// <param name="c"></param>
-        /// <returns></returns>
-        public IParent? GrabParent(IComponent c) {
-            IParent current = CurrentParent;
+        /// <param name="c">The child that will be parented.</param>
+        public IParent GrabParent(IComponent c) {
+            IParent current = _currentParent;
 
             // if the component doesn't have this as a parent. add the component to this parent.
             if (c.Parent != current) {
-                PendingComponents.Enqueue((c.Id, CurrentParent, c));
+                _pendingComponents.Enqueue((c.Id, _currentParent, c));
             }
+
 
             ChildrenCount++;
 
-            // remove the first element if the list is full. Which is dangerous right?
-            // As you wouldn't realize you are removing stuff untill you start the game.
-            if (MaxChildren > 0 && ChildrenCount >= MaxChildren) {
+            if (_maxChildren > 0 && ++_childrenCount >= _maxChildren) {
                 Pop();
             }
 
             return current;
         }
-        public void GrabFocus(IComponent? c) {
+        /// <summary>
+        /// Gives focus to a component. Can also clear the focus if null is passed.
+        /// </summary>
+        /// <param name="c">The component that should receive focus.</param>
+        public new void GrabFocus(IComponent? c) {
             if (c == null) {
                 Focus = null;
             } else if (Focus != c.Id) {
                 Focus = c.Id;
-            }
-        }
-        public int GetIdStack() {
-            // TODO: We can precompute the top id.
-            unchecked {
-                int hash = 17;
-
-                foreach (var e in IdStack) {
-                    hash *= 31 + e.GetHashCode();
-                }
-
-                return hash;
+                c.SendToTop();
             }
         }
         /// <summary>
@@ -178,7 +222,7 @@ namespace Apos.Gui {
         /// <param name="isAbsoluteId">Whether to use the current parent for the id generation.</param>
         public int CreateId(int id, bool isAbsoluteId) {
             if (!isAbsoluteId) {
-                id = CombineHash(GetIdStack(), id);
+                id = CombineHash(_idHash, id);
             }
 
             if (_idsUsedThisFrame.TryGetValue(id, out int count)) {
@@ -191,21 +235,26 @@ namespace Apos.Gui {
 
             return id;
         }
+        /// <summary>
+        /// Used when an action would invalidate the layout which would lead to an invalid draw (flicker).
+        /// Using this, you can delay the action until the next UpdateSetup.
+        /// </summary>
+        /// <param name="a">The action that will be enqueued.</param>
         public void QueueNextTick(Action a) {
             _nextTick.Enqueue(a);
         }
 
         private void Cleanup() {
             Reset();
-            foreach (var kc in ActiveComponents.Reverse()) {
+            foreach (var kc in _activeComponents.Reverse()) {
                 if (kc.Value.LastPing != InputHelper.CurrentFrame - 1) {
                     Remove(kc.Key, kc.Value);
                 }
             }
-            CurrentParent = this;
-            MaxChildren = 0;
-            ChildrenCount = 0;
-            Parents.Clear();
+            _currentParent = this;
+            _maxChildren = 0;
+            _childrenCount = 0;
+            _parents.Clear();
             _idsUsedThisFrame.Clear();
         }
         private void Remove(int id, IComponent c) {
@@ -213,12 +262,8 @@ namespace Apos.Gui {
                 Focus = null;
             }
 
-            ActiveComponents.Remove(id);
-            if (c.Parent != null) {
-                c.Parent.Remove(c);
-            } else {
-                _children.Remove(c);
-            }
+            _activeComponents.Remove(id);
+            c.Parent?.Remove(c);
             // TODO: Remove from PendingComponents? Probably not since that case can't happen?
         }
         private void FindPrevFocus() {
@@ -227,8 +272,8 @@ namespace Apos.Gui {
         private void FindNextFocus() {
             FindFocus(ExtractNext);
         }
-        private IComponent ExtractPrev(int id) => ActiveComponents[id].GetPrev();
-        private IComponent ExtractNext(int id) => ActiveComponents[id].GetNext();
+        private IComponent ExtractPrev(int id) => _activeComponents[id].GetPrev();
+        private IComponent ExtractNext(int id) => _activeComponents[id].GetNext();
         private void FindFocus(Func<int, IComponent> getNeighbor) {
             int initialFocus = Id;
             if (Focus != null) {
@@ -239,7 +284,7 @@ namespace Apos.Gui {
                 var c = getNeighbor(newFocus);
                 newFocus = c.Id;
                 if (c.IsFocusable) {
-                    Focus = newFocus;
+                    GrabFocus(c);
                     return;
                 }
             } while (initialFocus != newFocus);
@@ -253,29 +298,41 @@ namespace Apos.Gui {
                 return hash;
             }
         }
+        private void ComputeIdStack() {
+            unchecked {
+                int hash = 17;
 
-        private Stack<int> IdStack = new Stack<int>();
+                foreach (var e in _idStack) {
+                    hash *= 31 + e.GetHashCode();
+                }
 
-        private Stack<(IParent Parent, int MaxChildren, int ChildrenCount)> Parents = new Stack<(IParent, int, int)>();
-        private Dictionary<int, IComponent> ActiveComponents = new Dictionary<int, IComponent>();
-        private Queue<(int Id, IParent Parent, IComponent Component)> PendingComponents = new Queue<(int, IParent, IComponent)>();
+                _idHash = hash;
+            }
+        }
+
+        private Stack<int> _idStack = new Stack<int>();
+        private int _idHash;
+
+        private Stack<(IParent Parent, int MaxChildren, int ChildrenCount)> _parents = new Stack<(IParent, int, int)>();
+        private Dictionary<int, IComponent> _activeComponents = new Dictionary<int, IComponent>();
+        private Queue<(int Id, IParent Parent, IComponent Component)> _pendingComponents = new Queue<(int, IParent, IComponent)>();
         private int _lastId = 0;
         private int? Focus {
             get => _focus;
             set {
                 if (_focus != null) {
-                    ActiveComponents[_focus.Value].IsFocused = false;
+                    _activeComponents[_focus.Value].IsFocused = false;
                 }
                 _focus = value;
                 if (_focus != null) {
-                    ActiveComponents[_focus.Value].IsFocused = true;
+                    _activeComponents[_focus.Value].IsFocused = true;
                 }
             }
         }
         private int? _focus;
-        private IParent CurrentParent;
-        private int MaxChildren = 0;
-        private int ChildrenCount = 0;
+        private IParent _currentParent;
+        private int _maxChildren = 0;
+        private int _childrenCount = 0;
         private Dictionary<int, int> _idsUsedThisFrame = new Dictionary<int, int>();
 
         private bool _prevPressed = false;

@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Apos.Input;
+using Track = Apos.Input.Track;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace Apos.Gui {
     /// <summary>
@@ -13,17 +15,19 @@ namespace Apos.Gui {
         /// <param name="id"></param>
         public Panel(int id) : base(id) { }
 
-        /// <summary>
-        /// The X position relative to the parent.
-        /// </summary>
-        public float OffsetX { get; set; } = 0;
-        /// <summary>
-        /// The Y position relative to the parent.
-        /// </summary>
-        public float OffsetY { get; set; } = 0;
-        /// <summary>
-        /// The width of the Panel.
-        /// </summary>
+        public float OffsetX {
+            get => _offsetX;
+            set {
+                _targetOffsetX = MathHelper.Min(MathHelper.Max(value, Clip.Width - FullWidth), 0);
+            }
+        }
+        public float OffsetY {
+            get => _offsetY;
+            set {
+                _targetOffsetY = MathHelper.Min(MathHelper.Max(value, Clip.Height - FullHeight), 0);
+            }
+        }
+
         public float FullWidth { get; set; } = 100;
         /// <summary>
         /// The height of the Panel.
@@ -52,11 +56,9 @@ namespace Apos.Gui {
             }
         }
 
-        /// <summary>
-        /// To update parent size based on children.
-        /// Should run every frame.
-        /// </summary>
-        /// <param name="gameTime"></param>
+        public float ScrollIncrement { get; set; } = 50f;
+        public float ScrollSpeed { get; set; } = 0.008f;
+
         public override void UpdatePrefSize(GameTime gameTime) {
             float maxWidth = 0;
             float maxHeight = 0;
@@ -81,6 +83,9 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="gameTime"></param>
         public override void UpdateSetup(GameTime gameTime) {
+            _offsetX = Interpolate(_offsetX, _targetOffsetX, ScrollSpeed * (float)gameTime.ElapsedGameTime.TotalMilliseconds, 0.1f);
+            _offsetY = Interpolate(_offsetY, _targetOffsetY, ScrollSpeed * (float)gameTime.ElapsedGameTime.TotalMilliseconds, 0.1f);
+
             float maxWidth = Width;
             float maxHeight = Height;
 
@@ -103,17 +108,20 @@ namespace Apos.Gui {
             FullHeight = MathHelper.Max(currentY, maxHeight);
         }
         public override void UpdateInput(GameTime gameTime) {
-            foreach (var c in _children)
-                c.UpdateInput(gameTime);
+            for (int i = _childrenRenderOrder.Count - 1; i >= 0; i--) {
+                _childrenRenderOrder[i].UpdateInput(gameTime);
+            }
 
-            // TODO: Scrolling input.
+            if (Clip.Contains(GuiHelper.Mouse) && Track.MouseCondition.Scrolled()) {
+                _targetOffsetY = MathHelper.Min(MathHelper.Max(_targetOffsetY + Math.Sign(MouseCondition.ScrollDelta) * ScrollIncrement, Height - FullHeight), 0);
+            }
         }
         public override void Update(GameTime gameTime) {
             foreach (var c in _children)
                 c.Update(gameTime);
         }
         public override void Draw(GameTime gameTime) {
-            foreach (var c in _children)
+            foreach (var c in _childrenRenderOrder)
                 c.Draw(gameTime);
 
             // TODO: Draw scrollbars if needed.
@@ -122,10 +130,25 @@ namespace Apos.Gui {
         public virtual void Add(IComponent c) {
             c.Parent = this;
             _children.Insert(c.Index, c);
+
+            // TODO: Optimize this?
+            _childrenRenderOrder.Add(c);
+            _childrenRenderOrder.Sort((a, b) => {
+                if (a.IsFloatable && b.IsFloatable) {
+                    return 0;
+                } else if (!a.IsFloatable && !b.IsFloatable) {
+                    return a.Index.CompareTo(b.Index);
+                } else if (a.IsFloatable) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            });
         }
         public virtual void Remove(IComponent c) {
             c.Parent = null;
             _children.Remove(c);
+            _childrenRenderOrder.Remove(c);
         }
         public virtual void Reset() {
             _nextChildIndex = 0;
@@ -174,6 +197,42 @@ namespace Apos.Gui {
             return _children.Count > 0 ? _children.Last().GetLast() : this;
         }
 
+        public virtual void SendToTop(IComponent c) {
+            if (c.IsFloatable) {
+                _childrenRenderOrder.Remove(c);
+                _childrenRenderOrder.Add(c);
+            }
+
+            if (c.Y < Y) {
+                float yDiff = Y - c.Y;
+                float oDiff = _targetOffsetY - _offsetY;
+                _targetOffsetY += yDiff - oDiff;
+            }
+            if (c.Bottom > Bottom) {
+                float yDiff = Bottom - c.Bottom;
+                float oDiff = _targetOffsetY - _offsetY;
+                _targetOffsetY += yDiff - oDiff;
+            }
+
+            Parent?.SendToTop(this);
+        }
+
+        private float Interpolate(float start, float target, float speed, float snapNear) {
+            float result = MathHelper.Lerp(start, target, speed);
+
+            if (start < target) {
+                result = MathHelper.Clamp(result, start, target);
+            } else {
+                result = MathHelper.Clamp(result, target, start);
+            }
+
+            if (Math.Abs(target - result) < snapNear) {
+                return target;
+            } else {
+                return result;
+            }
+        }
+
         public static Panel Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             // 1. Check if panel with id already exists.
             //      a. If already exists. Get it.
@@ -190,14 +249,12 @@ namespace Apos.Gui {
                 a = new Panel(id);
             }
 
-            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent(a);
+            IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
 
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.Reset();
                 a.LastPing = InputHelper.CurrentFrame;
-                if (parent != null) {
-                    a.Index = parent.NextIndex();
-                }
+                a.Index = parent.NextIndex();
             }
 
             GuiHelper.CurrentIMGUI.Push(a);
@@ -214,5 +271,11 @@ namespace Apos.Gui {
 
         protected int _nextChildIndex = 0;
         protected List<IComponent> _children = new List<IComponent>();
+        protected List<IComponent> _childrenRenderOrder = new List<IComponent>();
+
+        protected float _offsetX = 0;
+        protected float _offsetY = 0;
+        protected float _targetOffsetX = 0;
+        protected float _targetOffsetY = 0;
     }
 }

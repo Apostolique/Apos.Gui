@@ -4,11 +4,13 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
 namespace Apos.Gui {
-    public class Button : Component, IParent {
-        public Button(int id) : base(id) { }
+    public class Checkbox : Component {
+        public Checkbox(int id, bool isChecked) : base(id) {
+            IsChecked = isChecked;
+        }
 
         public bool Clicked { get; set; } = false;
-        public IComponent? Child { get; set; }
+        public bool IsChecked { get; set; } = false;
         public override bool IsFocusable { get; set; } = true;
         public override bool IsFocused {
             get => base.IsFocused;
@@ -23,26 +25,12 @@ namespace Apos.Gui {
         }
 
         public override void UpdatePrefSize(GameTime gameTime) {
-            if (Child != null) {
-                Child.UpdatePrefSize(gameTime);
-
-                PrefWidth = Child.PrefWidth;
-                PrefHeight = Child.PrefHeight;
-            }
+            PrefWidth = 30f;
+            PrefHeight = 30f;
         }
         public override void UpdateSetup(GameTime gameTime) {
             if (Clicked) {
                 Clicked = false;
-            }
-
-            if (Child != null) {
-                Child.X = X;
-                Child.Y = Y;
-                Child.Width = Width;
-                Child.Height = Height;
-                Child.Clip = Child.Bounds.Intersection(Clip);
-
-                Child.UpdateSetup(gameTime);
             }
         }
         public override void UpdateInput(GameTime gameTime) {
@@ -54,8 +42,10 @@ namespace Apos.Gui {
             if (IsFocused) {
                 if (_mousePressed) {
                     if (Default.MouseInteraction.Released()) {
-                        if (Clip.Contains(GuiHelper.Mouse))
+                        if (Clip.Contains(GuiHelper.Mouse)) {
                             Clicked = true;
+                            IsChecked = !IsChecked;
+                        }
                         _mousePressed = false;
                     } else {
                         Default.MouseInteraction.Consume();
@@ -68,25 +58,21 @@ namespace Apos.Gui {
                 } else if (_buttonPressed) {
                     if (Default.ButtonInteraction.Released()) {
                         Clicked = true;
+                        IsChecked = !IsChecked;
                         _buttonPressed = false;
                     } else {
                         Default.ButtonInteraction.Consume();
                     }
                 }
             }
-
-            if (Child != null) {
-                Child.UpdateInput(gameTime);
-            }
-        }
-        public override void Update(GameTime gameTime) {
-            if (Child != null) {
-                Child.Update(gameTime);
-            }
         }
 
         public override void Draw(GameTime gameTime) {
             GuiHelper.SetScissor(Clip);
+
+            if (IsChecked) {
+                GuiHelper.SpriteBatch.FillRectangle(new RectangleF(Left + 6, Top + 6, Width - 12, Height - 12), Color.White);
+            }
 
             if (Clicked) {
                 GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.5f);
@@ -97,71 +83,35 @@ namespace Apos.Gui {
             }
             if (IsFocused) {
                 GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.White, 2f);
+                GuiHelper.SpriteBatch.DrawRectangle(new RectangleF(Left + 6, Top + 6, Width - 12, Height - 12), Color.White, 2f);
             } else {
                 GuiHelper.SpriteBatch.DrawRectangle(Bounds, new Color(76, 76, 76), 2f);
-            }
-
-            if (Child != null) {
-                Child.Draw(gameTime);
+                GuiHelper.SpriteBatch.DrawRectangle(new RectangleF(Left + 6, Top + 6, Width - 12, Height - 12), new Color(76, 76, 76), 2f);
             }
 
             GuiHelper.ResetScissor();
         }
 
-        public void Add(IComponent c) {
-            if (c != Child) {
-                if (Child != null) {
-                    Child.Parent = null;
-                }
-                Child = c;
-                Child.Parent = this;
-            }
-        }
-        public void Remove(IComponent c) {
-            if (Child == c) {
-                Child.Parent = null;
-                Child = null;
-            }
-        }
-        public void Reset() { }
-        public int NextIndex() => 0;
-
-        public override IComponent GetPrev() {
-            return Parent != null ? Parent.GetPrev(this) : Child != null ? Child : this;
-        }
-        public override IComponent GetNext() {
-            return Child != null ? Child : Parent != null ? Parent.GetNext(this) : this;
-        }
-        public virtual IComponent GetPrev(IComponent c) {
-            return this;
-        }
-        public virtual IComponent GetNext(IComponent c) {
-            return Parent != null ? Parent.GetNext(this) : this;
-        }
-
-        public virtual void SendToTop(IComponent c) {
-            Parent?.SendToTop(this);
-        }
-
-        public static Button Put(string text, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            Button b = Put(id, isAbsoluteId);
-            Label.Put(text, id, isAbsoluteId);
-
-            return b;
-        }
-        public static Button Put([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            // 1. Check if button with id already exists.
+        public static Checkbox Put(ref bool isChecked, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+            // 1. Check if checkbox with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
+            // 2. Update values.
+            // 3. Register it with a parent.
             // 4. Ping it.
             id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
             GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
-            Button a;
-            if (c is Button) {
-                a = (Button)c;
+            Checkbox a;
+            if (c is Checkbox) {
+                a = (Checkbox)c;
+                if (a.IsFocused) {
+                    isChecked = a.IsChecked;
+                } else {
+                    a.IsChecked = isChecked;
+                }
             } else {
-                a = new Button(id);
+                a = new Checkbox(id, isChecked);
             }
 
             IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
@@ -170,8 +120,6 @@ namespace Apos.Gui {
                 a.LastPing = InputHelper.CurrentFrame;
                 a.Index = parent.NextIndex();
             }
-
-            GuiHelper.CurrentIMGUI.Push(a, 1);
 
             return a;
         }

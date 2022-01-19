@@ -47,13 +47,11 @@ namespace Apos.Gui {
                 a = new Icon(id, region);
             }
 
-            IParent? parent = GuiHelper.CurrentIMGUI.GrabParent(a);
+            IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
 
             if (a.LastPing != InputHelper.CurrentFrame) {
                 a.LastPing = InputHelper.CurrentFrame;
-                if (parent != null) {
-                    a.Index = parent.NextIndex();
-                }
+                a.Index = parent.NextIndex();
             }
 
             return a;
