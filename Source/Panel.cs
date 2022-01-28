@@ -5,6 +5,7 @@ using Apos.Input;
 using Track = Apos.Input.Track;
 using Microsoft.Xna.Framework;
 using System;
+using Apos.Tweens;
 
 namespace Apos.Gui {
     public class Panel : Component, IParent {
@@ -13,13 +14,13 @@ namespace Apos.Gui {
         public float OffsetX {
             get => _offsetX;
             set {
-                _targetOffsetX = MathHelper.Min(MathHelper.Max(value, Clip.Width - FullWidth), 0);
+                SetOffset(_offsetXTween, MathHelper.Min(MathHelper.Max(value, Clip.Width - FullWidth), 0));
             }
         }
         public float OffsetY {
             get => _offsetY;
             set {
-                _targetOffsetY = MathHelper.Min(MathHelper.Max(value, Clip.Height - FullHeight), 0);
+                SetOffset(_offsetYTween, MathHelper.Min(MathHelper.Max(value, Clip.Height - FullHeight), 0));
             }
         }
         public float FullWidth { get; set; } = 100;
@@ -41,7 +42,8 @@ namespace Apos.Gui {
         }
 
         public float ScrollIncrement { get; set; } = 50f;
-        public float ScrollSpeed { get; set; } = 0.008f;
+        public float ScrollSpeed { get; set; } = 0.25f;
+        public long ScrollMaxDuration { get; set; } = 1000;
 
         public override void UpdatePrefSize(GameTime gameTime) {
             float maxWidth = 0;
@@ -57,8 +59,8 @@ namespace Apos.Gui {
             PrefHeight = maxHeight;
         }
         public override void UpdateSetup(GameTime gameTime) {
-            _offsetX = Interpolate(_offsetX, _targetOffsetX, ScrollSpeed * (float)gameTime.ElapsedGameTime.TotalMilliseconds, 0.1f);
-            _offsetY = Interpolate(_offsetY, _targetOffsetY, ScrollSpeed * (float)gameTime.ElapsedGameTime.TotalMilliseconds, 0.1f);
+            _offsetX = _offsetXTween.Value;
+            _offsetY = _offsetYTween.Value;
 
             float maxWidth = Width;
             float maxHeight = Height;
@@ -87,7 +89,7 @@ namespace Apos.Gui {
             }
 
             if (Clip.Contains(GuiHelper.Mouse) && Track.MouseCondition.Scrolled()) {
-                _targetOffsetY = MathHelper.Min(MathHelper.Max(_targetOffsetY + Math.Sign(MouseCondition.ScrollDelta) * ScrollIncrement, Height - FullHeight), 0);
+                SetOffset(_offsetYTween, MathHelper.Min(MathHelper.Max(_offsetYTween.B + Math.Sign(MouseCondition.ScrollDelta) * ScrollIncrement, Height - FullHeight), 0));
             }
         }
         public override void Update(GameTime gameTime) {
@@ -179,32 +181,28 @@ namespace Apos.Gui {
 
             if (c.Y < Y) {
                 float yDiff = Y - c.Y;
-                float oDiff = _targetOffsetY - _offsetY;
-                _targetOffsetY += yDiff - oDiff;
+                float oDiff = _offsetYTween.B - _offsetY;
+                SetOffset(_offsetYTween, _offsetYTween.B + yDiff - oDiff);
             }
             if (c.Bottom > Bottom) {
                 float yDiff = Bottom - c.Bottom;
-                float oDiff = _targetOffsetY - _offsetY;
-                _targetOffsetY += yDiff - oDiff;
+                float oDiff = _offsetYTween.B - _offsetY;
+                SetOffset(_offsetYTween, _offsetYTween.B + yDiff - oDiff);
             }
 
             Parent?.SendToTop(this);
         }
 
-        private float Interpolate(float start, float target, float speed, float snapNear) {
-            float result = MathHelper.Lerp(start, target, speed);
+        protected void SetOffset(FloatTween ft, float b) {
+            var a = ft.Value;
+            ft.StartTime = TweenHelper.TotalMS;
+            ft.A = a;
+            ft.B = b;
+            ft.Duration = GetDuration(a, b, ScrollSpeed, ScrollMaxDuration);
+        }
 
-            if (start < target) {
-                result = MathHelper.Clamp(result, start, target);
-            } else {
-                result = MathHelper.Clamp(result, target, start);
-            }
-
-            if (Math.Abs(target - result) < snapNear) {
-                return target;
-            } else {
-                return result;
-            }
+        protected long GetDuration(float a, float b, float speed, long maxDuration) {
+            return (long)Math.Min(Math.Abs((b - a) / speed), maxDuration);
         }
 
         public static Panel Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
@@ -243,9 +241,10 @@ namespace Apos.Gui {
         protected List<IComponent> _children = new List<IComponent>();
         protected List<IComponent> _childrenRenderOrder = new List<IComponent>();
 
+        protected FloatTween _offsetXTween = new FloatTween(0f, 0f, 0, Easing.ExpoOut);
+        protected FloatTween _offsetYTween = new FloatTween(0f, 0f, 0, Easing.ExpoOut);
+
         protected float _offsetX = 0;
         protected float _offsetY = 0;
-        protected float _targetOffsetX = 0;
-        protected float _targetOffsetY = 0;
     }
 }

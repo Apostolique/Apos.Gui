@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Apos.Input;
+using Apos.Tweens;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,8 +25,9 @@ namespace Apos.Gui {
         /// <summary>
         /// Called at the start of an update loop.
         /// </summary>
-        public static void UpdateSetup() {
+        public static void UpdateSetup(GameTime gameTime) {
             InputHelper.UpdateSetup();
+            TweenHelper.UpdateSetup(gameTime);
         }
         /// <summary>
         /// Called at the end of an update loop.

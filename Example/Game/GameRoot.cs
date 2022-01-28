@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Apos.Gui;
 using Apos.Input;
 using FontStashSharp;
@@ -43,7 +43,7 @@ namespace GameProject {
         private float _slider = 0.5f;
 
         protected override void Update(GameTime gameTime) {
-            GuiHelper.UpdateSetup();
+            GuiHelper.UpdateSetup(gameTime);
 
             if (_quit.Pressed())
                 Exit();
