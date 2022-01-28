@@ -86,7 +86,7 @@ namespace Apos.Gui {
         }
 
         public override void Draw(GameTime gameTime) {
-            GuiHelper.SetScissor(Clip);
+            GuiHelper.PushScissor(Clip);
 
             if (Clicked) {
                 GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.5f);
@@ -105,7 +105,7 @@ namespace Apos.Gui {
                 Child.Draw(gameTime);
             }
 
-            GuiHelper.ResetScissor();
+            GuiHelper.PopScissor();
         }
 
         public void Add(IComponent c) {
@@ -143,9 +143,9 @@ namespace Apos.Gui {
             Parent?.SendToTop(this);
         }
 
-        public static Button Put(string text, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+        public static Button Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             Button b = Put(id, isAbsoluteId);
-            Label.Put(text, id, isAbsoluteId);
+            Label.Put(text, fontSize: fontSize, color: color, id: id, isAbsoluteId: isAbsoluteId);
 
             return b;
         }

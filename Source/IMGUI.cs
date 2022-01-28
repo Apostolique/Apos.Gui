@@ -53,7 +53,7 @@ namespace Apos.Gui {
                 c.Width = c.PrefWidth;
                 c.Height = c.PrefHeight;
 
-                // TODO: Set clip limit to the window?
+                // TODO: Set clip limit to the window? When not set, clip == bounds.
 
                 c.UpdateSetup(gameTime);
             }
@@ -306,7 +306,7 @@ namespace Apos.Gui {
         }
 
         private Stack<int> _idStack = new Stack<int>();
-        private int _idHash;
+        private int _idHash = 17;
 
         private Stack<(IParent Parent, int MaxChildren, int ChildrenCount)> _parents = new Stack<(IParent, int, int)>();
         private Dictionary<int, IComponent> _activeComponents = new Dictionary<int, IComponent>();

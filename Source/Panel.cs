@@ -14,13 +14,13 @@ namespace Apos.Gui {
         public float OffsetX {
             get => _offsetX;
             set {
-                SetOffset(_offsetXTween, MathHelper.Min(MathHelper.Max(value, Clip.Width - FullWidth), 0));
+                SetOffset(_offsetXTween, ClampOffsetX(value));
             }
         }
         public float OffsetY {
             get => _offsetY;
             set {
-                SetOffset(_offsetYTween, MathHelper.Min(MathHelper.Max(value, Clip.Height - FullHeight), 0));
+                SetOffset(_offsetYTween, ClampOffsetY(value));
             }
         }
         public float FullWidth { get; set; } = 100;
@@ -59,13 +59,17 @@ namespace Apos.Gui {
             PrefHeight = maxHeight;
         }
         public override void UpdateSetup(GameTime gameTime) {
+            if (_offsetYTween.B != ClampOffsetY(_offsetYTween.B)) {
+                SetOffset(_offsetYTween, ClampOffsetY(_offsetYTween.B));
+            }
+
             _offsetX = _offsetXTween.Value;
             _offsetY = _offsetYTween.Value;
 
             float maxWidth = Width;
             float maxHeight = Height;
 
-            float currentY = 0;
+            float currentY = 0f;
             foreach (var c in _children) {
                 c.X = X + OffsetX;
                 c.Y = currentY + Y + OffsetY;
@@ -89,18 +93,21 @@ namespace Apos.Gui {
             }
 
             if (Clip.Contains(GuiHelper.Mouse) && Track.MouseCondition.Scrolled()) {
-                SetOffset(_offsetYTween, MathHelper.Min(MathHelper.Max(_offsetYTween.B + Math.Sign(MouseCondition.ScrollDelta) * ScrollIncrement, Height - FullHeight), 0));
+                SetOffset(_offsetYTween, ClampOffsetY(_offsetYTween.B + Math.Sign(MouseCondition.ScrollDelta) * ScrollIncrement));
             }
+
+            // TODO: Consume clicks on the panel? Otherwise it's possible to click stuff under it.
         }
         public override void Update(GameTime gameTime) {
             foreach (var c in _children)
                 c.Update(gameTime);
         }
         public override void Draw(GameTime gameTime) {
+            // TODO: Only draw visible stuff. Use clip.
             foreach (var c in _childrenRenderOrder)
                 c.Draw(gameTime);
 
-            // TODO: Draw scrollbars if needed.
+            // TODO: Draw scrollbars if needed?
         }
 
         public virtual void Add(IComponent c) {
@@ -182,15 +189,22 @@ namespace Apos.Gui {
             if (c.Y < Y) {
                 float yDiff = Y - c.Y;
                 float oDiff = _offsetYTween.B - _offsetY;
-                SetOffset(_offsetYTween, _offsetYTween.B + yDiff - oDiff);
+                SetOffset(_offsetYTween, ClampOffsetY(_offsetYTween.B + yDiff - oDiff));
             }
             if (c.Bottom > Bottom) {
                 float yDiff = Bottom - c.Bottom;
                 float oDiff = _offsetYTween.B - _offsetY;
-                SetOffset(_offsetYTween, _offsetYTween.B + yDiff - oDiff);
+                SetOffset(_offsetYTween, ClampOffsetY(_offsetYTween.B + yDiff - oDiff));
             }
 
             Parent?.SendToTop(this);
+        }
+
+        protected virtual float ClampOffsetX(float x) {
+            return MathHelper.Min(MathHelper.Max(x, Clip.Width - FullWidth), 0f);
+        }
+        protected virtual float ClampOffsetY(float y) {
+            return MathHelper.Min(MathHelper.Max(y, Clip.Height - FullHeight), 0f);
         }
 
         protected void SetOffset(FloatTween ft, float b) {

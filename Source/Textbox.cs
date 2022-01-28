@@ -101,7 +101,7 @@ namespace Apos.Gui {
             }
         }
         public override void Draw(GameTime gameTime) {
-            GuiHelper.SetScissor(Clip);
+            GuiHelper.PushScissor(Clip);
 
             if (IsFocused) {
                 GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.White, 2f);
@@ -122,7 +122,7 @@ namespace Apos.Gui {
             var font = GuiHelper.GetFont(_fontSize);
             GuiHelper.SpriteBatch.DrawString(font, _text, XY + new Vector2(Padding), new Color(200, 200, 200), GuiHelper.FontScale);
 
-            GuiHelper.ResetScissor();
+            GuiHelper.PopScissor();
         }
 
         public static Textbox Put(ref string text, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
@@ -200,6 +200,7 @@ namespace Apos.Gui {
         protected int _inputDelay = 0;
         protected int _inputDelaySpeed = 50;
         protected int _inputDelayInitialSpeed = 400;
+        // TODO: Replace with tween.
         protected int _cursorBlink = 0;
         protected int _cursorBlinkSpeed = 1500;
 

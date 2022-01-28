@@ -68,7 +68,7 @@ namespace Apos.Gui {
         }
 
         public override void Draw(GameTime gameTime) {
-            GuiHelper.SetScissor(Clip);
+            GuiHelper.PushScissor(Clip);
 
             if (IsChecked) {
                 GuiHelper.SpriteBatch.FillRectangle(new RectangleF(Left + 6, Top + 6, Width - 12, Height - 12), Color.White);
@@ -89,7 +89,7 @@ namespace Apos.Gui {
                 GuiHelper.SpriteBatch.DrawRectangle(new RectangleF(Left + 6, Top + 6, Width - 12, Height - 12), new Color(76, 76, 76), 2f);
             }
 
-            GuiHelper.ResetScissor();
+            GuiHelper.PopScissor();
         }
 
         public static Checkbox Put(ref bool isChecked, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {

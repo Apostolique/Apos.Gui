@@ -87,7 +87,7 @@ namespace Apos.Gui {
         /// The rectangle is converted into screen coordinates.
         /// </summary>
         /// <param name="r">The rectangle to use for the spritebatch scissor in UI coordinates.</param>
-        public static void SetScissor(RectangleF r) {
+        public static void PushScissor(RectangleF r) {
             // TODO: Optimize begin call somehow. Maybe there is no drawing between scissor swaps?
             bool wasBeginCalled = _beginCalled;
             if (wasBeginCalled) {
@@ -106,7 +106,7 @@ namespace Apos.Gui {
         /// <summary>
         /// Uses a rectangle to limit the area that the spritebatch is allowed to draw to.
         /// </summary>
-        public static void ResetScissor() {
+        public static void PopScissor() {
             if (_beginCalled) {
                 End();
             }
