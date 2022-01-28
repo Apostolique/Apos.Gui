@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6</TargetFramework>
     <AssemblyName>Example</AssemblyName>
     <MonoGamePlatform>DesktopGl</MonoGamePlatform>
     <PublishTrimmed>true</PublishTrimmed>
