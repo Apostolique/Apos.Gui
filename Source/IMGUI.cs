@@ -54,13 +54,17 @@ namespace Apos.Gui {
                 }
             }
 
+            X = 0f;
+            Y = 0f;
+            Width = GuiHelper.WindowWidth;
+            Height = GuiHelper.WindowHeight;
+
             foreach (var c in _children) {
                 c.UpdatePrefSize(gameTime);
-                // TODO: Update position?
                 c.Width = c.PrefWidth;
                 c.Height = c.PrefHeight;
 
-                // TODO: Set clip limit to the window? When not set, clip == bounds.
+                c.Clip = Bounds;
 
                 c.UpdateSetup(gameTime);
             }
