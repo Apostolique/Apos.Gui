@@ -59,6 +59,8 @@ namespace Apos.Gui {
             PrefHeight = maxHeight;
         }
         public override void UpdateSetup(GameTime gameTime) {
+            // TODO: Keep current focus in view if it's in view?
+
             if (_offsetYTween.B != ClampOffsetY(_offsetYTween.B)) {
                 SetOffset(_offsetYTween, ClampOffsetY(_offsetYTween.B));
             }
@@ -92,6 +94,7 @@ namespace Apos.Gui {
                 _childrenRenderOrder[i].UpdateInput(gameTime);
             }
 
+            // TODO: If we don't scroll, don't consume the scroll to bubble the event up. Allows recursive scrolling.
             if (Clip.Contains(GuiHelper.Mouse) && Track.MouseCondition.Scrolled()) {
                 SetOffset(_offsetYTween, ClampOffsetY(_offsetYTween.B + Math.Sign(MouseCondition.ScrollDelta) * ScrollIncrement));
             }
@@ -201,10 +204,10 @@ namespace Apos.Gui {
         }
 
         protected virtual float ClampOffsetX(float x) {
-            return MathHelper.Min(MathHelper.Max(x, Clip.Width - FullWidth), 0f);
+            return MathHelper.Min(MathHelper.Max(x, Width - FullWidth), 0f);
         }
         protected virtual float ClampOffsetY(float y) {
-            return MathHelper.Min(MathHelper.Max(y, Clip.Height - FullHeight), 0f);
+            return MathHelper.Min(MathHelper.Max(y, Height - FullHeight), 0f);
         }
 
         protected void SetOffset(FloatTween ft, float b) {
