@@ -106,9 +106,11 @@ namespace Apos.Gui {
                 c.Update(gameTime);
         }
         public override void Draw(GameTime gameTime) {
-            // TODO: Only draw visible stuff. Use clip.
-            foreach (var c in _childrenRenderOrder)
-                c.Draw(gameTime);
+            foreach (var c in _childrenRenderOrder) {
+                if (Clip.Intersects(c.Clip)) {
+                    c.Draw(gameTime);
+                }
+            }
 
             // TODO: Draw scrollbars if needed?
         }
