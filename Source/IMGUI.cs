@@ -43,8 +43,15 @@ namespace Apos.Gui {
                 pc.Component.GrabFocus = GrabFocus;
             }
 
-            while (_nextTick.Count > 0) {
-                _nextTick.Dequeue().Invoke();
+            _isTick0 = !_isTick0;
+            if (!_isTick0) {
+                while (_nextTick0.Count > 0) {
+                    _nextTick0.Dequeue().Invoke();
+                }
+            } else {
+                while (_nextTick1.Count > 0) {
+                    _nextTick1.Dequeue().Invoke();
+                }
             }
 
             foreach (var c in _children) {
@@ -236,7 +243,11 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="a">The action that will be enqueued.</param>
         public void QueueNextTick(Action a) {
-            _nextTick.Enqueue(a);
+            if (_isTick0) {
+                _nextTick0.Enqueue(a);
+            } else {
+                _nextTick1.Enqueue(a);
+            }
         }
 
         private void Cleanup() {
@@ -333,6 +344,8 @@ namespace Apos.Gui {
         private bool _prevPressed = false;
         private bool _nextPressed = false;
 
-        private Queue<Action> _nextTick = new Queue<Action>();
+        private bool _isTick0 = true;
+        private Queue<Action> _nextTick0 = new Queue<Action>();
+        private Queue<Action> _nextTick1 = new Queue<Action>();
     }
 }
