@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using FontStashSharp;
 using MonoGame.Extended;
 using System.Runtime.CompilerServices;
+using Apos.Tweens;
 
 namespace Apos.Gui {
     // TODO: Scroll / Follow cursor when there's too much text.
@@ -31,7 +32,7 @@ namespace Apos.Gui {
             get => base.IsFocused;
             set {
                 base.IsFocused = value;
-                _cursorBlink = _cursorBlinkSpeed;
+                _blink.StartTime = TweenHelper.TotalMS;
             }
         }
         public override bool IsFocusable { get; set; } = true;
@@ -78,7 +79,7 @@ namespace Apos.Gui {
                     } else if (te.Key == Keys.Delete) {
                         if (_text.Length > 0 && Cursor < _text.Length) {
                             Text = _text.Remove(Cursor, 1);
-                            _cursorBlink = _cursorBlinkSpeed;
+                            _blink.StartTime = TweenHelper.TotalMS;
                         }
                     } else {
                         Text = _text.Insert(Cursor, $"{te.Character}");
@@ -90,13 +91,8 @@ namespace Apos.Gui {
         }
         public override void Update(GameTime gameTime) {
             if (IsFocused) {
-                if (_inputDelay > 0) {
-                    _inputDelay -= (int)gameTime.ElapsedGameTime.TotalMilliseconds;
-                }
-                if (_cursorBlink > 0) {
-                    _cursorBlink -= (int)gameTime.ElapsedGameTime.TotalMilliseconds;
-                } else {
-                    _cursorBlink = _cursorBlinkSpeed;
+                if (TweenHelper.TotalMS > _blink.StartTime + _blink.Duration) {
+                    _blink.StartTime = TweenHelper.TotalMS;
                 }
             }
         }
@@ -112,8 +108,8 @@ namespace Apos.Gui {
                 if (Cursor > 0 && Cursor <= _text.Length) {
                     cursorLeft = alignLeft + GuiHelper.MeasureStringTight(_text.Substring(0, Cursor), _fontSize).X;
                 }
-                if (_cursorBlink >= _cursorBlinkSpeed * 0.5) {
-                    GuiHelper.SpriteBatch.FillRectangle(new RectangleF(cursorLeft, Top, 2, Height), Color.White);
+                if (_blink.Value <= 0.5f) {
+                    GuiHelper.SpriteBatch.FillRectangle(new RectangleF(cursorLeft, Top, 2f, Height), Color.White);
                 }
             } else {
                 GuiHelper.SpriteBatch.DrawRectangle(Bounds, new Color(76, 76, 76), 2f);
@@ -158,12 +154,14 @@ namespace Apos.Gui {
         protected void MoveCursor(ICondition condition, int direction) {
             if (condition.Pressed()) {
                 Cursor += direction;
-                _inputDelay = _inputDelayInitialSpeed;
+                _input.StartTime = TweenHelper.TotalMS;
+                _input.Duration = _inputInitialDelay;
             }
             if (condition.HeldOnly()) {
-                if (_inputDelay <= 0) {
+                if (TweenHelper.TotalMS > _input.StartTime + _input.Duration) {
                     Cursor += direction;
-                    _inputDelay = _inputDelaySpeed;
+                    _input.StartTime = TweenHelper.TotalMS;
+                    _input.Duration = _inputDelay;
                 }
             }
         }
@@ -191,18 +189,16 @@ namespace Apos.Gui {
             set {
                 if (value >= 0 && value <= _text.Length && _cursor != value) {
                     _cursor = value;
-                    _cursorBlink = _cursorBlinkSpeed;
+                    _blink.StartTime = TweenHelper.TotalMS;
                 }
             }
         }
         protected int _cursor;
 
-        protected int _inputDelay = 0;
-        protected int _inputDelaySpeed = 50;
-        protected int _inputDelayInitialSpeed = 400;
-        // TODO: Replace with tween.
-        protected int _cursorBlink = 0;
-        protected int _cursorBlinkSpeed = 1500;
+        protected int _inputDelay = 50;
+        protected int _inputInitialDelay = 400;
+        protected FloatTween _input = new FloatTween(0f, 1f, 50, Easing.Linear);
+        protected FloatTween _blink = new FloatTween(0f, 1f, 1500, Easing.Linear);
 
         protected bool _pressed = false;
     }
