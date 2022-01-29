@@ -50,5 +50,12 @@ namespace Apos.Gui {
                 new Track.KeyboardCondition(Keys.Down),
                 new Track.GamePadCondition(GamePadButton.Left, 0)
             );
+        public static ICondition Back { get; set; } =
+            new AnyCondition(
+                new Track.KeyboardCondition(Keys.Escape),
+                new Track.GamePadCondition(GamePadButton.B, 0),
+                new Track.GamePadCondition(GamePadButton.Back, 0),
+                new Track.MouseCondition(MouseButton.XButton2)
+            );
     }
 }
