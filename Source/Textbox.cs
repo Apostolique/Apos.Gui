@@ -8,19 +8,22 @@ using System.Runtime.CompilerServices;
 using Apos.Tweens;
 
 namespace Apos.Gui {
-    // TODO: Scroll / Follow cursor when there's too much text.
+    // TODO: Textbox shouldn't change it's size. It should take a "preferred width" and just use that.
+    //       Will need to add scrolling.
+
     public class Textbox : Component {
-        public Textbox(int id, string text) : base(id) {
+        public Textbox(int id, string text, int fontSize, Color c) : base(id) {
             Text = text;
+            FontSize = fontSize;
+            Color = c;
         }
 
         public string Text {
             get => _text;
             set {
-                // TODO: Only modify the text on the next loop.
                 if (_text != value) {
                     _text = value;
-                    _size = GuiHelper.MeasureString(_text, 30);
+                    _size = GuiHelper.MeasureString(_text, _fontSize);
                     if (Cursor > _text.Length) {
                         Cursor = _text.Length;
                     }
@@ -28,6 +31,17 @@ namespace Apos.Gui {
             }
         }
         public int Padding { get; set; } = 10;
+        public Color Color { get; set; }
+        public int FontSize {
+            get => _fontSize;
+            set {
+                if (value != _fontSize) {
+                    _fontSize = value;
+                    _size = GuiHelper.MeasureString(_text, _fontSize);
+                }
+            }
+        }
+
         public override bool IsFocused {
             get => base.IsFocused;
             set {
@@ -116,18 +130,20 @@ namespace Apos.Gui {
             }
 
             var font = GuiHelper.GetFont(_fontSize);
-            GuiHelper.SpriteBatch.DrawString(font, _text, XY + new Vector2(Padding), new Color(200, 200, 200), GuiHelper.FontScale);
+            GuiHelper.SpriteBatch.DrawString(font, _text, XY + new Vector2(Padding), Color, GuiHelper.FontScale);
 
             GuiHelper.PopScissor();
         }
 
-        public static Textbox Put(ref string text, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+        public static Textbox Put(ref string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             // 1. Check if Textbox with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 4. Ping it.
             id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
             GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
+
+            color ??= new Color(200, 200, 200);
 
             Textbox a;
             if (c is Textbox) {
@@ -137,8 +153,11 @@ namespace Apos.Gui {
                 } else {
                     a.Text = text;
                 }
+
+                a.Color = color.Value;
+                a.FontSize = fontSize;
             } else {
-                a = new Textbox(id, text);
+                a = new Textbox(id, text, fontSize, color.Value);
             }
 
             IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
@@ -182,7 +201,7 @@ namespace Apos.Gui {
         protected string _text;
         protected Vector2 _size;
 
-        protected int _fontSize = 30;
+        protected int _fontSize;
         protected RectangleF _cursorRect;
         protected int Cursor {
             get => _cursor;
