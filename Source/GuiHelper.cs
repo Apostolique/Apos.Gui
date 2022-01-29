@@ -44,7 +44,7 @@ namespace Apos.Gui {
         public static float Scale {
             get => _scale;
             set {
-                if (value > 0) {
+                if (value > 0f) {
                     _scale = value;
                     _virtualScale = (float)Math.Ceiling(_scale);
                     _finalScale = 1f / _virtualScale;
@@ -57,7 +57,7 @@ namespace Apos.Gui {
         /// <summary>
         /// Used to convert between the screen and UI coordinate system.
         /// </summary>
-        public static Matrix UIMatrix => Matrix.CreateScale(Scale, Scale, 1);
+        public static Matrix UIMatrix => Matrix.CreateScale(Scale, Scale, 1f);
         /// <summary>
         ///
         /// </summary>
