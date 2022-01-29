@@ -51,6 +51,9 @@ namespace Apos.Gui {
                 }
             }
         }
+        public static float WindowWidth => InputHelper.WindowWidth / Scale;
+        public static float WindowHeight => InputHelper.WindowHeight / Scale;
+
         /// <summary>
         /// Used to convert between the screen and UI coordinate system.
         /// </summary>
