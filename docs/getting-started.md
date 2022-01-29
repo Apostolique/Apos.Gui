@@ -39,7 +39,7 @@ In your update loop, call the following functions:
 ```csharp
 protected override void Update(GameTime gameTime) {
     // Call UpdateSetup at the start.
-    GuiHelper.UpdateSetup();
+    GuiHelper.UpdateSetup(gameTime);
     _ui.UpdateAll(gameTime);
 
     // Create your UI.
