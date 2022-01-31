@@ -3,8 +3,6 @@ UI library for MonoGame.
 
 [![Discord](https://img.shields.io/discord/355231098122272778.svg)](https://discord.gg/N9t26Uv)
 
-Note: Version 1 is currently in alpha. It is a full rewrite. This readme is updated, but the API is not yet fully stabilized. The library is not yet fully stable.
-
 ## Documentation
 
 * [Getting started](https://apostolique.github.io/Apos.Gui/getting-started/)
