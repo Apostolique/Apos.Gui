@@ -64,7 +64,7 @@ namespace Apos.Gui {
                 c.Width = c.PrefWidth;
                 c.Height = c.PrefHeight;
 
-                c.Clip = Bounds;
+                c.Clip = c.Bounds.Intersection(Clip);
 
                 c.UpdateSetup(gameTime);
             }
