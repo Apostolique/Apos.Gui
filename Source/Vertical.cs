@@ -75,10 +75,10 @@ namespace Apos.Gui {
             foreach (var c in _children) {
                 c.X = X + OffsetX;
                 c.Y = currentY + Y + OffsetY;
-                c.Width = c.PrefWidth;
+                c.Width = MathHelper.Min(c.PrefWidth, Width);
                 c.Height = c.PrefHeight;
 
-                maxWidth = MathHelper.Max(c.PrefWidth, maxWidth);
+                maxWidth = MathHelper.Max(c.Width, maxWidth);
                 c.Clip = c.Bounds.Intersection(Clip);
 
                 c.UpdateSetup(gameTime);

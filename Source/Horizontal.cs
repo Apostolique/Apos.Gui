@@ -61,8 +61,8 @@ namespace Apos.Gui {
         public override void UpdateSetup(GameTime gameTime) {
             // TODO: Keep current focus in view if it's in view?
 
-            if (_offsetXTween.B != ClampOffsetY(_offsetXTween.B)) {
-                SetOffset(_offsetXTween, ClampOffsetY(_offsetXTween.B));
+            if (_offsetXTween.B != ClampOffsetX(_offsetXTween.B)) {
+                SetOffset(_offsetXTween, ClampOffsetX(_offsetXTween.B));
             }
 
             _offsetX = _offsetXTween.Value;
@@ -76,9 +76,9 @@ namespace Apos.Gui {
                 c.X = currentX + X + OffsetX;
                 c.Y = Y + OffsetY;
                 c.Width = c.PrefWidth;
-                c.Height = c.PrefHeight;
+                c.Height = MathHelper.Min(c.PrefHeight, Height);
 
-                maxHeight = MathHelper.Max(c.PrefHeight, maxHeight);
+                maxHeight = MathHelper.Max(c.Height, maxHeight);
                 c.Clip = c.Bounds.Intersection(Clip);
 
                 c.UpdateSetup(gameTime);
