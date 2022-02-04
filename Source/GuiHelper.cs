@@ -44,6 +44,7 @@ namespace Apos.Gui {
         public static float Scale {
             get => _scale;
             set {
+                // TODO: Delay scale change until next frame? It's not likely to be desirable to update before a layout refresh.
                 if (value > 0f) {
                     _scale = value;
                     _virtualScale = (float)Math.Ceiling(_scale);

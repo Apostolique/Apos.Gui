@@ -5,7 +5,7 @@
     <TargetFramework>net6-windows</TargetFramework>
     <AssemblyName>Example</AssemblyName>
     <MonoGamePlatform>Windows</MonoGamePlatform>
-    <PublishTrimmed>true</PublishTrimmed>
+    <PublishTrimmed>false</PublishTrimmed>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
   </PropertyGroup>

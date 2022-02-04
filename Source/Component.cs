@@ -61,7 +61,7 @@ namespace Apos.Gui {
             return this;
         }
 
-        public virtual Action<IComponent> GrabFocus { get; set; } = c => { };
+        public virtual Action<IComponent?> GrabFocus { get; set; } = c => { };
         public virtual void SendToTop() {
             Parent?.SendToTop(this);
         }

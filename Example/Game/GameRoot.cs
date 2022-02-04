@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Apos.Gui;
 using Apos.Input;
 using FontStashSharp;
@@ -50,7 +50,7 @@ namespace GameProject {
 
             _ui.UpdateAll(gameTime);
 
-            Panel.Push().XY = new Vector2(100, 100);
+            MenuPanel.Push().XY = new Vector2(100, 100);
             if (_menu == Menu.Main) {
                 Label.Put("Main Menu");
                 Label.Put($"Your name is '{_name}'");
@@ -68,7 +68,7 @@ namespace GameProject {
                 if (Button.Put("Yes").Clicked) Exit();
                 if (Button.Put("No").Clicked) _menu = Menu.Main;
             }
-            Panel.Pop();
+            MenuPanel.Pop();
 
             GuiHelper.UpdateCleanup();
             base.Update(gameTime);

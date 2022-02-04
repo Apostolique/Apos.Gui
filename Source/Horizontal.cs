@@ -8,8 +8,8 @@ using System;
 using Apos.Tweens;
 
 namespace Apos.Gui {
-    public class Panel : Component, IParent {
-        public Panel(int id) : base(id) { }
+    public class Horizontal : Component, IParent {
+        public Horizontal(int id) : base(id) { }
 
         public float OffsetX {
             get => _offsetX;
@@ -51,8 +51,8 @@ namespace Apos.Gui {
 
             foreach (var c in _children) {
                 c.UpdatePrefSize(gameTime);
-                maxWidth = MathHelper.Max(c.PrefWidth, maxWidth);
-                maxHeight += c.PrefHeight;
+                maxWidth += c.PrefWidth;
+                maxHeight = MathHelper.Max(c.PrefHeight, maxHeight);
             }
 
             PrefWidth = maxWidth;
@@ -61,8 +61,8 @@ namespace Apos.Gui {
         public override void UpdateSetup(GameTime gameTime) {
             // TODO: Keep current focus in view if it's in view?
 
-            if (_offsetYTween.B != ClampOffsetY(_offsetYTween.B)) {
-                SetOffset(_offsetYTween, ClampOffsetY(_offsetYTween.B));
+            if (_offsetXTween.B != ClampOffsetY(_offsetXTween.B)) {
+                SetOffset(_offsetXTween, ClampOffsetY(_offsetXTween.B));
             }
 
             _offsetX = _offsetXTween.Value;
@@ -71,23 +71,23 @@ namespace Apos.Gui {
             float maxWidth = Width;
             float maxHeight = Height;
 
-            float currentY = 0f;
+            float currentX = 0f;
             foreach (var c in _children) {
-                c.X = X + OffsetX;
-                c.Y = currentY + Y + OffsetY;
+                c.X = currentX + X + OffsetX;
+                c.Y = Y + OffsetY;
                 c.Width = c.PrefWidth;
                 c.Height = c.PrefHeight;
 
-                maxWidth = MathHelper.Max(c.PrefWidth, maxWidth);
+                maxHeight = MathHelper.Max(c.PrefHeight, maxHeight);
                 c.Clip = c.Bounds.Intersection(Clip);
 
                 c.UpdateSetup(gameTime);
 
-                currentY += c.Height;
+                currentX += c.Width;
             }
 
-            FullWidth = maxWidth;
-            FullHeight = MathHelper.Max(currentY, maxHeight);
+            FullWidth = MathHelper.Max(currentX, maxWidth);
+            FullHeight = maxHeight;
         }
         public override void UpdateInput(GameTime gameTime) {
             for (int i = _childrenRenderOrder.Count - 1; i >= 0; i--) {
@@ -96,7 +96,7 @@ namespace Apos.Gui {
 
             // TODO: If we don't scroll, don't consume the scroll to bubble the event up. Allows recursive scrolling.
             if (Clip.Contains(GuiHelper.Mouse) && Track.MouseCondition.Scrolled()) {
-                SetOffset(_offsetYTween, ClampOffsetY(_offsetYTween.B + Math.Sign(MouseCondition.ScrollDelta) * ScrollIncrement));
+                SetOffset(_offsetXTween, ClampOffsetX(_offsetXTween.B + Math.Sign(MouseCondition.ScrollDelta) * ScrollIncrement));
             }
 
             // TODO: Consume clicks on the panel? Otherwise it's possible to click stuff under it.
@@ -191,15 +191,15 @@ namespace Apos.Gui {
                 _childrenRenderOrder.Add(c);
             }
 
-            if (c.Y < Y) {
-                float yDiff = Y - c.Y;
-                float oDiff = _offsetYTween.B - _offsetY;
-                SetOffset(_offsetYTween, ClampOffsetY(_offsetYTween.B + yDiff - oDiff));
+            if (c.X < X) {
+                float xDiff = X - c.X;
+                float oDiff = _offsetXTween.B - _offsetX;
+                SetOffset(_offsetXTween, ClampOffsetX(_offsetXTween.B + xDiff - oDiff));
             }
-            if (c.Bottom > Bottom) {
-                float yDiff = Bottom - c.Bottom;
-                float oDiff = _offsetYTween.B - _offsetY;
-                SetOffset(_offsetYTween, ClampOffsetY(_offsetYTween.B + yDiff - oDiff));
+            if (c.Right > Right) {
+                float xDiff = Right - c.Right;
+                float oDiff = _offsetXTween.B - _offsetX;
+                SetOffset(_offsetXTween, ClampOffsetX(_offsetXTween.B + xDiff - oDiff));
             }
 
             Parent?.SendToTop(this);
@@ -224,8 +224,8 @@ namespace Apos.Gui {
             return (long)Math.Min(Math.Abs((b - a) / speed), maxDuration);
         }
 
-        public static Panel Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            // 1. Check if panel with id already exists.
+        public static Horizontal Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+            // 1. Check if horizontal with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 3. Push it on the stack.
@@ -233,11 +233,11 @@ namespace Apos.Gui {
             id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
             GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
 
-            Panel a;
-            if (c is Panel) {
-                a = (Panel)c;
+            Horizontal a;
+            if (c is Horizontal) {
+                a = (Horizontal)c;
             } else {
-                a = new Panel(id);
+                a = new Horizontal(id);
             }
 
             IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);

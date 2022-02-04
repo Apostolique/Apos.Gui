@@ -4,7 +4,7 @@ using Apos.Tweens;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
-    public class MenuPanel : Panel {
+    public class MenuPanel : Vertical {
         public MenuPanel(int id) : base(id) { }
 
         public override void UpdatePrefSize(GameTime gameTime) {
@@ -64,8 +64,8 @@ namespace Apos.Gui {
             return MathHelper.Min(MathHelper.Max(y, Height - FullHeight), FullHeight < Height ? Height / 2f - FullHeight / 2f : 0f);
         }
 
-        public static MenuPanel Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            // 1. Check if ScreenPanel with id already exists.
+        public static new MenuPanel Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+            // 1. Check if MenuPanel with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
             // 3. Push it on the stack.
@@ -91,9 +91,6 @@ namespace Apos.Gui {
             GuiHelper.CurrentIMGUI.Push(a);
 
             return a;
-        }
-        public static void Pop() {
-            GuiHelper.CurrentIMGUI.Pop();
         }
 
         protected bool _snap = false;

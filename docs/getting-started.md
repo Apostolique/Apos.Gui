@@ -43,7 +43,7 @@ protected override void Update(GameTime gameTime) {
     _ui.UpdateAll(gameTime);
 
     // Create your UI.
-    Panel.Push();
+    MenuPanel.Push();
     if (Button.Put("Show fun").Clicked) {
         _showFun = !_showFun;
     }
@@ -53,7 +53,7 @@ protected override void Update(GameTime gameTime) {
     if (Button.Put("Quit").Clicked) {
         Exit();
     }
-    Panel.Pop();
+    MenuPanel.Pop();
 
     // Call UpdateCleanup at the end.
     GuiHelper.UpdateCleanup();

@@ -35,6 +35,7 @@ namespace Apos.Gui {
         public int FontSize {
             get => _fontSize;
             set {
+                // TODO: Only change size on next loop since it changes the layout.
                 if (value != _fontSize) {
                     _fontSize = value;
                     _size = GuiHelper.MeasureString(_text, _fontSize);

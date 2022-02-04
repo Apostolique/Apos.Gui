@@ -26,7 +26,7 @@ UI library for MonoGame.
 You can create a simple UI with the following code that you'll put in the Update call:
 
 ```csharp
-Panel.Push();
+MenuPanel.Push();
 if (Button.Put("Show fun").Clicked) {
     _showFun = !_showFun;
 }
@@ -36,7 +36,7 @@ if (_showFun) {
 if (Button.Put("Quit").Clicked) {
     Exit();
 }
-Panel.Pop();
+MenuPanel.Pop();
 ```
 
 The code above will create 2 buttons, "Show Fun" and "Quit". You can use your mouse, keyboard, or gamepad to interact with them. Clicking on "Show Fun" will insert a label in between them with the text "This is fun!".

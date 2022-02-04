@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
 namespace Apos.Gui {
-    public class FloatingWindow : Panel {
+    public class FloatingWindow : Vertical {
         public FloatingWindow(int id) : base(id) { }
 
         public override bool IsFocusable { get; set; } = true;

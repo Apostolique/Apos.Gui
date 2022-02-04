@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
     // NOTE: IMGUI is NOT recursive. It should always be the top level component.
-    public class IMGUI : Panel {
+    public class IMGUI : Component, IParent {
         public IMGUI() : base(0) {
             _currentParent = this;
             _activeComponents.Add(Id, this);
@@ -254,6 +254,83 @@ namespace Apos.Gui {
             }
         }
 
+        public virtual void Add(IComponent c) {
+            c.Parent = this;
+            _children.Insert(c.Index, c);
+
+            // TODO: Optimize this?
+            _childrenRenderOrder.Add(c);
+            _childrenRenderOrder.Sort((a, b) => {
+                if (a.IsFloatable && b.IsFloatable) {
+                    return 0;
+                } else if (!a.IsFloatable && !b.IsFloatable) {
+                    return a.Index.CompareTo(b.Index);
+                } else if (a.IsFloatable) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            });
+        }
+        public virtual void Remove(IComponent c) {
+            c.Parent = null;
+            _children.Remove(c);
+            _childrenRenderOrder.Remove(c);
+        }
+        public virtual void Reset() {
+            _nextChildIndex = 0;
+        }
+        public virtual int NextIndex() {
+            return _nextChildIndex++;
+        }
+
+        /// <summary>
+        /// If this component has a parent, it will ask the parent to return this component's previous neighbor.
+        /// If it has children, it will return the last one.
+        /// Otherwise it will return itself.
+        /// </summary>
+        public override IComponent GetPrev() {
+            return Parent != null ? Parent.GetPrev(this) : _children.Count > 0 ? _children.Last().GetLast() : this;
+        }
+        /// <summary>
+        /// If this component has children, it will return the first one.
+        /// If it has a parent it will ask the parent to return this component's next neighbor.
+        /// Otherwise, it will return itself.
+        /// </summary>
+        public override IComponent GetNext() {
+            return _children.Count > 0 ? _children.First() : Parent != null ? Parent.GetNext(this) : this;
+        }
+        /// <summary>
+        /// If the child isn't the first one, it will return the child before it.
+        /// Otherwise it will return itself.
+        /// </summary>
+        public virtual IComponent GetPrev(IComponent c) {
+            int index = c.Index - 1;
+            return index >= 0 ? _children[index].GetLast() : this;
+        }
+        /// <summary>
+        /// If the child isn't the last one, it will return the child after it.
+        /// If it has a parent, it will ask the parent to return this component's next neighbor.
+        /// Otherwise it will return itself.
+        /// </summary>
+        public virtual IComponent GetNext(IComponent c) {
+            int index = c.Index + 1;
+            return index < _children.Count ? _children[index] : Parent != null ? Parent.GetNext(this) : this;
+        }
+        /// <summary>
+        /// Returns the last child in this component tree.
+        /// </summary>
+        public virtual IComponent GetLast() {
+            return _children.Count > 0 ? _children.Last().GetLast() : this;
+        }
+
+        public virtual void SendToTop(IComponent c) {
+            if (c.IsFloatable) {
+                _childrenRenderOrder.Remove(c);
+                _childrenRenderOrder.Add(c);
+            }
+        }
+
         private void Cleanup() {
             Reset();
             foreach (var kc in _activeComponents.Reverse()) {
@@ -351,5 +428,9 @@ namespace Apos.Gui {
         private bool _isTick0 = true;
         private Queue<Action> _nextTick0 = new Queue<Action>();
         private Queue<Action> _nextTick1 = new Queue<Action>();
+
+        private int _nextChildIndex = 0;
+        private List<IComponent> _children = new List<IComponent>();
+        private List<IComponent> _childrenRenderOrder = new List<IComponent>();
     }
 }
