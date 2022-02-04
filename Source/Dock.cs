@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using Apos.Input;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 
 namespace Apos.Gui {
     public class Dock : Component, IParent {
@@ -47,11 +46,6 @@ namespace Apos.Gui {
             }
         }
         public override void Draw(GameTime gameTime) {
-            GuiHelper.PushScissor(Clip);
-            GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.Red * 0.2f);
-            GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.Blue, 2f);
-            GuiHelper.PopScissor();
-
             if (Child != null) {
                 Child.Draw(gameTime);
             }
