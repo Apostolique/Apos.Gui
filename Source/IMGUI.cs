@@ -290,7 +290,7 @@ namespace Apos.Gui {
         /// Otherwise it will return itself.
         /// </summary>
         public override IComponent GetPrev() {
-            return Parent != null ? Parent.GetPrev(this) : _children.Count > 0 ? _children.Last().GetLast() : this;
+            return Parent?.GetPrev(this) ?? (_children.Count > 0 ? _children.Last().GetLast() : this);
         }
         /// <summary>
         /// If this component has children, it will return the first one.
@@ -298,7 +298,7 @@ namespace Apos.Gui {
         /// Otherwise, it will return itself.
         /// </summary>
         public override IComponent GetNext() {
-            return _children.Count > 0 ? _children.First() : Parent != null ? Parent.GetNext(this) : this;
+            return _children.Count > 0 ? _children.First() : Parent?.GetNext(this) ?? this;
         }
         /// <summary>
         /// If the child isn't the first one, it will return the child before it.
@@ -315,7 +315,7 @@ namespace Apos.Gui {
         /// </summary>
         public virtual IComponent GetNext(IComponent c) {
             int index = c.Index + 1;
-            return index < _children.Count ? _children[index] : Parent != null ? Parent.GetNext(this) : this;
+            return index < _children.Count ? _children[index] : Parent?.GetNext(this) ?? this;
         }
         /// <summary>
         /// Returns the last child in this component tree.

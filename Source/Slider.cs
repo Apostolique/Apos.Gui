@@ -16,7 +16,7 @@ namespace Apos.Gui {
         public float Min { get; set; }
         public float Max { get; set; }
         public float? Step {
-            get => _step != null ? _step.Value : (Max - Min) / 100;
+            get => _step ?? (Max - Min) / 100f;
             set {
                 _step = value;
             }

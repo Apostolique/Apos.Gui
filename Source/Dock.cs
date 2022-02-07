@@ -70,19 +70,19 @@ namespace Apos.Gui {
         public int NextIndex() => 0;
 
         public override IComponent GetPrev() {
-            return Parent != null ? Parent.GetPrev(this) : Child != null ? Child.GetLast() : this;
+            return Parent?.GetPrev(this) ?? Child?.GetLast() ?? this;
         }
         public override IComponent GetNext() {
-            return Child != null ? Child : Parent != null ? Parent.GetNext(this) : this;
+            return Child ?? Parent?.GetNext(this) ?? this;
         }
         public virtual IComponent GetPrev(IComponent c) {
             return this;
         }
         public virtual IComponent GetNext(IComponent c) {
-            return Parent != null ? Parent.GetNext(this) : this;
+            return Parent?.GetNext(this) ?? this;
         }
         public virtual IComponent GetLast() {
-            return Child != null ? Child.GetLast() : this;
+            return Child?.GetLast() ?? this;
         }
 
         public virtual void SendToTop(IComponent c) {

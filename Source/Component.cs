@@ -31,7 +31,7 @@ namespace Apos.Gui {
         public virtual IParent? Parent { get; set; }
 
         public virtual RectangleF Clip {
-            get => _clip != null ? _clip.Value : Bounds;
+            get => _clip ?? Bounds;
             set {
                 _clip = value;
             }
@@ -48,14 +48,14 @@ namespace Apos.Gui {
         /// Otherwise, it will return itself.
         /// </summary>
         public virtual IComponent GetPrev() {
-            return Parent != null ? Parent.GetPrev(this) : this;
+            return Parent?.GetPrev(this) ?? this;
         }
         /// <summary>
         /// If this component has a parent, it will ask the parent to return this component's next neighbor.
         /// Otherwise, it will return itself.
         /// </summary>
         public virtual IComponent GetNext() {
-            return Parent != null ? Parent.GetNext(this) : this;
+            return Parent?.GetNext(this) ?? this;
         }
         public virtual IComponent GetLast() {
             return this;
