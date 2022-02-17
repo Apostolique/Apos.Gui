@@ -120,5 +120,8 @@ namespace Apos.Gui {
 
             return a;
         }
+        public static void Pop() {
+            GuiHelper.CurrentIMGUI.Pop();
+        }
     }
 }
