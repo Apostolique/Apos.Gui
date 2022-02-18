@@ -1,6 +1,10 @@
 # Apos.Gui
 UI library for MonoGame.
 
+## Description
+
+This library is designed to allow the creation of custom user facing UIs. It doesn't provide much out of the box except some mechanics to manage user inputs, focus handling, component parenting and hierarchy. It is inspired by the IMGUI paradigm.
+
 [![Discord](https://img.shields.io/discord/355231098122272778.svg)](https://discord.gg/N9t26Uv)
 
 ## Documentation
