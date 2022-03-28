@@ -106,12 +106,12 @@ namespace Apos.Gui {
 
         protected void SlideValue(ICondition condition, int direction) {
             if (condition.Pressed()) {
-                Value = MathHelper.Max(MathHelper.Min(Value + direction * Step.Value, Max), Min);
+                Value = MathHelper.Max(MathHelper.Min(Value + direction * Step!.Value, Max), Min);
                 _inputDelay = _inputDelayInitialSpeed;
             }
             if (condition.HeldOnly()) {
                 if (_inputDelay <= 0) {
-                    Value = MathHelper.Max(MathHelper.Min(Value + direction * Step.Value, Max), Min);
+                    Value = MathHelper.Max(MathHelper.Min(Value + direction * Step!.Value, Max), Min);
                     _inputDelay = _inputDelaySpeed;
                 }
             }

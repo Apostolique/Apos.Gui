@@ -181,7 +181,7 @@ namespace Apos.Gui {
         /// <summary>
         /// Returns the last child in this component tree.
         /// </summary>
-        public virtual IComponent GetLast() {
+        public override IComponent GetLast() {
             return _children.Count > 0 ? _children.Last().GetLast() : this;
         }
 

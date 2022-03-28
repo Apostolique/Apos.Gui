@@ -86,7 +86,7 @@ namespace Apos.Gui {
         public virtual IComponent GetNext(IComponent c) {
             return Parent?.GetNext(this) ?? this;
         }
-        public virtual IComponent GetLast() {
+        public override IComponent GetLast() {
             return Child?.GetLast() ?? this;
         }
 
@@ -94,7 +94,7 @@ namespace Apos.Gui {
             Parent?.SendToTop(this);
         }
 
-        public static new Dock Put(float left, float top, float right, float bottom, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+        public static Dock Put(float left, float top, float right, float bottom, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             // 1. Check if dock with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.

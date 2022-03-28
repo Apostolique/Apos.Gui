@@ -145,7 +145,7 @@ namespace Apos.Gui {
         /// <summary>
         /// Removes a parent from the top of the parent stack.
         /// </summary>
-        public new void Pop() {
+        public void Pop() {
             var pop = _parents.Pop();
             _currentParent = pop.Parent;
             _maxChildren = pop.MaxChildren;
@@ -320,7 +320,7 @@ namespace Apos.Gui {
         /// <summary>
         /// Returns the last child in this component tree.
         /// </summary>
-        public virtual IComponent GetLast() {
+        public override IComponent GetLast() {
             return _children.Count > 0 ? _children.Last().GetLast() : this;
         }
 

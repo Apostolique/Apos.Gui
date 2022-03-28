@@ -199,7 +199,7 @@ namespace Apos.Gui {
             return currentPosition;
         }
 
-        protected string _text;
+        protected string _text = null!;
         protected Vector2 _size;
 
         protected int _fontSize;

@@ -87,7 +87,7 @@ namespace Apos.Gui {
             return a;
         }
 
-        protected string _text;
+        protected string _text = null!;
         protected int _fontSize;
         protected Vector2 _cachedSize;
 

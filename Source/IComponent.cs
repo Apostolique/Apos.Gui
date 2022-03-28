@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
 namespace Apos.Gui {
+    /// <summary>
+    /// Base API for components.
+    /// </summary>
     public interface IComponent {
         /// <summary>
         /// Managed automatically when a component is created. Used by an IParent to keep track of it's children.
@@ -65,8 +68,17 @@ namespace Apos.Gui {
         /// </summary>
         RectangleF Clip { get; set; }
 
+        /// <summary>
+        /// X and Y positions in the UI coordinate system.
+        /// </summary>
         Vector2 XY { get; set; }
+        /// <summary>
+        /// Width and Height of the component given by it's parent.
+        /// </summary>
         Vector2 Size { get; set; }
+        /// <summary>
+        /// The component's preferred width and height. It's up to the parent to respect that.
+        /// </summary>
         Vector2 PrefSize { get; set; }
         /// <summary>
         /// X
@@ -105,8 +117,14 @@ namespace Apos.Gui {
         /// This is where everything that doesn't rely on inputs gets updated.
         /// </summary>
         void Update(GameTime gameTime);
+        /// <summary>
+        /// Draws the component. The component should draw itself within it's clip rectangle.
+        /// </summary>
         void Draw(GameTime gameTime);
 
+        /// <summary>
+        /// The component's parent once one has been assigned.
+        /// </summary>
         IParent? Parent { get; set; }
         /// <summary>
         /// Used for focus cycling. The component tree is flattened. This returns the component before the current one.

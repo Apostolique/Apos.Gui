@@ -53,7 +53,7 @@ namespace Apos.Gui {
             base.Draw(gameTime);
         }
 
-        public static FloatingWindow Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+        public static new FloatingWindow Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             // 1. Check if window with id already exists.
             //      a. If already exists. Get it.
             //      b  If not, create it.
@@ -82,7 +82,7 @@ namespace Apos.Gui {
 
             return a;
         }
-        public static void Pop() {
+        public static new void Pop() {
             GuiHelper.CurrentIMGUI.Pop();
         }
 
