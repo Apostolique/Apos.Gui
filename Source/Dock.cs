@@ -45,6 +45,11 @@ namespace Apos.Gui {
                 Child.UpdateInput(gameTime);
             }
         }
+        public override void Update(GameTime gameTime) {
+            if (Child != null) {
+                Child.Update(gameTime);
+            }
+        }
         public override void Draw(GameTime gameTime) {
             if (Child != null) {
                 Child.Draw(gameTime);
