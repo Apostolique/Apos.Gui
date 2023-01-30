@@ -403,7 +403,6 @@ namespace Apos.Gui {
         private Stack<(IParent Parent, int MaxChildren, int ChildrenCount)> _parents = new Stack<(IParent, int, int)>();
         private Dictionary<int, IComponent> _activeComponents = new Dictionary<int, IComponent>();
         private Queue<(int Id, IParent Parent, IComponent Component)> _pendingComponents = new Queue<(int, IParent, IComponent)>();
-        private int _lastId = 0;
         private int? Focus {
             get => _focus;
             set {
