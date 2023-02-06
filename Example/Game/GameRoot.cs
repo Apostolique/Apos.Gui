@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Apos.Gui;
 using Apos.Input;
 using FontStashSharp;
@@ -27,7 +27,7 @@ namespace GameProject {
         protected override void LoadContent() {
             _s = new SpriteBatch(GraphicsDevice);
 
-            FontSystem fontSystem = FontSystemFactory.Create(GraphicsDevice, 2048, 2048);
+            FontSystem fontSystem = new FontSystem();
             fontSystem.AddFont(TitleContainer.OpenStream($"{Content.RootDirectory}/source-code-pro-medium.ttf"));
 
             GuiHelper.Setup(this, fontSystem);

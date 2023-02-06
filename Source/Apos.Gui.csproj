@@ -6,19 +6,21 @@
     <Nullable>enable</Nullable>
 
     <PackageId>Apos.Gui</PackageId>
-    <RootNamespace>Apos.Gui</RootNamespace>
     <Description>UI library for MonoGame.</Description>
+    <PackageTags>gamedev;monogame;ui</PackageTags>
+
     <Authors>Jean-David Moisan</Authors>
     <Company>Vyne Enterprise Inc.</Company>
-    <Copyright>Copyright 2020</Copyright>
-    <PackageTags>gamedev;monogame;ui</PackageTags>
-    <PackageIcon>Icon.png</PackageIcon>
+    <Copyright>Copyright 2023</Copyright>
+
     <RepositoryUrl>https://github.com/Apostolique/Apos.Gui</RepositoryUrl>
     <PackageProjectUrl>https://github.com/Apostolique/Apos.Gui</PackageProjectUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
+
+    <PackageIcon>Icon.png</PackageIcon>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSymbols>true</IncludeSymbols>
@@ -29,7 +31,7 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="All" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
-    <PackageReference Include="FontStashSharp.MonoGame" Version="0.9.2" />
+    <PackageReference Include="FontStashSharp.MonoGame" Version="1.2.8" />
     <PackageReference Include="Apos.Input" Version="2.4.2" />
     <PackageReference Include="Apos.Tweens" Version="0.1.3" />
   </ItemGroup>
