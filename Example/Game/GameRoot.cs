@@ -50,7 +50,8 @@ namespace GameProject {
 
             _ui.UpdateAll(gameTime);
 
-            MenuPanel.Push().XY = new Vector2(100, 100);
+            Dock.Put(0, 0, InputHelper.WindowWidth, InputHelper.WindowHeight);
+            Vertical.Push();
             if (_menu == Menu.Main) {
                 Label.Put("Main Menu");
                 Label.Put($"Your name is '{_name}'");
@@ -68,7 +69,7 @@ namespace GameProject {
                 if (Button.Put("Yes").Clicked) Exit();
                 if (Button.Put("No").Clicked) _menu = Menu.Main;
             }
-            MenuPanel.Pop();
+            Vertical.Pop();
 
             GuiHelper.UpdateCleanup();
             base.Update(gameTime);
