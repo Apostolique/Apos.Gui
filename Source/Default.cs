@@ -38,17 +38,17 @@ namespace Apos.Gui {
         public static ICondition MoveRight { get; set; } =
             new AnyCondition(
                 new Track.KeyboardCondition(Keys.Right),
-                new Track.GamePadCondition(GamePadButton.Left, 0)
+                new Track.GamePadCondition(GamePadButton.Right, 0)
             );
         public static ICondition MoveUp { get; set; } =
             new AnyCondition(
                 new Track.KeyboardCondition(Keys.Up),
-                new Track.GamePadCondition(GamePadButton.Left, 0)
+                new Track.GamePadCondition(GamePadButton.Up, 0)
             );
         public static ICondition MoveDown { get; set; } =
             new AnyCondition(
                 new Track.KeyboardCondition(Keys.Down),
-                new Track.GamePadCondition(GamePadButton.Left, 0)
+                new Track.GamePadCondition(GamePadButton.Down, 0)
             );
         public static ICondition Back { get; set; } =
             new AnyCondition(
