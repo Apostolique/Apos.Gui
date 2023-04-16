@@ -17,7 +17,7 @@ This library is designed to allow the creation of custom user facing UIs. It doe
 
 ## Features
 
-* Mouse, Keyboard, Gamepad
+* Mouse, Keyboard, Gamepad (touch input is possible but not provided out of the box)
 * UI scaling
 * Used like IMGUI but components can be coded like a retained UI
 
