@@ -22,7 +22,7 @@ namespace Apos.Gui {
                 _snap = true;
             }
         }
-        public override void UpdateSetup(GameTime gameTime) {
+        public override void UpdateLayout(GameTime gameTime) {
             // MenuPanel is a root component so it can set it's own position.
             X = 0f;
             Y = 0f;
@@ -54,7 +54,9 @@ namespace Apos.Gui {
 
                 c.Clip = c.Bounds.Intersection(Clip);
 
-                c.UpdateSetup(gameTime);
+                if (c is IParent p) {
+                    p.UpdateLayout(gameTime);
+                }
 
                 currentY += c.Height;
             }
@@ -64,14 +66,10 @@ namespace Apos.Gui {
             return MathHelper.Min(MathHelper.Max(y, Height - FullHeight), FullHeight < Height ? Height / 2f - FullHeight / 2f : 0f);
         }
 
+        protected bool _snap = false;
+
         public static new MenuPanel Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            // 1. Check if MenuPanel with id already exists.
-            //      a. If already exists. Get it.
-            //      b  If not, create it.
-            // 3. Push it on the stack.
-            // 4. Ping it.
-            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
-            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
+            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             MenuPanel a;
             if (c is MenuPanel) {
@@ -80,19 +78,11 @@ namespace Apos.Gui {
                 a = new MenuPanel(id);
             }
 
-            IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
-
-            if (a.LastPing != InputHelper.CurrentFrame) {
-                a.Reset();
-                a.LastPing = InputHelper.CurrentFrame;
-                a.Index = parent.NextIndex();
-            }
+            GuiHelper.CurrentIMGUI.GrabParent(a);
 
             GuiHelper.CurrentIMGUI.Push(a);
 
             return a;
         }
-
-        protected bool _snap = false;
     }
 }

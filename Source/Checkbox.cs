@@ -24,10 +24,6 @@ namespace Apos.Gui {
             }
         }
 
-        public override void UpdatePrefSize(GameTime gameTime) {
-            PrefWidth = 30f;
-            PrefHeight = 30f;
-        }
         public override void UpdateSetup(GameTime gameTime) {
             if (Clicked) {
                 Clicked = false;
@@ -67,6 +63,11 @@ namespace Apos.Gui {
             }
         }
 
+        public override void UpdatePrefSize(GameTime gameTime) {
+            PrefWidth = 30f;
+            PrefHeight = 30f;
+        }
+
         public override void Draw(GameTime gameTime) {
             GuiHelper.PushScissor(Clip);
 
@@ -92,15 +93,12 @@ namespace Apos.Gui {
             GuiHelper.PopScissor();
         }
 
+        protected bool _mousePressed = false;
+        protected bool _buttonPressed = false;
+        protected bool _hovered = false;
+
         public static Checkbox Put(ref bool isChecked, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            // 1. Check if checkbox with id already exists.
-            //      a. If already exists. Get it.
-            //      b  If not, create it.
-            // 2. Update values.
-            // 3. Register it with a parent.
-            // 4. Ping it.
-            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
-            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
+            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             Checkbox a;
             if (c is Checkbox) {
@@ -114,18 +112,9 @@ namespace Apos.Gui {
                 a = new Checkbox(id, isChecked);
             }
 
-            IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
-
-            if (a.LastPing != InputHelper.CurrentFrame) {
-                a.LastPing = InputHelper.CurrentFrame;
-                a.Index = parent.NextIndex();
-            }
+            GuiHelper.CurrentIMGUI.GrabParent(a);
 
             return a;
         }
-
-        protected bool _mousePressed = false;
-        protected bool _buttonPressed = false;
-        protected bool _hovered = false;
     }
 }

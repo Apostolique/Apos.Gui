@@ -98,13 +98,7 @@ namespace Apos.Gui {
         float Bottom { get; set; }
 
         /// <summary>
-        /// First pass for layout management.
-        /// Components can determine their preferred sizes.
-        /// </summary>
-        void UpdatePrefSize(GameTime gameTime);
-        /// <summary>
-        /// Second pass for layout management.
-        /// Parents give their child a position and size. Good place for animations that modify a layout.
+        /// Good place to setup states before inputs are processed.
         /// </summary>
         void UpdateSetup(GameTime gameTime);
         /// <summary>
@@ -117,6 +111,11 @@ namespace Apos.Gui {
         /// This is where everything that doesn't rely on inputs gets updated.
         /// </summary>
         void Update(GameTime gameTime);
+        /// <summary>
+        /// First pass for layout management.
+        /// Components can determine their preferred sizes.
+        /// </summary>
+        void UpdatePrefSize(GameTime gameTime);
         /// <summary>
         /// Draws the component. The component should draw itself within it's clip rectangle.
         /// </summary>

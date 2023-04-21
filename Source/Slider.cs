@@ -23,10 +23,6 @@ namespace Apos.Gui {
         }
         public override bool IsFocusable { get; set; } = true;
 
-        public override void UpdatePrefSize(GameTime gameTime) {
-            PrefWidth = 100;
-            PrefHeight = 40;
-        }
         public override void UpdateInput(GameTime gameTime) {
             if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
                 _isPressed = true;
@@ -57,6 +53,12 @@ namespace Apos.Gui {
                 }
             }
         }
+
+        public override void UpdatePrefSize(GameTime gameTime) {
+            PrefWidth = 100;
+            PrefHeight = 40;
+        }
+
         public override void Draw(GameTime gameTime) {
             GuiHelper.PushScissor(Clip);
             Color c;
@@ -69,39 +71,6 @@ namespace Apos.Gui {
             GuiHelper.SpriteBatch.FillRectangle(new RectangleF(Left + (Width - _thickness) * percent - _handleThickness / 2, Top + Height * 0.4f, _thickness + _handleThickness, 2), c);
             GuiHelper.SpriteBatch.FillRectangle(new RectangleF(Left + (Width - _thickness) * percent - _handleThickness / 2, Top + Height * 0.6f, _thickness + _handleThickness, 2), c);
             GuiHelper.PopScissor();
-        }
-
-        public static Slider Put(ref float value, float min, float max, float? step = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            // 1. Check if Textbox with id already exists.
-            //      a. If already exists. Get it.
-            //      b  If not, create it.
-            // 4. Ping it.
-            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
-            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
-
-            Slider a;
-            if (c is Slider) {
-                a = (Slider)c;
-                if (a.IsFocused) {
-                    value = a.Value;
-                } else {
-                    a.Value = value;
-                    a.Min = min;
-                    a.Max = max;
-                    a.Step = step;
-                }
-            } else {
-                a = new Slider(id, value, min, max, step);
-            }
-
-            IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
-
-            if (a.LastPing != InputHelper.CurrentFrame) {
-                a.LastPing = InputHelper.CurrentFrame;
-                a.Index = parent.NextIndex();
-            }
-
-            return a;
         }
 
         protected void SlideValue(ICondition condition, int direction) {
@@ -125,5 +94,28 @@ namespace Apos.Gui {
         protected int _inputDelay = 0;
         protected int _inputDelaySpeed = 50;
         protected int _inputDelayInitialSpeed = 400;
+
+        public static Slider Put(ref float value, float min, float max, float? step = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
+
+            Slider a;
+            if (c is Slider) {
+                a = (Slider)c;
+                if (a.IsFocused) {
+                    value = a.Value;
+                } else {
+                    a.Value = value;
+                    a.Min = min;
+                    a.Max = max;
+                    a.Step = step;
+                }
+            } else {
+                a = new Slider(id, value, min, max, step);
+            }
+
+            GuiHelper.CurrentIMGUI.GrabParent(a);
+
+            return a;
+        }
     }
 }

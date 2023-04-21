@@ -22,26 +22,12 @@ namespace Apos.Gui {
             }
         }
 
-        public override void UpdatePrefSize(GameTime gameTime) {
-            if (Child != null) {
-                Child.UpdatePrefSize(gameTime);
-
-                PrefWidth = Child.PrefWidth;
-                PrefHeight = Child.PrefHeight;
-            }
-        }
         public override void UpdateSetup(GameTime gameTime) {
             if (Clicked) {
                 Clicked = false;
             }
 
             if (Child != null) {
-                Child.X = X;
-                Child.Y = Y;
-                Child.Width = Width;
-                Child.Height = Height;
-                Child.Clip = Child.Bounds.Intersection(Clip);
-
                 Child.UpdateSetup(gameTime);
             }
         }
@@ -85,6 +71,28 @@ namespace Apos.Gui {
             }
         }
 
+        public override void UpdatePrefSize(GameTime gameTime) {
+            if (Child != null) {
+                Child.UpdatePrefSize(gameTime);
+
+                PrefWidth = Child.PrefWidth;
+                PrefHeight = Child.PrefHeight;
+            }
+        }
+        public virtual void UpdateLayout(GameTime gameTime) {
+            if (Child != null) {
+                Child.X = X;
+                Child.Y = Y;
+                Child.Width = Width;
+                Child.Height = Height;
+                Child.Clip = Child.Bounds.Intersection(Clip);
+
+                if (Child is IParent p) {
+                    p.UpdateLayout(gameTime);
+                }
+            }
+        }
+
         public override void Draw(GameTime gameTime) {
             GuiHelper.PushScissor(Clip);
 
@@ -123,8 +131,9 @@ namespace Apos.Gui {
                 Child = null;
             }
         }
-        public void Reset() { }
-        public int NextIndex() => 0;
+        public virtual void Reset() { }
+        public virtual int PeekNextIndex() => 0;
+        public virtual int NextIndex() => 0;
 
         public virtual IComponent GetPrev(IComponent c) {
             return this;
@@ -137,6 +146,10 @@ namespace Apos.Gui {
             Parent?.SendToTop(this);
         }
 
+        protected bool _mousePressed = false;
+        protected bool _buttonPressed = false;
+        protected bool _hovered = false;
+
         public static Button Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             Button b = Put(id, isAbsoluteId);
             Label.Put(text, fontSize: fontSize, color: color, id: id, isAbsoluteId: isAbsoluteId);
@@ -144,12 +157,7 @@ namespace Apos.Gui {
             return b;
         }
         public static Button Put([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            // 1. Check if button with id already exists.
-            //      a. If already exists. Get it.
-            //      b  If not, create it.
-            // 4. Ping it.
-            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
-            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
+            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             Button a;
             if (c is Button) {
@@ -158,20 +166,11 @@ namespace Apos.Gui {
                 a = new Button(id);
             }
 
-            IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
-
-            if (a.LastPing != InputHelper.CurrentFrame) {
-                a.LastPing = InputHelper.CurrentFrame;
-                a.Index = parent.NextIndex();
-            }
+            GuiHelper.CurrentIMGUI.GrabParent(a);
 
             GuiHelper.CurrentIMGUI.Push(a, 1);
 
             return a;
         }
-
-        protected bool _mousePressed = false;
-        protected bool _buttonPressed = false;
-        protected bool _hovered = false;
     }
 }

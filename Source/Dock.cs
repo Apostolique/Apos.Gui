@@ -18,25 +18,8 @@ namespace Apos.Gui {
 
         public IComponent? Child { get; set; }
 
-        public override void UpdatePrefSize(GameTime gameTime) {
-            if (Child != null) {
-                Child.UpdatePrefSize(gameTime);
-
-                PrefWidth = DockRight - DockLeft;
-                PrefHeight = DockBottom - DockTop;
-            }
-        }
         public override void UpdateSetup(GameTime gameTime) {
-            X = DockLeft;
-            Y = DockTop;
-
             if (Child != null) {
-                Child.X = X;
-                Child.Y = Y;
-                Child.Width = MathHelper.Min(Width, Child.PrefWidth);
-                Child.Height = MathHelper.Min(Height, Child.PrefHeight);
-                Child.Clip = Child.Bounds.Intersection(Clip);
-
                 Child.UpdateSetup(gameTime);
             }
         }
@@ -50,6 +33,32 @@ namespace Apos.Gui {
                 Child.Update(gameTime);
             }
         }
+
+        public override void UpdatePrefSize(GameTime gameTime) {
+            if (Child != null) {
+                Child.UpdatePrefSize(gameTime);
+
+                PrefWidth = DockRight - DockLeft;
+                PrefHeight = DockBottom - DockTop;
+            }
+        }
+        public virtual void UpdateLayout(GameTime gameTime) {
+            X = DockLeft;
+            Y = DockTop;
+
+            if (Child != null) {
+                Child.X = X;
+                Child.Y = Y;
+                Child.Width = MathHelper.Min(Width, Child.PrefWidth);
+                Child.Height = MathHelper.Min(Height, Child.PrefHeight);
+                Child.Clip = Child.Bounds.Intersection(Clip);
+
+                if (Child is IParent p) {
+                    p.UpdateLayout(gameTime);
+                }
+            }
+        }
+
         public override void Draw(GameTime gameTime) {
             if (Child != null) {
                 Child.Draw(gameTime);
@@ -71,8 +80,9 @@ namespace Apos.Gui {
                 Child = null;
             }
         }
-        public void Reset() { }
-        public int NextIndex() => 0;
+        public virtual void Reset() { }
+        public virtual int PeekNextIndex() => 0;
+        public virtual int NextIndex() => 0;
 
         public override IComponent GetPrev() {
             return Parent?.GetPrev(this) ?? Child?.GetLast() ?? this;
@@ -95,13 +105,7 @@ namespace Apos.Gui {
         }
 
         public static Dock Put(float left, float top, float right, float bottom, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            // 1. Check if dock with id already exists.
-            //      a. If already exists. Get it.
-            //      b  If not, create it.
-            // 3. Push it on the stack.
-            // 4. Ping it.
-            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
-            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
+            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             Dock a;
             if (c is Dock) {
@@ -114,12 +118,7 @@ namespace Apos.Gui {
                 a = new Dock(id, left, top, right, bottom);
             }
 
-            IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
-
-            if (a.LastPing != InputHelper.CurrentFrame) {
-                a.LastPing = InputHelper.CurrentFrame;
-                a.Index = parent.NextIndex();
-            }
+            GuiHelper.CurrentIMGUI.GrabParent(a);
 
             GuiHelper.CurrentIMGUI.Push(a, 1);
 

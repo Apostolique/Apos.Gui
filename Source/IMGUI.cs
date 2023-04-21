@@ -15,11 +15,7 @@ namespace Apos.Gui {
         }
 
         /// <summary>
-        /// Only call this if you didn't call UpdateAll. This should be called at the start of your update loop.
-        /// </summary>
-        public override void UpdatePrefSize(GameTime gameTime) { }
-        /// <summary>
-        /// Only call this if you didn't call UpdateAll. This should be called after UpdatePrefSize.
+        /// Only call this if you didn't call UpdateStart. This should be called after UpdatePrefSize.
         /// </summary>
         public override void UpdateSetup(GameTime gameTime) {
             // 1. Ping ourself to prevent cleanup.
@@ -29,48 +25,15 @@ namespace Apos.Gui {
             // 4. Update pref sizes.
             // 5. Apply pref sizes.
             // 6. Update setup.
-            LastPing = InputHelper.CurrentFrame - 1;
-            Cleanup();
+            LastPing = InputHelper.CurrentFrame;
             _idsUsedThisFrame.Add(Id, 1);
-            while (_pendingComponents.Count > 0) {
-                var pc = _pendingComponents.Dequeue();
-                if (pc.Component.Parent == null) {
-                    _activeComponents.Add(pc.Id, pc.Component);
-                } else {
-                    pc.Component.Parent.Remove(pc.Component);
-                }
-                pc.Parent.Add(pc.Component);
-                pc.Component.GrabFocus = GrabFocus;
-            }
-
-            _isTick0 = !_isTick0;
-            if (!_isTick0) {
-                while (_nextTick0.Count > 0) {
-                    _nextTick0.Dequeue().Invoke();
-                }
-            } else {
-                while (_nextTick1.Count > 0) {
-                    _nextTick1.Dequeue().Invoke();
-                }
-            }
-
-            X = 0f;
-            Y = 0f;
-            Width = GuiHelper.WindowWidth;
-            Height = GuiHelper.WindowHeight;
 
             foreach (var c in _children) {
-                c.UpdatePrefSize(gameTime);
-                c.Width = c.PrefWidth;
-                c.Height = c.PrefHeight;
-
-                c.Clip = c.Bounds.Intersection(Clip);
-
                 c.UpdateSetup(gameTime);
             }
         }
         /// <summary>
-        /// Only call this if you didn't call UpdateAll. This should be called after UpdateSetup.
+        /// Only call this if you didn't call UpdateStart. This should be called after UpdateSetup.
         /// </summary>
         /// <param name="gameTime">Current gametime.</param>
         public override void UpdateInput(GameTime gameTime) {
@@ -101,7 +64,7 @@ namespace Apos.Gui {
             }
         }
         /// <summary>
-        /// Only call this if you didn't call UpdateAll. This should be called after UpdateInput.
+        /// Only call this if you didn't call UpdateStart. This should be called after UpdateInput.
         /// </summary>
         /// <param name="gameTime">Current gametime</param>
         public override void Update(GameTime gameTime) {
@@ -115,12 +78,49 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="gameTime">Current gametime.</param>
         /// <param name="callUpdateInput">false will skip UpdateInput.</param>
-        public void UpdateAll(GameTime gameTime, bool callUpdateInput = true) {
+        public void UpdateStart(GameTime gameTime, bool callUpdateInput = true) {
             UpdateSetup(gameTime);
             if (callUpdateInput)
                 UpdateInput(gameTime);
             Update(gameTime);
         }
+
+        /// <summary>
+        /// Don't call this.
+        /// </summary>
+        public override void UpdatePrefSize(GameTime gameTime) { }
+        /// <summary>
+        /// Only call this if you didn't call UpdateEnd. This should be called after UpdateInput.
+        /// </summary>
+        /// <param name="gameTime">Current gametime</param>
+        public void UpdateLayout(GameTime gameTime) {
+            // IMGUI manages itself so it can set it's own position and size.
+            X = 0f;
+            Y = 0f;
+            Width = GuiHelper.WindowWidth;
+            Height = GuiHelper.WindowHeight;
+
+            foreach (var c in _children) {
+                c.UpdatePrefSize(gameTime);
+                c.Width = c.PrefWidth;
+                c.Height = c.PrefHeight;
+
+                c.Clip = c.Bounds.Intersection(Clip);
+
+                if (c is IParent p) {
+                    p.UpdateLayout(gameTime);
+                }
+            }
+        }
+
+        /// <summary>
+        /// This should be called at the end of your update loop.
+        /// </summary>
+        public void UpdateEnd(GameTime gameTime) {
+            Cleanup();
+            UpdateLayout(gameTime);
+        }
+
         /// <summary>
         /// Draws all components in the UI.
         /// </summary>
@@ -176,38 +176,38 @@ namespace Apos.Gui {
         /// <param name="c">When this method returns, contains the component associated with the specified id.</param>
         /// <returns>true if the component with the specified id is found; otherwise false.</returns>
         public bool TryGetValue(int id, out IComponent c) {
-            if (_activeComponents.TryGetValue(id, out c)) {
-                return true;
-            }
-
-            // TODO: Verify that this is still required.
-            //       This is usually called after CreateId which will always return a new unique id for this frame.
-            foreach (var pc in _pendingComponents) {
-                if (pc.Id == id) {
-                    c = pc.Component;
-                    return true;
-                }
-            }
-
-            return false;
+            return _activeComponents.TryGetValue(id, out c);
         }
         /// <summary>
-        /// Returns the current top parent. Used for parenting a child component to a parent.
-        /// If a child already has a parent, it will be marked for a parent change.
+        /// Used for parenting a child component to a parent.
+        /// If a child already has a parent, it will be adopted by the current parent if the parent is different.
         /// </summary>
         /// <param name="c">The child that will be parented.</param>
-        public IParent GrabParent(IComponent c) {
+        public void GrabParent(IComponent c) {
             IParent current = _currentParent;
 
-            if (c.Parent != current) {
-                _pendingComponents.Enqueue((c.Id, _currentParent, c));
+            if (c.Parent == null) {
+                _activeComponents.Add(c.Id, c);
+            }
+
+            // Note: This might be considered a hack. Is it more proper to reset parent components during their LastPing?
+            if (c is IParent p) {
+                p.Reset();
+            }
+
+            if (c.Parent != current || c.Parent.PeekNextIndex() != c.Index) {
+                c.Parent?.Remove(c);
+                c.Index = current.NextIndex();
+                c.GrabFocus = GrabFocus;
+
+                current.Add(c);
             }
 
             if (_maxChildren > 0 && ++_childrenCount >= _maxChildren) {
                 Pop();
             }
 
-            return current;
+            c.LastPing = InputHelper.CurrentFrame;
         }
         /// <summary>
         /// Gives focus to a component. Can also clear the focus if null is passed.
@@ -241,20 +241,15 @@ namespace Apos.Gui {
 
             return id;
         }
-        /// <summary>
-        /// Used when an action would invalidate the layout which would lead to an invalid draw (flicker).
-        /// Using this, you can delay the action until the next UpdateSetup.
-        /// </summary>
-        /// <param name="a">The action that will be enqueued.</param>
-        public void QueueNextTick(Action a) {
-            if (_isTick0) {
-                _nextTick0.Enqueue(a);
-            } else {
-                _nextTick1.Enqueue(a);
-            }
+
+        public int TryCreateId(int id, bool isAbsoluteId, out IComponent c) {
+            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
+            GuiHelper.CurrentIMGUI.TryGetValue(id, out c);
+
+            return id;
         }
 
-        public virtual void Add(IComponent c) {
+        public void Add(IComponent c) {
             c.Parent = this;
             _children.Insert(c.Index, c);
 
@@ -272,17 +267,16 @@ namespace Apos.Gui {
                 }
             });
         }
-        public virtual void Remove(IComponent c) {
+        public void Remove(IComponent c) {
             c.Parent = null;
             _children.Remove(c);
             _childrenRenderOrder.Remove(c);
         }
-        public virtual void Reset() {
+        public void Reset() {
             _nextChildIndex = 0;
         }
-        public virtual int NextIndex() {
-            return _nextChildIndex++;
-        }
+        public int PeekNextIndex() => _nextChildIndex + 1;
+        public int NextIndex() => _nextChildIndex++;
 
         /// <summary>
         /// If this component has a parent, it will ask the parent to return this component's previous neighbor.
@@ -304,7 +298,7 @@ namespace Apos.Gui {
         /// If the child isn't the first one, it will return the child before it.
         /// Otherwise it will return itself.
         /// </summary>
-        public virtual IComponent GetPrev(IComponent c) {
+        public IComponent GetPrev(IComponent c) {
             int index = c.Index - 1;
             return index >= 0 ? _children[index].GetLast() : this;
         }
@@ -313,7 +307,7 @@ namespace Apos.Gui {
         /// If it has a parent, it will ask the parent to return this component's next neighbor.
         /// Otherwise it will return itself.
         /// </summary>
-        public virtual IComponent GetNext(IComponent c) {
+        public IComponent GetNext(IComponent c) {
             int index = c.Index + 1;
             return index < _children.Count ? _children[index] : Parent?.GetNext(this) ?? this;
         }
@@ -324,7 +318,7 @@ namespace Apos.Gui {
             return _children.Count > 0 ? _children.Last().GetLast() : this;
         }
 
-        public virtual void SendToTop(IComponent c) {
+        public void SendToTop(IComponent c) {
             if (c.IsFloatable) {
                 _childrenRenderOrder.Remove(c);
                 _childrenRenderOrder.Add(c);
@@ -334,7 +328,7 @@ namespace Apos.Gui {
         private void Cleanup() {
             Reset();
             foreach (var kc in _activeComponents.Reverse()) {
-                if (kc.Value.LastPing != InputHelper.CurrentFrame - 1) {
+                if (kc.Value.LastPing != InputHelper.CurrentFrame) {
                     Remove(kc.Key, kc.Value);
                 }
             }
@@ -351,7 +345,6 @@ namespace Apos.Gui {
 
             _activeComponents.Remove(id);
             c.Parent?.Remove(c);
-            // TODO: Remove from PendingComponents? Probably not since that case can't happen?
         }
         private void FindPrevFocus() {
             FindFocus(ExtractPrev);
@@ -402,7 +395,6 @@ namespace Apos.Gui {
 
         private Stack<(IParent Parent, int MaxChildren, int ChildrenCount)> _parents = new Stack<(IParent, int, int)>();
         private Dictionary<int, IComponent> _activeComponents = new Dictionary<int, IComponent>();
-        private Queue<(int Id, IParent Parent, IComponent Component)> _pendingComponents = new Queue<(int, IParent, IComponent)>();
         private int? Focus {
             get => _focus;
             set {
@@ -423,10 +415,6 @@ namespace Apos.Gui {
 
         private bool _prevPressed = false;
         private bool _nextPressed = false;
-
-        private bool _isTick0 = true;
-        private Queue<Action> _nextTick0 = new Queue<Action>();
-        private Queue<Action> _nextTick1 = new Queue<Action>();
 
         private int _nextChildIndex = 0;
         private List<IComponent> _children = new List<IComponent>();
