@@ -48,7 +48,7 @@ namespace GameProject {
             if (_quit.Pressed())
                 Exit();
 
-            _ui.UpdateAll(gameTime);
+            _ui.UpdateStart(gameTime);
 
             Dock.Put(0, 0, InputHelper.WindowWidth, InputHelper.WindowHeight);
             Vertical.Push();
@@ -71,6 +71,7 @@ namespace GameProject {
             }
             Vertical.Pop();
 
+            _ui.UpdateEnd(gameTime);
             GuiHelper.UpdateCleanup();
             base.Update(gameTime);
         }
@@ -100,7 +101,6 @@ namespace GameProject {
             );
 
         IMGUI _ui;
-        int _counter = 0;
 
         TextureRegion2D _apos;
     }

@@ -32,12 +32,7 @@ namespace Apos.Gui {
         }
 
         public static Icon Put(TextureRegion2D region, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            // 1. Check if Icon with id already exists.
-            //      a. If already exists. Get it.
-            //      b  If not, create it.
-            // 4. Ping it.
-            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
-            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
+            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             Icon a;
             if (c is Icon) {
@@ -47,12 +42,7 @@ namespace Apos.Gui {
                 a = new Icon(id, region);
             }
 
-            IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
-
-            if (a.LastPing != InputHelper.CurrentFrame) {
-                a.LastPing = InputHelper.CurrentFrame;
-                a.Index = parent.NextIndex();
-            }
+            GuiHelper.CurrentIMGUI.GrabParent(a);
 
             return a;
         }

@@ -45,6 +45,27 @@ namespace Apos.Gui {
         public float ScrollSpeed { get; set; } = 0.25f;
         public long ScrollMaxDuration { get; set; } = 1000;
 
+        public override void UpdateSetup(GameTime gameTime) {
+            foreach (var c in _children)
+                c.UpdateSetup(gameTime);
+        }
+        public override void UpdateInput(GameTime gameTime) {
+            for (int i = _childrenRenderOrder.Count - 1; i >= 0; i--) {
+                _childrenRenderOrder[i].UpdateInput(gameTime);
+            }
+
+            // TODO: If we don't scroll, don't consume the scroll to bubble the event up. Allows recursive scrolling.
+            if (Clip.Contains(GuiHelper.Mouse) && Track.MouseCondition.Scrolled()) {
+                SetOffset(_offsetYTween, ClampOffsetY(_offsetYTween.B + Math.Sign(MouseCondition.ScrollDelta) * ScrollIncrement));
+            }
+
+            // TODO: Consume clicks on the panel? Otherwise it's possible to click stuff under it.
+        }
+        public override void Update(GameTime gameTime) {
+            foreach (var c in _children)
+                c.Update(gameTime);
+        }
+
         public override void UpdatePrefSize(GameTime gameTime) {
             float maxWidth = 0;
             float maxHeight = 0;
@@ -58,7 +79,7 @@ namespace Apos.Gui {
             PrefWidth = maxWidth;
             PrefHeight = maxHeight;
         }
-        public override void UpdateSetup(GameTime gameTime) {
+        public virtual void UpdateLayout(GameTime gameTime) {
             // TODO: Keep current focus in view if it's in view?
 
             if (_offsetYTween.B != ClampOffsetY(_offsetYTween.B)) {
@@ -81,7 +102,9 @@ namespace Apos.Gui {
                 maxWidth = MathHelper.Max(c.Width, maxWidth);
                 c.Clip = c.Bounds.Intersection(Clip);
 
-                c.UpdateSetup(gameTime);
+                if (c is IParent p) {
+                    p.UpdateLayout(gameTime);
+                }
 
                 currentY += c.Height;
             }
@@ -89,22 +112,7 @@ namespace Apos.Gui {
             FullWidth = maxWidth;
             FullHeight = MathHelper.Max(currentY, maxHeight);
         }
-        public override void UpdateInput(GameTime gameTime) {
-            for (int i = _childrenRenderOrder.Count - 1; i >= 0; i--) {
-                _childrenRenderOrder[i].UpdateInput(gameTime);
-            }
 
-            // TODO: If we don't scroll, don't consume the scroll to bubble the event up. Allows recursive scrolling.
-            if (Clip.Contains(GuiHelper.Mouse) && Track.MouseCondition.Scrolled()) {
-                SetOffset(_offsetYTween, ClampOffsetY(_offsetYTween.B + Math.Sign(MouseCondition.ScrollDelta) * ScrollIncrement));
-            }
-
-            // TODO: Consume clicks on the panel? Otherwise it's possible to click stuff under it.
-        }
-        public override void Update(GameTime gameTime) {
-            foreach (var c in _children)
-                c.Update(gameTime);
-        }
         public override void Draw(GameTime gameTime) {
             foreach (var c in _childrenRenderOrder) {
                 if (Clip.Intersects(c.Clip)) {
@@ -141,9 +149,8 @@ namespace Apos.Gui {
         public virtual void Reset() {
             _nextChildIndex = 0;
         }
-        public virtual int NextIndex() {
-            return _nextChildIndex++;
-        }
+        public virtual int PeekNextIndex() => _nextChildIndex + 1;
+        public virtual int NextIndex() => _nextChildIndex++;
 
         /// <summary>
         /// If this component has a parent, it will ask the parent to return this component's previous neighbor.
@@ -223,39 +230,6 @@ namespace Apos.Gui {
         protected long GetDuration(float a, float b, float speed, long maxDuration) {
             return (long)Math.Min(Math.Abs((b - a) / speed), maxDuration);
         }
-
-        public static Vertical Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            // 1. Check if vertical with id already exists.
-            //      a. If already exists. Get it.
-            //      b  If not, create it.
-            // 3. Push it on the stack.
-            // 4. Ping it.
-            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
-            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
-
-            Vertical a;
-            if (c is Vertical) {
-                a = (Vertical)c;
-            } else {
-                a = new Vertical(id);
-            }
-
-            IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
-
-            if (a.LastPing != InputHelper.CurrentFrame) {
-                a.Reset();
-                a.LastPing = InputHelper.CurrentFrame;
-                a.Index = parent.NextIndex();
-            }
-
-            GuiHelper.CurrentIMGUI.Push(a);
-
-            return a;
-        }
-        public static void Pop() {
-            GuiHelper.CurrentIMGUI.Pop();
-        }
-
         protected int _nextChildIndex = 0;
         protected List<IComponent> _children = new List<IComponent>();
         protected List<IComponent> _childrenRenderOrder = new List<IComponent>();
@@ -265,5 +239,25 @@ namespace Apos.Gui {
 
         protected float _offsetX = 0;
         protected float _offsetY = 0;
+
+        public static Vertical Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
+
+            Vertical a;
+            if (c is Vertical) {
+                a = (Vertical)c;
+            } else {
+                a = new Vertical(id);
+            }
+
+            GuiHelper.CurrentIMGUI.GrabParent(a);
+
+            GuiHelper.CurrentIMGUI.Push(a);
+
+            return a;
+        }
+        public static void Pop() {
+            GuiHelper.CurrentIMGUI.Pop();
+        }
     }
 }

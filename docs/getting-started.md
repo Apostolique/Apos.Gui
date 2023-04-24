@@ -40,7 +40,7 @@ In your update loop, call the following functions:
 protected override void Update(GameTime gameTime) {
     // Call UpdateSetup at the start.
     GuiHelper.UpdateSetup(gameTime);
-    _ui.UpdateAll(gameTime);
+    _ui.UpdateStart(gameTime);
 
     // Create your UI.
     MenuPanel.Push();
@@ -55,7 +55,8 @@ protected override void Update(GameTime gameTime) {
     }
     MenuPanel.Pop();
 
-    // Call UpdateCleanup at the end.
+    // Call UpdateEnd and UpdateCleanup at the end.
+    _ui.UpdateEnd(gameTime);
     GuiHelper.UpdateCleanup();
 
     base.Update(gameTime);

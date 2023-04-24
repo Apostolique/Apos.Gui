@@ -37,10 +37,10 @@ namespace Apos.Gui {
             }
         }
 
-        public virtual void UpdatePrefSize(GameTime gameTime) { }
         public virtual void UpdateSetup(GameTime gameTime) { }
         public virtual void UpdateInput(GameTime gameTime) { }
         public virtual void Update(GameTime gameTime) { }
+        public virtual void UpdatePrefSize(GameTime gameTime) { }
         public virtual void Draw(GameTime gameTime) { }
 
         /// <summary>

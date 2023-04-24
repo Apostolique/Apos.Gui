@@ -23,10 +23,7 @@ namespace Apos.Gui {
             set {
                 if (_text != value) {
                     _text = value;
-                    _size = GuiHelper.MeasureString(_text, _fontSize);
-                    if (Cursor > _text.Length) {
-                        Cursor = _text.Length;
-                    }
+                    _isDirty = true;
                 }
             }
         }
@@ -35,10 +32,9 @@ namespace Apos.Gui {
         public int FontSize {
             get => _fontSize;
             set {
-                // TODO: Only change size on next loop since it changes the layout.
                 if (value != _fontSize) {
                     _fontSize = value;
-                    _size = GuiHelper.MeasureString(_text, _fontSize);
+                    _isDirty = true;
                 }
             }
         }
@@ -52,10 +48,6 @@ namespace Apos.Gui {
         }
         public override bool IsFocusable { get; set; } = true;
 
-        public override void UpdatePrefSize(GameTime gameTime) {
-            PrefWidth = MathHelper.Max(_size.X, 100) + Padding * 2;
-            PrefHeight = _size.Y + Padding * 2;
-        }
         public override void UpdateInput(GameTime gameTime) {
             if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
                 _pressed = true;
@@ -111,6 +103,13 @@ namespace Apos.Gui {
                 }
             }
         }
+
+        public override void UpdatePrefSize(GameTime gameTime) {
+            Cache();
+            PrefWidth = MathHelper.Max(_cachedSize.X, 100f) + Padding * 2f;
+            PrefHeight = _cachedSize.Y + Padding * 2f;
+        }
+
         public override void Draw(GameTime gameTime) {
             GuiHelper.PushScissor(Clip);
 
@@ -136,39 +135,14 @@ namespace Apos.Gui {
             GuiHelper.PopScissor();
         }
 
-        public static Textbox Put(ref string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            // 1. Check if Textbox with id already exists.
-            //      a. If already exists. Get it.
-            //      b  If not, create it.
-            // 4. Ping it.
-            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
-            GuiHelper.CurrentIMGUI.TryGetValue(id, out IComponent c);
-
-            color ??= new Color(200, 200, 200);
-
-            Textbox a;
-            if (c is Textbox) {
-                a = (Textbox)c;
-                if (a.IsFocused) {
-                    text = a.Text;
-                } else {
-                    a.Text = text;
+        protected void Cache() {
+            if (_isDirty) {
+                _cachedSize = GuiHelper.MeasureString(_text, _fontSize);
+                if (Cursor > _text.Length) {
+                    Cursor = _text.Length;
                 }
-
-                a.Color = color.Value;
-                a.FontSize = fontSize;
-            } else {
-                a = new Textbox(id, text, fontSize, color.Value);
+                _isDirty = false;
             }
-
-            IParent parent = GuiHelper.CurrentIMGUI.GrabParent(a);
-
-            if (a.LastPing != InputHelper.CurrentFrame) {
-                a.LastPing = InputHelper.CurrentFrame;
-                a.Index = parent.NextIndex();
-            }
-
-            return a;
         }
 
         protected void MoveCursor(ICondition condition, int direction) {
@@ -200,9 +174,11 @@ namespace Apos.Gui {
         }
 
         protected string _text = null!;
-        protected Vector2 _size;
+        protected Vector2 _cachedSize;
 
         protected int _fontSize;
+        protected bool _isDirty = false;
+
         protected RectangleF _cursorRect;
         protected int Cursor {
             get => _cursor;
@@ -221,5 +197,30 @@ namespace Apos.Gui {
         protected FloatTween _blink = new FloatTween(0f, 1f, 1500, Easing.Linear);
 
         protected bool _pressed = false;
+
+        public static Textbox Put(ref string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
+
+            color ??= new Color(200, 200, 200);
+
+            Textbox a;
+            if (c is Textbox) {
+                a = (Textbox)c;
+                if (a.IsFocused) {
+                    text = a.Text;
+                } else {
+                    a.Text = text;
+                }
+
+                a.Color = color.Value;
+                a.FontSize = fontSize;
+            } else {
+                a = new Textbox(id, text, fontSize, color.Value);
+            }
+
+            GuiHelper.CurrentIMGUI.GrabParent(a);
+
+            return a;
+        }
     }
 }
