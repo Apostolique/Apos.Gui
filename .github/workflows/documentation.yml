@@ -7,12 +7,14 @@ on:
     paths:
     - 'docs/**'
     - 'README.md'
+    - '.github/workflows/documentation.yml'
 
 env:
   TITLE: Apos.Gui
   DESCRIPTION: UI library for MonoGame.
   BASE: Apos.Gui
   REPO: https://github.com/Apostolique/Apos.Gui/tree/main/
+  ANALYTICS: G-FV5M4CNS85
 
 jobs:
   build:
@@ -29,7 +31,7 @@ jobs:
       run: npm install apos-docs -g
     - name: Use apos-docs
       run: |
-        apos-docs -t ${{ env.TITLE }} -d '${{ env.DESCRIPTION }}' -b ${{ env.BASE }} -r ${{ env.REPO }}
+        apos-docs -t ${{ env.TITLE }} -d '${{ env.DESCRIPTION }}' -b ${{ env.BASE }} -r ${{ env.REPO }} -a ${{ env.ANALYTICS }}
         cd apos-docs
         npm i
         npm run build
