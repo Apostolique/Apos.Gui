@@ -43,7 +43,7 @@ if (Button.Put("Quit").Clicked) {
 MenuPanel.Pop();
 ```
 
-The code above will create 2 buttons, "Show Fun" and "Quit". You can use your mouse, keyboard, or gamepad to interact with them. Clicking on "Show Fun" will insert a label in between them with the text "This is fun!".
+This code will create 2 buttons, "Show Fun" and "Quit". You can use your mouse, keyboard, or gamepad to interact with them. Clicking on "Show Fun" will insert a label in between them with the text "This is fun!".
 
 You can read more in the [Getting started](https://apostolique.github.io/Apos.Gui/getting-started/) guide.
 
