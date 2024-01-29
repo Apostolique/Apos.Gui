@@ -32,6 +32,10 @@ namespace Apos.Gui {
             X = DockLeft;
             Y = DockTop;
 
+            if (Parent != null) {
+                Clip = Bounds.Intersection(Parent.Clip);
+            }
+
             if (Child != null) {
                 Child.X = X;
                 Child.Y = Y;
