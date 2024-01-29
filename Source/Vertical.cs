@@ -8,9 +8,7 @@ using System;
 using Apos.Tweens;
 
 namespace Apos.Gui {
-    public class Vertical : Component, IParent {
-        public Vertical(int id) : base(id) { }
-
+    public class Vertical(int id) : Component(id), IParent {
         public float OffsetX {
             get => _offsetX;
             set {
@@ -27,14 +25,14 @@ namespace Apos.Gui {
         public float FullHeight { get; set; } = 100;
 
         public Vector2 OffsetXY {
-            get => new Vector2(OffsetX, OffsetY);
+            get => new(OffsetX, OffsetY);
             set {
                 OffsetX = value.X;
                 OffsetY = value.Y;
             }
         }
         public Vector2 FullSize {
-            get => new Vector2(FullWidth, FullHeight);
+            get => new(FullWidth, FullHeight);
             set {
                 FullWidth = value.X;
                 FullHeight = value.Y;
@@ -231,11 +229,11 @@ namespace Apos.Gui {
             return (long)Math.Min(Math.Abs((b - a) / speed), maxDuration);
         }
         protected int _nextChildIndex = 0;
-        protected List<IComponent> _children = new List<IComponent>();
-        protected List<IComponent> _childrenRenderOrder = new List<IComponent>();
+        protected List<IComponent> _children = [];
+        protected List<IComponent> _childrenRenderOrder = [];
 
-        protected FloatTween _offsetXTween = new FloatTween(0f, 0f, 0, Easing.ExpoOut);
-        protected FloatTween _offsetYTween = new FloatTween(0f, 0f, 0, Easing.ExpoOut);
+        protected FloatTween _offsetXTween = new(0f, 0f, 0, Easing.ExpoOut);
+        protected FloatTween _offsetYTween = new(0f, 0f, 0, Easing.ExpoOut);
 
         protected float _offsetX = 0;
         protected float _offsetY = 0;
