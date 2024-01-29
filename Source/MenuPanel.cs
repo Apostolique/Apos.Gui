@@ -1,12 +1,9 @@
 using System.Runtime.CompilerServices;
-using Apos.Input;
 using Apos.Tweens;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
-    public class MenuPanel : Vertical {
-        public MenuPanel(int id) : base(id) { }
-
+    public class MenuPanel(int id) : Vertical(id) {
         public override void UpdatePrefSize(GameTime gameTime) {
             base.UpdatePrefSize(gameTime);
 
@@ -72,8 +69,8 @@ namespace Apos.Gui {
             id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             MenuPanel a;
-            if (c is MenuPanel) {
-                a = (MenuPanel)c;
+            if (c is MenuPanel d) {
+                a = d;
             } else {
                 a = new MenuPanel(id);
             }

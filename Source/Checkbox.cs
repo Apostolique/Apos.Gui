@@ -1,16 +1,11 @@
 using System.Runtime.CompilerServices;
-using Apos.Input;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
 namespace Apos.Gui {
-    public class Checkbox : Component {
-        public Checkbox(int id, bool isChecked) : base(id) {
-            IsChecked = isChecked;
-        }
-
+    public class Checkbox(int id, bool isChecked) : Component(id) {
         public bool Clicked { get; set; } = false;
-        public bool IsChecked { get; set; } = false;
+        public bool IsChecked { get; set; } = isChecked;
         public override bool IsFocusable { get; set; } = true;
         public override bool IsFocused {
             get => base.IsFocused;
@@ -101,8 +96,8 @@ namespace Apos.Gui {
             id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             Checkbox a;
-            if (c is Checkbox) {
-                a = (Checkbox)c;
+            if (c is Checkbox d) {
+                a = d;
                 if (a.IsFocused) {
                     isChecked = a.IsChecked;
                 } else {

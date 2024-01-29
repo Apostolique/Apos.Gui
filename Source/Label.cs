@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using Apos.Input;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
 
@@ -65,8 +64,8 @@ namespace Apos.Gui {
             color ??= new Color(200, 200, 200);
 
             Label a;
-            if (c is Label) {
-                a = (Label)c;
+            if (c is Label d) {
+                a = d;
                 a.Text = text;
                 a.Color = color.Value;
                 a.FontSize = fontSize;

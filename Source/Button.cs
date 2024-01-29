@@ -1,12 +1,9 @@
 using System.Runtime.CompilerServices;
-using Apos.Input;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
 namespace Apos.Gui {
-    public class Button : Component, IParent {
-        public Button(int id) : base(id) { }
-
+    public class Button(int id) : Component(id), IParent {
         public bool Clicked { get; set; } = false;
         public IComponent? Child { get; set; }
         public override bool IsFocusable { get; set; } = true;
@@ -27,9 +24,7 @@ namespace Apos.Gui {
                 Clicked = false;
             }
 
-            if (Child != null) {
-                Child.UpdateSetup(gameTime);
-            }
+            Child?.UpdateSetup(gameTime);
         }
         public override void UpdateInput(GameTime gameTime) {
             if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
@@ -61,14 +56,10 @@ namespace Apos.Gui {
                 }
             }
 
-            if (Child != null) {
-                Child.UpdateInput(gameTime);
-            }
+            Child?.UpdateInput(gameTime);
         }
         public override void Update(GameTime gameTime) {
-            if (Child != null) {
-                Child.Update(gameTime);
-            }
+            Child?.Update(gameTime);
         }
 
         public override void UpdatePrefSize(GameTime gameTime) {
@@ -109,9 +100,7 @@ namespace Apos.Gui {
                 GuiHelper.SpriteBatch.DrawRectangle(Bounds, new Color(76, 76, 76), 2f);
             }
 
-            if (Child != null) {
-                Child.Draw(gameTime);
-            }
+            Child?.Draw(gameTime);
 
             GuiHelper.PopScissor();
         }
@@ -160,8 +149,8 @@ namespace Apos.Gui {
             id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             Button a;
-            if (c is Button) {
-                a = (Button)c;
+            if (c is Button d) {
+                a = d;
             } else {
                 a = new Button(id);
             }

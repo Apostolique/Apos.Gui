@@ -193,8 +193,8 @@ namespace Apos.Gui {
 
         protected int _inputDelay = 50;
         protected int _inputInitialDelay = 400;
-        protected FloatTween _input = new FloatTween(0f, 1f, 50, Easing.Linear);
-        protected FloatTween _blink = new FloatTween(0f, 1f, 1500, Easing.Linear);
+        protected FloatTween _input = new(0f, 1f, 50, Easing.Linear);
+        protected FloatTween _blink = new(0f, 1f, 1500, Easing.Linear);
 
         protected bool _pressed = false;
 
@@ -204,8 +204,8 @@ namespace Apos.Gui {
             color ??= new Color(200, 200, 200);
 
             Textbox a;
-            if (c is Textbox) {
-                a = (Textbox)c;
+            if (c is Textbox d) {
+                a = d;
                 if (a.IsFocused) {
                     text = a.Text;
                 } else {

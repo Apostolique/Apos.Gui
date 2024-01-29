@@ -244,8 +244,8 @@ namespace Apos.Gui {
             id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             Vertical a;
-            if (c is Vertical) {
-                a = (Vertical)c;
+            if (c is Vertical d) {
+                a = d;
             } else {
                 a = new Vertical(id);
             }

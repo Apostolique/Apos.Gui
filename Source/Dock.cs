@@ -1,37 +1,23 @@
 using System.Runtime.CompilerServices;
-using Apos.Input;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
-    public class Dock : Component, IParent {
-        public Dock(int id, float left, float top, float right, float bottom) : base(id) {
-            DockLeft = left;
-            DockTop = top;
-            DockRight = right;
-            DockBottom = bottom;
-        }
-
-        public float DockLeft { get; set; }
-        public float DockTop { get; set; }
-        public float DockRight { get; set; }
-        public float DockBottom { get; set; }
+    public class Dock(int id, float left, float top, float right, float bottom) : Component(id), IParent {
+        public float DockLeft { get; set; } = left;
+        public float DockTop { get; set; } = top;
+        public float DockRight { get; set; } = right;
+        public float DockBottom { get; set; } = bottom;
 
         public IComponent? Child { get; set; }
 
         public override void UpdateSetup(GameTime gameTime) {
-            if (Child != null) {
-                Child.UpdateSetup(gameTime);
-            }
+            Child?.UpdateSetup(gameTime);
         }
         public override void UpdateInput(GameTime gameTime) {
-            if (Child != null) {
-                Child.UpdateInput(gameTime);
-            }
+            Child?.UpdateInput(gameTime);
         }
         public override void Update(GameTime gameTime) {
-            if (Child != null) {
-                Child.Update(gameTime);
-            }
+            Child?.Update(gameTime);
         }
 
         public override void UpdatePrefSize(GameTime gameTime) {
@@ -60,9 +46,7 @@ namespace Apos.Gui {
         }
 
         public override void Draw(GameTime gameTime) {
-            if (Child != null) {
-                Child.Draw(gameTime);
-            }
+            Child?.Draw(gameTime);
         }
 
         public void Add(IComponent c) {
@@ -108,8 +92,8 @@ namespace Apos.Gui {
             id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             Dock a;
-            if (c is Dock) {
-                a = (Dock)c;
+            if (c is Dock d) {
+                a = d;
                 a.DockLeft = left;
                 a.DockTop = top;
                 a.DockRight = right;

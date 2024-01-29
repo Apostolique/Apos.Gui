@@ -1,15 +1,10 @@
 using System.Runtime.CompilerServices;
-using Apos.Input;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended.TextureAtlases;
 
 namespace Apos.Gui {
-    public class Icon : Component {
-        public Icon(int id, TextureRegion2D region) : base(id) {
-            Region = region;
-        }
-
-        public TextureRegion2D Region { get; set; }
+    public class Icon(int id, TextureRegion2D region) : Component(id) {
+        public TextureRegion2D Region { get; set; } = region;
 
         public override void UpdatePrefSize(GameTime gametime) {
             PrefWidth = Region.Width;
@@ -24,7 +19,7 @@ namespace Apos.Gui {
             int halfHeight = (int)(Height / 2);
             int iconHalfHeight = (int)(PrefHeight / 2);
 
-            Vector2 pos = new Vector2(Left + halfWidth - iconHalfWidth, Top + halfHeight - iconHalfHeight);
+            Vector2 pos = new(Left + halfWidth - iconHalfWidth, Top + halfHeight - iconHalfHeight);
 
             GuiHelper.SpriteBatch.Draw(Region, pos, Color.White);
 
@@ -35,8 +30,8 @@ namespace Apos.Gui {
             id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             Icon a;
-            if (c is Icon) {
-                a = (Icon)c;
+            if (c is Icon d) {
+                a = d;
                 a.Region = region;
             } else {
                 a = new Icon(id, region);

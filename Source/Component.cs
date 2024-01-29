@@ -7,13 +7,9 @@ namespace Apos.Gui {
     /// An empty component that doesn't really do anything.
     /// Used as a base class for other components.
     /// </summary>
-    public class Component : IComponent {
-        public Component(int id) {
-            Id = id;
-        }
-
+    public class Component(int id) : IComponent {
         public virtual uint LastPing { get; set; } = 0;
-        public virtual int Id { get; set; }
+        public virtual int Id { get; set; } = id;
         public virtual int Index { get; set; } = 0;
 
         public virtual float X { get; set; } = 0;
@@ -67,28 +63,28 @@ namespace Apos.Gui {
         }
 
         public virtual Vector2 XY {
-            get => new Vector2(X, Y);
+            get => new(X, Y);
             set {
                 X = value.X;
                 Y = value.Y;
             }
         }
         public virtual Vector2 Size {
-            get => new Vector2(Width, Height);
+            get => new(Width, Height);
             set {
                 Width = value.X;
                 Height = value.Y;
             }
         }
         public virtual Vector2 PrefSize {
-            get => new Vector2(PrefWidth, PrefHeight);
+            get => new(PrefWidth, PrefHeight);
             set {
                 PrefWidth = value.X;
                 PrefHeight = value.Y;
             }
         }
         public virtual RectangleF Bounds {
-            get => new RectangleF(XY, Size);
+            get => new(XY, Size);
             set {
                 XY = value.Position;
                 Size = value.Size;

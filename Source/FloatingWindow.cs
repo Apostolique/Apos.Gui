@@ -1,12 +1,9 @@
 using System.Runtime.CompilerServices;
-using Apos.Input;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
 namespace Apos.Gui {
-    public class FloatingWindow : Vertical {
-        public FloatingWindow(int id) : base(id) { }
-
+    public class FloatingWindow(int id) : Vertical(id) {
         public override bool IsFocusable { get; set; } = true;
         public override bool IsFloatable { get; set; } = true;
 
@@ -52,8 +49,8 @@ namespace Apos.Gui {
             id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             FloatingWindow a;
-            if (c is FloatingWindow) {
-                a = (FloatingWindow)c;
+            if (c is FloatingWindow d) {
+                a = d;
             } else {
                 a = new FloatingWindow(id);
             }

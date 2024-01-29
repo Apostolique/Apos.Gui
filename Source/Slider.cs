@@ -99,8 +99,8 @@ namespace Apos.Gui {
             id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             Slider a;
-            if (c is Slider) {
-                a = (Slider)c;
+            if (c is Slider d) {
+                a = d;
                 if (a.IsFocused) {
                     value = a.Value;
                 } else {
