@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6</TargetFramework>
+    <TargetFramework>net8</TargetFramework>
     <AssemblyName>Example</AssemblyName>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -10,7 +10,7 @@
     <PublishTrimmed>true</PublishTrimmed>
     <PublishReadyToRun>false</PublishReadyToRun>
     <TieredCompilation>false</TieredCompilation>
-    <RuntimeIdentifiers>win10-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>

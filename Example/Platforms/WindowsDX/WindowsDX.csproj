@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6-windows</TargetFramework>
+    <TargetFramework>net8-windows</TargetFramework>
     <AssemblyName>Example</AssemblyName>
     <ApplicationIcon>Icon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
