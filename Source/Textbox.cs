@@ -21,6 +21,7 @@ namespace Apos.Gui {
         public string Text {
             get => _text;
             set {
+                value ??= "";
                 if (_text != value) {
                     _text = value;
                     _isDirty = true;
@@ -173,7 +174,7 @@ namespace Apos.Gui {
             return currentPosition;
         }
 
-        protected string _text = null!;
+        protected string _text;
         protected Vector2 _cachedSize;
 
         protected int _fontSize;
