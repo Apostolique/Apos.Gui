@@ -15,7 +15,6 @@ namespace Apos.Gui {
         }
         public override void UpdateInput(GameTime gameTime) {
             if (Main != null) {
-                Main.UpdateInput(gameTime);
                 if (Main.Clip.Contains(GuiHelper.OldMouse)) {
                     if (!_hovered) {
                         SendToTop(this);
@@ -29,6 +28,8 @@ namespace Apos.Gui {
             if (Tip != null && _hovered) {
                 Tip.UpdateInput(gameTime);
             }
+
+            Main?.UpdateInput(gameTime);
         }
         public override void Update(GameTime gameTime) {
             Main?.Update(gameTime);
@@ -113,11 +114,42 @@ namespace Apos.Gui {
         public virtual int PeekNextIndex() => _nextChildIndex + 1;
         public virtual int NextIndex() => _nextChildIndex++;
 
-        public virtual IComponent GetPrev(IComponent c) {
-            return this;
+        /// <summary>
+        /// If this component has a parent, it will ask the parent to return this component's previous neighbor.
+        /// If it has children, it will return the last one.
+        /// Otherwise it will return itself.
+        /// </summary>
+        public override IComponent GetPrev() {
+            return Parent?.GetPrev(this) ?? Tip?.GetLast() ?? Main?.GetLast() ?? this;
         }
+        /// <summary>
+        /// If this component has children, it will return the first one.
+        /// If it has a parent it will ask the parent to return this component's next neighbor.
+        /// Otherwise, it will return itself.
+        /// </summary>
+        public override IComponent GetNext() {
+            return Main ?? Tip ?? Parent?.GetNext(this) ?? this;
+        }
+        /// <summary>
+        /// If the child isn't the first one, it will return the child before it.
+        /// Otherwise it will return itself.
+        /// </summary>
+        public virtual IComponent GetPrev(IComponent c) {
+            return c == Tip && Main != null ? Main.GetLast() : this;
+        }
+        /// <summary>
+        /// If the child isn't the last one, it will return the child after it.
+        /// If it has a parent, it will ask the parent to return this component's next neighbor.
+        /// Otherwise it will return itself.
+        /// </summary>
         public virtual IComponent GetNext(IComponent c) {
-            return Parent?.GetNext(this) ?? this;
+            return c == Main && Tip != null ? Tip : c == Tip ? Parent?.GetNext(this) ?? this : this;
+        }
+        /// <summary>
+        /// Returns the last child in this component tree.
+        /// </summary>
+        public override IComponent GetLast() {
+            return Tip ?? Main ?? this;
         }
 
         public virtual void SendToTop(IComponent c) {
