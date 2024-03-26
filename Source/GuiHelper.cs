@@ -60,7 +60,11 @@ namespace Apos.Gui {
         /// </summary>
         public static Matrix UIMatrix => Matrix.CreateScale(Scale, Scale, 1f);
         /// <summary>
-        ///
+        /// Position of OldMouse in the UI coordinate system.
+        /// </summary>
+        public static Vector2 OldMouse => Vector2.Transform(InputHelper.OldMouse.Position.ToVector2(), Matrix.Invert(UIMatrix));
+        /// <summary>
+        /// Position of NewMouse in the UI coordinate system.
         /// </summary>
         public static Vector2 Mouse => Vector2.Transform(InputHelper.NewMouse.Position.ToVector2(), Matrix.Invert(UIMatrix));
 
