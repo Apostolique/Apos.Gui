@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net8.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
 
@@ -11,7 +11,7 @@
 
     <Authors>Jean-David Moisan</Authors>
     <Company>Vyne Enterprise Inc.</Company>
-    <Copyright>Copyright 2023</Copyright>
+    <Copyright>Copyright 2024</Copyright>
 
     <RepositoryUrl>https://github.com/Apostolique/Apos.Gui</RepositoryUrl>
     <PackageProjectUrl>https://github.com/Apostolique/Apos.Gui</PackageProjectUrl>
@@ -30,7 +30,7 @@
 
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="All" Version="3.8.0.1641" />
-    <PackageReference Include="MonoGame.Extended" Version="3.8.0" />
+    <PackageReference Include="MonoGame.Extended" Version="4.0.3" />
     <PackageReference Include="FontStashSharp.MonoGame" Version="1.2.8" />
     <PackageReference Include="Apos.Input" Version="2.4.2" />
     <PackageReference Include="Apos.Tweens" Version="0.1.3" />

@@ -1,10 +1,10 @@
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended.TextureAtlases;
+using MonoGame.Extended.Graphics;
 
 namespace Apos.Gui {
-    public class Icon(int id, TextureRegion2D region) : Component(id) {
-        public TextureRegion2D Region { get; set; } = region;
+    public class Icon(int id, Texture2DRegion region) : Component(id) {
+        public Texture2DRegion Region { get; set; } = region;
 
         public override void UpdatePrefSize(GameTime gametime) {
             PrefWidth = Region.Width;
@@ -26,7 +26,7 @@ namespace Apos.Gui {
             GuiHelper.PopScissor();
         }
 
-        public static Icon Put(TextureRegion2D region, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+        public static Icon Put(Texture2DRegion region, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
 
             Icon a;

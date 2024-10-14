@@ -5,7 +5,7 @@ using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended.TextureAtlases;
+using MonoGame.Extended.Graphics;
 
 namespace GameProject {
     public class GameRoot : Game {
@@ -36,7 +36,7 @@ namespace GameProject {
 
             var texture = Content.Load<Texture2D>("apos");
 
-            _apos = new TextureRegion2D(texture, 0, 0, texture.Width, texture.Height);
+            _apos = new Texture2DRegion(texture, 0, 0, texture.Width, texture.Height);
         }
 
         private string _name = "no name";
@@ -102,6 +102,6 @@ namespace GameProject {
 
         IMGUI _ui;
 
-        TextureRegion2D _apos;
+        Texture2DRegion _apos;
     }
 }
