@@ -5,7 +5,7 @@
 Install using the following dotnet command:
 
 ```
-dotnet add package Apos.Gui --prerelease
+dotnet add package Apos.Gui
 ```
 
 ## Setup
@@ -23,7 +23,7 @@ In your game's `LoadContent()`, give your game instance and font to GuiHelper an
 
 ```csharp
 protected override void LoadContent() {
-    FontSystem fontSystem = FontSystemFactory.Create(GraphicsDevice, 2048, 2048);
+    FontSystem fontSystem = new FontSystem();
     fontSystem.AddFont(TitleContainer.OpenStream($"{Content.RootDirectory}/font-file.ttf"));
 
     GuiHelper.Setup(this, fontSystem);
