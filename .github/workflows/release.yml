@@ -6,8 +6,8 @@ on:
     - 'v*'
 
 env:
-  SOURCE1: Source/Apos.Camera.csproj
-  SOURCE2: Source/Apos.Camera.KNI.csproj
+  SOURCE1: Source/Apos.Gui.csproj
+  SOURCE2: Source/Apos.Gui.KNI.csproj
 
 jobs:
   build:
