@@ -55,7 +55,7 @@ namespace Apos.Gui {
                 Main.Y = Y;
                 Main.Width = Width;
                 Main.Height = Height;
-                Main.Clip = Main.Bounds.Intersection(Clip);
+                Main.Clip = Main.Bounds.Intersect(Clip);
 
                 if (Main is IParent p) {
                     p.UpdateLayout(gameTime);

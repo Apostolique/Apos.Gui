@@ -76,7 +76,7 @@ namespace Apos.Gui {
                 Child.Y = Y;
                 Child.Width = Width;
                 Child.Height = Height;
-                Child.Clip = Child.Bounds.Intersection(Clip);
+                Child.Clip = Child.Bounds.Intersect(Clip);
 
                 if (Child is IParent p) {
                     p.UpdateLayout(gameTime);

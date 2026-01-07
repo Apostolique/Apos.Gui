@@ -98,7 +98,7 @@ namespace Apos.Gui {
                 c.Height = MathHelper.Min(c.PrefHeight, Height);
 
                 maxHeight = MathHelper.Max(c.Height, maxHeight);
-                c.Clip = c.Bounds.Intersection(Clip);
+                c.Clip = c.Bounds.Intersect(Clip);
 
                 if (c is IParent p) {
                     p.UpdateLayout(gameTime);

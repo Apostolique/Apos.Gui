@@ -49,7 +49,7 @@ namespace Apos.Gui {
                 c.X = X + OffsetX + halfWidth - c.Width / 2f;
                 c.Y = currentY + Y + OffsetY;
 
-                c.Clip = c.Bounds.Intersection(Clip);
+                c.Clip = c.Bounds.Intersect(Clip);
 
                 if (c is IParent p) {
                     p.UpdateLayout(gameTime);

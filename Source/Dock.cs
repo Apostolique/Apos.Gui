@@ -33,7 +33,7 @@ namespace Apos.Gui {
             Y = DockTop;
 
             if (Parent != null) {
-                Clip = Bounds.Intersection(Parent.Clip);
+                Clip = Bounds.Intersect(Parent.Clip);
             }
 
             if (Child != null) {
@@ -41,7 +41,7 @@ namespace Apos.Gui {
                 Child.Y = Y;
                 Child.Width = MathHelper.Min(Width, Child.PrefWidth);
                 Child.Height = MathHelper.Min(Height, Child.PrefHeight);
-                Child.Clip = Child.Bounds.Intersection(Clip);
+                Child.Clip = Child.Bounds.Intersect(Clip);
 
                 if (Child is IParent p) {
                     p.UpdateLayout(gameTime);

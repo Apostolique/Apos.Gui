@@ -5,9 +5,9 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
 
-    <PackageId>Apos.Gui</PackageId>
-    <Description>UI library for MonoGame.</Description>
-    <PackageTags>gamedev;monogame;ui</PackageTags>
+    <PackageId>Apos.Gui.KNI</PackageId>
+    <Description>UI library for KNI.</Description>
+    <PackageTags>gamedev;kni;ui</PackageTags>
 
     <Authors>Jean-David Moisan</Authors>
     <Company>Vyne Enterprise Inc.</Company>
@@ -29,11 +29,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="All" Version="3.8.0.1641" />
-    <PackageReference Include="MonoGame.Extended" Version="5.3.1" />
-    <PackageReference Include="FontStashSharp.MonoGame" Version="1.2.8" />
-    <PackageReference Include="Apos.Input" Version="2.5.0" />
-    <PackageReference Include="Apos.Tweens" Version="0.2.0" />
+    <PackageReference Include="nkast.Xna.Framework" Version="4.2.9001" />
+    <PackageReference Include="KNI.Extended" Version="5.3.1" />
+    <PackageReference Include="FontStashSharp.KNI" Version="1.5.1" />
+    <PackageReference Include="Apos.Input.KNI" Version="2.5.0" />
+    <PackageReference Include="Apos.Tweens.KNI" Version="0.2.0" />
   </ItemGroup>
 
   <ItemGroup>

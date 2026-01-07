@@ -105,7 +105,7 @@ namespace Apos.Gui {
                 c.Width = c.PrefWidth;
                 c.Height = c.PrefHeight;
 
-                c.Clip = c.Bounds.Intersection(Clip);
+                c.Clip = c.Bounds.Intersect(Clip);
 
                 if (c is IParent p) {
                     p.UpdateLayout(gameTime);

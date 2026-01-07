@@ -6,7 +6,8 @@ on:
     - 'v*'
 
 env:
-  SOURCE: Source
+  SOURCE1: Source/Apos.Camera.csproj
+  SOURCE2: Source/Apos.Camera.KNI.csproj
 
 jobs:
   build:
@@ -14,16 +15,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: '9.0.x'
     - name: Get version from tag
       run: |
         TAGVERSION=$(git describe --tags --abbrev=0)
         echo "TAGVERSION=${TAGVERSION:1}" >> $GITHUB_ENV
     - name: Pack with dotnet
-      run: dotnet pack ${{ env.SOURCE }} -c Release --include-source --include-symbols -o ./artifacts -p:Version=${{ env.TAGVERSION }}
+      run: |
+        dotnet pack ${{ env.SOURCE1 }} -c Release --include-source --include-symbols -o ./artifacts -p:Version=${{ env.TAGVERSION }}
+        dotnet pack ${{ env.SOURCE2 }} -c Release --include-source --include-symbols -o ./artifacts -p:Version=${{ env.TAGVERSION }}
     - name: Push with dotnet
       run: dotnet nuget push ./artifacts/*.nupkg -k ${{ secrets.NUGETAPIKEY }} -s https://api.nuget.org/v3/index.json --skip-duplicate
