@@ -66,10 +66,10 @@ namespace Apos.Gui {
             else c = new Color(76, 76, 76);
 
             float percent = (Value - Min) / (Max - Min);
-            GuiHelper.SpriteBatch.DrawRectangle(Bounds, c, 2f);
-            GuiHelper.SpriteBatch.FillRectangle(new RectangleF(Left + (Width - _thickness) * percent, Top, _thickness, Height), c);
-            GuiHelper.SpriteBatch.FillRectangle(new RectangleF(Left + (Width - _thickness) * percent - _handleThickness / 2, Top + Height * 0.4f, _thickness + _handleThickness, 2), c);
-            GuiHelper.SpriteBatch.FillRectangle(new RectangleF(Left + (Width - _thickness) * percent - _handleThickness / 2, Top + Height * 0.6f, _thickness + _handleThickness, 2), c);
+            GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, c, 2f);
+            GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left + (Width - _thickness) * percent, Top), new Vector2(_thickness, Height), c);
+            GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left + (Width - _thickness) * percent - _handleThickness / 2, Top + Height * 0.4f), new Vector2(_thickness + _handleThickness, 2), c);
+            GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left + (Width - _thickness) * percent - _handleThickness / 2, Top + Height * 0.6f), new Vector2(_thickness + _handleThickness, 2), c);
             GuiHelper.PopScissor();
         }
 

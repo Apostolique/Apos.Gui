@@ -35,7 +35,7 @@
     <PackageReference Include="nkast.Kni.Platform.Blazor.GL" Version="4.2.9001" />
     <PackageReference Include="nkast.Xna.Framework.Content.Pipeline.Builder" Version="4.2.9001" />
 
-    <PackageReference Include="Apos.Shapes.KNI" Version="0.5.2" />
+    <PackageReference Include="Apos.Shapes.KNI" Version="0.6.2-alpha" />
 
     <ProjectReference Include="../../../Source/Apos.Gui.KNI.csproj" />
   </ItemGroup>

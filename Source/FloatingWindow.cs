@@ -35,8 +35,8 @@ namespace Apos.Gui {
 
         public override void Draw(GameTime gameTime) {
             GuiHelper.PushScissor(Clip);
-            GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.Black);
-            GuiHelper.SpriteBatch.FillRectangle(new RectangleF(Left, Bottom - 20, Width, 20), Color.White * 0.5f);
+            GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, Color.Black);
+            GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left, Bottom - 20), new Vector2(Width, 20), Color.White * 0.5f);
             GuiHelper.PopScissor();
 
             base.Draw(gameTime);

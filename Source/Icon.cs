@@ -21,7 +21,7 @@ namespace Apos.Gui {
 
             Vector2 pos = new(Left + halfWidth - iconHalfWidth, Top + halfHeight - iconHalfHeight);
 
-            GuiHelper.SpriteBatch.Draw(Region, pos, Color.White);
+            GuiHelper.ShapeBatch.Draw(Region.Texture, pos, Region.Bounds, Color.White);
 
             GuiHelper.PopScissor();
         }

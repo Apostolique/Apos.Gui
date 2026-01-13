@@ -67,22 +67,22 @@ namespace Apos.Gui {
             GuiHelper.PushScissor(Clip);
 
             if (IsChecked) {
-                GuiHelper.SpriteBatch.FillRectangle(new RectangleF(Left + 6, Top + 6, Width - 12, Height - 12), Color.White);
+                GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left + 6, Top + 6), new Vector2(Width - 12, Height - 12), Color.White);
             }
 
             if (Clicked) {
-                GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.5f);
+                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, Color.White * 0.5f);
             } else if (_mousePressed && _hovered || _buttonPressed) {
-                GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.2f);
+                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, Color.White * 0.2f);
             } else if (_mousePressed) {
-                GuiHelper.SpriteBatch.FillRectangle(Bounds, Color.White * 0.15f);
+                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, Color.White * 0.15f);
             }
             if (IsFocused) {
-                GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.White, 2f);
-                GuiHelper.SpriteBatch.DrawRectangle(new RectangleF(Left + 6, Top + 6, Width - 12, Height - 12), Color.White, 2f);
+                GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, Color.White, 2f);
+                GuiHelper.ShapeBatch.BorderRectangle(new Vector2(Left + 6, Top + 6), new Vector2(Width - 12, Height - 12), Color.White, 2f);
             } else {
-                GuiHelper.SpriteBatch.DrawRectangle(Bounds, new Color(76, 76, 76), 2f);
-                GuiHelper.SpriteBatch.DrawRectangle(new RectangleF(Left + 6, Top + 6, Width - 12, Height - 12), new Color(76, 76, 76), 2f);
+                GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, new Color(76, 76, 76), 2f);
+                GuiHelper.ShapeBatch.BorderRectangle(new Vector2(Left + 6, Top + 6), new Vector2(Width - 12, Height - 12), new Color(76, 76, 76), 2f);
             }
 
             GuiHelper.PopScissor();

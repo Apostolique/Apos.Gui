@@ -115,7 +115,7 @@ namespace Apos.Gui {
             GuiHelper.PushScissor(Clip);
 
             if (IsFocused) {
-                GuiHelper.SpriteBatch.DrawRectangle(Bounds, Color.White, 2f);
+                GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, Color.White, 2f);
 
                 float alignLeft = Left + Padding;
 
@@ -124,14 +124,14 @@ namespace Apos.Gui {
                     cursorLeft = alignLeft + GuiHelper.MeasureStringTight(_text.Substring(0, Cursor), _fontSize).X;
                 }
                 if (_blink.Value <= 0.5f) {
-                    GuiHelper.SpriteBatch.FillRectangle(new RectangleF(cursorLeft, Top, 2f, Height), Color.White);
+                    GuiHelper.ShapeBatch.FillRectangle(new Vector2(cursorLeft, Top), new Vector2(2f, Height), Color.White);
                 }
             } else {
-                GuiHelper.SpriteBatch.DrawRectangle(Bounds, new Color(76, 76, 76), 2f);
+                GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, new Color(76, 76, 76), 2f);
             }
 
             var font = GuiHelper.GetFont(_fontSize);
-            GuiHelper.SpriteBatch.DrawString(font, _text, XY + new Vector2(Padding), Color, scale: GuiHelper.FontScale);
+            GuiHelper.ShapeBatch.DrawString(font, _text, XY + new Vector2(Padding), Color, scale: GuiHelper.FontScale);
 
             GuiHelper.PopScissor();
         }

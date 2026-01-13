@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Apos.Input;
+using Apos.Shapes;
 using Apos.Tweens;
 using FontStashSharp;
 using Microsoft.Xna.Framework;
@@ -20,7 +21,7 @@ namespace Apos.Gui {
         public static void Setup(Game game, FontSystem fontSystem) {
             InputHelper.Setup(game);
             FontSystem = fontSystem;
-            SpriteBatch = new SpriteBatch(game.GraphicsDevice);
+            ShapeBatch = new ShapeBatch(game.GraphicsDevice, game.Content);
         }
         /// <summary>
         /// Called at the start of an update loop.
@@ -69,7 +70,7 @@ namespace Apos.Gui {
         public static Vector2 Mouse => Vector2.Transform(InputHelper.NewMouse.Position.ToVector2(), Matrix.Invert(UIMatrix));
 
         /// <summary>SpriteBatch used to draw the UI.</summary>
-        public static SpriteBatch SpriteBatch { get; set; } = null!;
+        public static ShapeBatch ShapeBatch { get; set; } = null!;
         /// <summary>FontSystem used in the UI.</summary>
         public static FontSystem FontSystem { get; set; } = null!;
         /// <summary>Defaults to LinearClamp.</summary>
@@ -91,10 +92,10 @@ namespace Apos.Gui {
         /// <summary>Used when drawing text to the screen. The text has to be scaled by this value.</summary>
         public static Vector2 FontScale => new Vector2(_finalScale);
         /// <summary>
-        /// Uses a rectangle to limit the area that the spritebatch is allowed to draw to.
+        /// Uses a rectangle to limit the area that the ShapeBatch is allowed to draw to.
         /// The rectangle is converted into screen coordinates.
         /// </summary>
-        /// <param name="r">The rectangle to use for the spritebatch scissor in UI coordinates.</param>
+        /// <param name="r">The rectangle to use for the ShapeBatch scissor in UI coordinates.</param>
         public static void PushScissor(RectangleF r) {
             // TODO: Optimize begin call somehow. Maybe there is no drawing between scissor swaps?
             bool wasBeginCalled = _beginCalled;
@@ -107,8 +108,8 @@ namespace Apos.Gui {
             int w = (int)(r.Width * Scale);
             int h = (int)(r.Height * Scale);
 
-            _scissorStack.Push((SpriteBatch.GraphicsDevice.ScissorRectangle, wasBeginCalled));
-            SpriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(x, y, w, h);
+            _scissorStack.Push((ShapeBatch.GraphicsDevice.ScissorRectangle, wasBeginCalled));
+            ShapeBatch.GraphicsDevice.ScissorRectangle = new Rectangle(x, y, w, h);
             Begin();
         }
         /// <summary>
@@ -121,7 +122,7 @@ namespace Apos.Gui {
 
             bool wasBeginCalled;
 
-            (SpriteBatch.GraphicsDevice.ScissorRectangle, wasBeginCalled) = _scissorStack.Pop();
+            (ShapeBatch.GraphicsDevice.ScissorRectangle, wasBeginCalled) = _scissorStack.Pop();
             if (wasBeginCalled) {
                 Begin();
             }
@@ -131,14 +132,15 @@ namespace Apos.Gui {
         /// Calls begin on the spritebatch with the UI rasterizer state, transform matrix and sampler state.
         /// </summary>
         private static void Begin() {
-            SpriteBatch.Begin(rasterizerState: _rasterState, transformMatrix: UIMatrix, samplerState: GuiSampler);
+            ShapeBatch.GraphicsDevice.RasterizerState = _rasterState;
+            ShapeBatch.Begin(UIMatrix);
             _beginCalled = true;
         }
         /// <summary>
         /// Calls end on the spritebatch.
         /// </summary>
         private static void End() {
-            SpriteBatch.End();
+            ShapeBatch.End();
             _beginCalled = false;
         }
         private static int CountLines(string text) {

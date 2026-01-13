@@ -41,7 +41,7 @@ namespace Apos.Gui {
 
             var font = GuiHelper.GetFont(_fontSize);
             // TODO: Hover color?
-            GuiHelper.SpriteBatch.DrawString(font, _text, XY + new Vector2(Padding), Color, scale: GuiHelper.FontScale);
+            GuiHelper.ShapeBatch.DrawString(font, _text, XY + new Vector2(Padding), Color, scale: GuiHelper.FontScale);
 
             GuiHelper.PopScissor();
         }
