@@ -165,7 +165,7 @@ namespace Apos.Gui {
         /// Removes an id from the top of the id stack.
         /// </summary>
         public void PopId() {
-            int id = _idStack.Pop();
+            int _ = _idStack.Pop();
 
             ComputeIdStack();
         }
@@ -175,7 +175,7 @@ namespace Apos.Gui {
         /// <param name="id">The id of the component to get.</param>
         /// <param name="c">When this method returns, contains the component associated with the specified id.</param>
         /// <returns>true if the component with the specified id is found; otherwise false.</returns>
-        public bool TryGetValue(int id, out IComponent c) {
+        public bool TryGetValue(int id, out IComponent? c) {
             return _activeComponents.TryGetValue(id, out c);
         }
         /// <summary>
@@ -242,7 +242,7 @@ namespace Apos.Gui {
             return id;
         }
 
-        public int TryCreateId(int id, bool isAbsoluteId, out IComponent c) {
+        public static int TryCreateId(int id, bool isAbsoluteId, out IComponent? c) {
             id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
             GuiHelper.CurrentIMGUI.TryGetValue(id, out c);
 
@@ -390,11 +390,11 @@ namespace Apos.Gui {
             }
         }
 
-        private Stack<int> _idStack = new Stack<int>();
+        private readonly Stack<int> _idStack = new();
         private int _idHash = 17;
 
-        private Stack<(IParent Parent, int MaxChildren, int ChildrenCount)> _parents = new Stack<(IParent, int, int)>();
-        private Dictionary<int, IComponent> _activeComponents = new Dictionary<int, IComponent>();
+        private readonly Stack<(IParent Parent, int MaxChildren, int ChildrenCount)> _parents = new();
+        private readonly Dictionary<int, IComponent> _activeComponents = [];
         private int? Focus {
             get => _focus;
             set {
@@ -411,13 +411,13 @@ namespace Apos.Gui {
         private IParent _currentParent;
         private int _maxChildren = 0;
         private int _childrenCount = 0;
-        private Dictionary<int, int> _idsUsedThisFrame = new Dictionary<int, int>();
+        private readonly Dictionary<int, int> _idsUsedThisFrame = [];
 
         private bool _prevPressed = false;
         private bool _nextPressed = false;
 
         private int _nextChildIndex = 0;
-        private List<IComponent> _children = new List<IComponent>();
-        private List<IComponent> _childrenRenderOrder = new List<IComponent>();
+        private readonly List<IComponent> _children = [];
+        private readonly List<IComponent> _childrenRenderOrder = [];
     }
 }

@@ -45,7 +45,7 @@ namespace Apos.Gui {
         protected Vector2 _dragDelta = Vector2.Zero;
 
         public static new FloatingWindow Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
+            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
 
             FloatingWindow a;
             if (c is FloatingWindow d) {

@@ -95,7 +95,7 @@ namespace Apos.Gui {
         protected int _inputDelayInitialSpeed = 400;
 
         public static Slider Put(ref float value, float min, float max, float? step = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
+            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
 
             Slider a;
             if (c is Slider d) {

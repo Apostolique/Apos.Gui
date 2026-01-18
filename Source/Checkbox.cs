@@ -92,7 +92,7 @@ namespace Apos.Gui {
         protected bool _hovered = false;
 
         public static Checkbox Put(ref bool isChecked, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
+            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
 
             Checkbox a;
             if (c is Checkbox d) {

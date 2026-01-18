@@ -240,7 +240,7 @@ namespace Apos.Gui {
         protected float _offsetY = 0;
 
         public static Horizontal Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
+            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
 
             Horizontal a;
             if (c is Horizontal d) {

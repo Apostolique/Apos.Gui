@@ -59,7 +59,7 @@ namespace Apos.Gui {
         protected bool _isDirty = false;
 
         public static Label Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
+            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
 
             color ??= new Color(200, 200, 200);
 

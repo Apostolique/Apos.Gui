@@ -66,7 +66,7 @@ namespace Apos.Gui {
         protected bool _snap = false;
 
         public static new MenuPanel Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
+            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
 
             MenuPanel a;
             if (c is MenuPanel d) {

@@ -225,7 +225,7 @@ namespace Apos.Gui {
             ft.Duration = GetDuration(a, b, ScrollSpeed, ScrollMaxDuration);
         }
 
-        protected long GetDuration(float a, float b, float speed, long maxDuration) {
+        protected static long GetDuration(float a, float b, float speed, long maxDuration) {
             return (long)Math.Min(Math.Abs((b - a) / speed), maxDuration);
         }
         protected int _nextChildIndex = 0;
@@ -239,7 +239,7 @@ namespace Apos.Gui {
         protected float _offsetY = 0;
 
         public static Vertical Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = GuiHelper.CurrentIMGUI.TryCreateId(id, isAbsoluteId, out IComponent c);
+            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
 
             Vertical a;
             if (c is Vertical d) {
