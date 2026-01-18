@@ -2,7 +2,6 @@ using Apos.Input;
 using Track = Apos.Input.Track;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
-using FontStashSharp;
 using MonoGame.Extended;
 using System.Runtime.CompilerServices;
 using Apos.Tweens;
@@ -121,7 +120,7 @@ namespace Apos.Gui {
 
                 float cursorLeft = alignLeft;
                 if (Cursor > 0 && Cursor <= _text.Length) {
-                    cursorLeft = alignLeft + GuiHelper.MeasureStringTight(_text.Substring(0, Cursor), _fontSize).X;
+                    cursorLeft = alignLeft + GuiHelper.MeasureStringTight(_text[..Cursor], _fontSize).X;
                 }
                 if (_blink.Value <= 0.5f) {
                     GuiHelper.ShapeBatch.FillRectangle(new Vector2(cursorLeft, Top), new Vector2(2f, Height), Color.White);
@@ -169,12 +168,12 @@ namespace Apos.Gui {
                     break;
                 }
                 currentPosition++;
-                currentOffset = left + GuiHelper.MeasureStringTight(text.Substring(0, currentPosition), _fontSize).X;
+                currentOffset = left + GuiHelper.MeasureStringTight(text[..currentPosition], _fontSize).X;
             }
             return currentPosition;
         }
 
-        protected string _text;
+        protected string _text = null!;
         protected Vector2 _cachedSize;
 
         protected int _fontSize;

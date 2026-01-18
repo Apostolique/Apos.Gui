@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 
 namespace Apos.Gui {
     public class Tooltip(int id) : Component(id), IParent {

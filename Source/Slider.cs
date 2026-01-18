@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using Apos.Input;
 using Microsoft.Xna.Framework;
-using MonoGame.Extended;
 
 namespace Apos.Gui {
     public class Slider : Component {
