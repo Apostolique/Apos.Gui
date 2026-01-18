@@ -78,7 +78,7 @@ namespace Apos.Gui {
 
             if (Tip != null && _hovered) {
                 GuiHelper.PushScissor(Tip.Clip);
-                GuiHelper.ShapeBatch.FillRectangle(Tip.Bounds.Position, Tip.Bounds.Size, Color.Black * 0.7f);
+                GuiHelper.ShapeBatch.FillRectangle(Tip.Bounds.Position, Tip.Bounds.Size, new Color(Color.Black, 0.7f));
                 GuiHelper.PopScissor();
                 Tip.Draw(gameTime);
             }

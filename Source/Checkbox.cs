@@ -71,11 +71,11 @@ namespace Apos.Gui {
             }
 
             if (Clicked) {
-                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, Color.White * 0.5f);
+                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, new Color(Color.White, 0.5f));
             } else if (_mousePressed && _hovered || _buttonPressed) {
-                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, Color.White * 0.2f);
+                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, new Color(Color.White, 0.2f));
             } else if (_mousePressed) {
-                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, Color.White * 0.15f);
+                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, new Color(Color.White, 0.15f));
             }
             if (IsFocused) {
                 GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, Color.White, 2f);
