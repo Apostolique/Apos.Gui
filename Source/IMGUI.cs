@@ -94,7 +94,7 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="gameTime">Current gametime</param>
         public void UpdateLayout(GameTime gameTime) {
-            // IMGUI manages itself so it can set it's own position and size.
+            // IMGUI manages itself so it can set its own position and size.
             X = 0f;
             Y = 0f;
             Width = GuiHelper.WindowWidth;

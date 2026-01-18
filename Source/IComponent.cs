@@ -8,7 +8,7 @@ namespace Apos.Gui {
     /// </summary>
     public interface IComponent {
         /// <summary>
-        /// Managed automatically when a component is created. Used by an IParent to keep track of it's children.
+        /// Managed automatically when a component is created. Used by an IParent to keep track of its children.
         /// </summary>
         int Index { get; set; }
         /// <summary>
@@ -29,11 +29,11 @@ namespace Apos.Gui {
         /// </summary>
         float Y { get; set; }
         /// <summary>
-        /// Width of the component given by it's parent.
+        /// Width of the component given by its parent.
         /// </summary>
         float Width { get; set; }
         /// <summary>
-        /// Height of the component given by it's parent.
+        /// Height of the component given by its parent.
         /// </summary>
         float Height { get; set; }
         /// <summary>
@@ -63,7 +63,7 @@ namespace Apos.Gui {
         /// </summary>
         RectangleF Bounds { get; set; }
         /// <summary>
-        /// When a component is not fully visible. Usually because it overflows it's parent.
+        /// When a component is not fully visible. Usually because it overflows its parent.
         /// When the component is fully visible this will be the same as Bounds.
         /// </summary>
         RectangleF Clip { get; set; }
@@ -73,7 +73,7 @@ namespace Apos.Gui {
         /// </summary>
         Vector2 XY { get; set; }
         /// <summary>
-        /// Width and Height of the component given by it's parent.
+        /// Width and Height of the component given by its parent.
         /// </summary>
         Vector2 Size { get; set; }
         /// <summary>
@@ -117,7 +117,7 @@ namespace Apos.Gui {
         /// </summary>
         void UpdatePrefSize(GameTime gameTime);
         /// <summary>
-        /// Draws the component. The component should draw itself within it's clip rectangle.
+        /// Draws the component. The component should draw itself within its clip rectangle.
         /// </summary>
         void Draw(GameTime gameTime);
 
@@ -136,7 +136,7 @@ namespace Apos.Gui {
         /// </summary>
         IComponent GetNext();
         /// <summary>
-        /// Used for focus cycling. When a component is a parent, this returns it's last child.
+        /// Used for focus cycling. When a component is a parent, this returns its last child.
         /// If there is only one component in the tree it will return itself.
         /// </summary>
         IComponent GetLast();
@@ -146,7 +146,7 @@ namespace Apos.Gui {
         /// </summary>
         Action<IComponent?> GrabFocus { get; set; }
         /// <summary>
-        /// If the component is floatable, it's parent will reorder it to be drawn on top.
+        /// If the component is floatable, its parent will reorder it to be drawn on top.
         /// It will also scroll it into view if needed.
         /// </summary>
         void SendToTop();

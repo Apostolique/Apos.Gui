@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using Apos.Tweens;
 
 namespace Apos.Gui {
-    // TODO: Textbox shouldn't change it's size. It should take a "preferred width" and just use that.
+    // TODO: Textbox shouldn't change its size. It should take a "preferred width" and just use that.
     //       Will need to add scrolling.
 
     public class Textbox : Component {

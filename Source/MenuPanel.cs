@@ -20,7 +20,7 @@ namespace Apos.Gui {
             }
         }
         public override void UpdateLayout(GameTime gameTime) {
-            // MenuPanel is a root component so it can set it's own position.
+            // MenuPanel is a root component so it can set its own position.
             X = 0f;
             Y = 0f;
 
