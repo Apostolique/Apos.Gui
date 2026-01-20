@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Apos.Input;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
@@ -89,6 +90,7 @@ namespace Apos.Gui {
         }
 
         public virtual void SendToTop(IComponent c) {
+            LastFocus = InputHelper.CurrentFrame;
             Parent?.SendToTop(this);
         }
 

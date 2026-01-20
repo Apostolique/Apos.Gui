@@ -198,7 +198,7 @@ namespace Apos.Gui {
             if (c.Parent != current || c.Parent.PeekNextIndex() != c.Index) {
                 c.Parent?.Remove(c);
                 c.Index = current.NextIndex();
-                c.GrabFocus = GrabFocus;
+                c.Root = this;
 
                 current.Add(c);
             }
@@ -213,7 +213,7 @@ namespace Apos.Gui {
         /// Gives focus to a component. Can also clear the focus if null is passed.
         /// </summary>
         /// <param name="c">The component that should receive focus.</param>
-        public new void GrabFocus(IComponent? c) {
+        public void GrabFocus(IComponent? c) {
             if (c == null) {
                 Focus = null;
             } else if (Focus != c.Id) {
@@ -277,6 +277,7 @@ namespace Apos.Gui {
         }
         public int PeekNextIndex() => _nextChildIndex + 1;
         public int NextIndex() => _nextChildIndex++;
+        public new uint LastFocus { get; set; } = uint.MaxValue;
 
         /// <summary>
         /// If this component has a parent, it will ask the parent to return this component's previous neighbor.
@@ -319,6 +320,7 @@ namespace Apos.Gui {
         }
 
         public void SendToTop(IComponent c) {
+            LastFocus = InputHelper.CurrentFrame;
             if (c.IsFloatable) {
                 _childrenRenderOrder.Remove(c);
                 _childrenRenderOrder.Add(c);

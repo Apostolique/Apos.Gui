@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Apos.Input;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
@@ -14,10 +15,12 @@ namespace Apos.Gui {
         }
         public override void UpdateInput(GameTime gameTime) {
             if (Main != null) {
-                if (Main.Clip.Contains(GuiHelper.OldMouse)) {
-                    if (!_hovered) {
-                        SendToTop(this);
+                if (Main.Clip.Contains(GuiHelper.OldMouse) && Tip != null) {
+                    if (!_hovered && LastFocus != Root.LastFocus) {
+                        SendToTop();
                     }
+                    _hovered = true;
+                } else if (Tip?.LastFocus == Root.LastFocus || Main.LastFocus == Root.LastFocus) {
                     _hovered = true;
                 } else {
                     _hovered = false;
@@ -152,6 +155,7 @@ namespace Apos.Gui {
         }
 
         public virtual void SendToTop(IComponent c) {
+            LastFocus = InputHelper.CurrentFrame;
             Parent?.SendToTop(this);
         }
 

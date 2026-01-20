@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
@@ -8,6 +7,10 @@ namespace Apos.Gui {
     /// </summary>
     public interface IComponent {
         /// <summary>
+        /// Used by IMGUI to efficiently access any component in the UI.
+        /// </summary>
+        int Id { get; set; }
+        /// <summary>
         /// Managed automatically when a component is created. Used by an IParent to keep track of its children.
         /// </summary>
         int Index { get; set; }
@@ -16,9 +19,9 @@ namespace Apos.Gui {
         /// </summary>
         uint LastPing { get; set; }
         /// <summary>
-        /// Used by IMGUI to efficiently access any component in the UI.
+        /// Used by a parent to know if one of its children currently has focus.
         /// </summary>
-        int Id { get; set; }
+        uint LastFocus { get; set; }
 
         /// <summary>
         /// X position in the UI coordinate system.
@@ -142,9 +145,9 @@ namespace Apos.Gui {
         IComponent GetLast();
 
         /// <summary>
-        /// Used to request focus on a component. IMGUI will also implicitly call SendToTop.
+        /// The root IMGUI component. Useful for calling functions directly on it.
         /// </summary>
-        Action<IComponent?> GrabFocus { get; set; }
+        IMGUI Root { get; set; }
         /// <summary>
         /// If the component is floatable, its parent will reorder it to be drawn on top.
         /// It will also scroll it into view if needed.

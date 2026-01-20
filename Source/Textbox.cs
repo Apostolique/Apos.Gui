@@ -52,7 +52,7 @@ namespace Apos.Gui {
             if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
                 _pressed = true;
                 Cursor = MouseToCursor(GuiHelper.Mouse.X, _text);
-                GrabFocus(this);
+                Root.GrabFocus(this);
             }
 
             if (IsFocused) {

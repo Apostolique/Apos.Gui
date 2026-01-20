@@ -27,7 +27,7 @@ namespace Apos.Gui {
                 _isPressed = true;
                 float percent = (GuiHelper.Mouse.X - Left) / (Width - _thickness);
                 Value = MathHelper.Max(MathHelper.Min(percent * (Max - Min) + Min, Max), Min);
-                GrabFocus(this);
+                Root.GrabFocus(this);
             }
             if (IsFocused) {
                 if (_isPressed) {

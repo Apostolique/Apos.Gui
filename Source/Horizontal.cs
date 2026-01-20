@@ -191,6 +191,7 @@ namespace Apos.Gui {
         }
 
         public virtual void SendToTop(IComponent c) {
+            LastFocus = InputHelper.CurrentFrame;
             if (c.IsFloatable) {
                 _childrenRenderOrder.Remove(c);
                 _childrenRenderOrder.Add(c);
@@ -225,7 +226,7 @@ namespace Apos.Gui {
             ft.Duration = GetDuration(a, b, ScrollSpeed, ScrollMaxDuration);
         }
 
-        protected long GetDuration(float a, float b, float speed, long maxDuration) {
+        protected static long GetDuration(float a, float b, float speed, long maxDuration) {
             return (long)Math.Min(Math.Abs((b - a) / speed), maxDuration);
         }
 

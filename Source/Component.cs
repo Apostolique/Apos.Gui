@@ -1,4 +1,4 @@
-using System;
+using Apos.Input;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
@@ -8,9 +8,10 @@ namespace Apos.Gui {
     /// Used as a base class for other components.
     /// </summary>
     public class Component(int id) : IComponent {
-        public virtual uint LastPing { get; set; } = 0;
         public virtual int Id { get; set; } = id;
         public virtual int Index { get; set; } = 0;
+        public virtual uint LastPing { get; set; } = 0;
+        public virtual uint LastFocus { get; set; }
 
         public virtual float X { get; set; } = 0;
         public virtual float Y { get; set; } = 0;
@@ -57,10 +58,12 @@ namespace Apos.Gui {
             return this;
         }
 
-        public virtual Action<IComponent?> GrabFocus { get; set; } = c => { };
         public virtual void SendToTop() {
+            LastFocus = InputHelper.CurrentFrame;
             Parent?.SendToTop(this);
         }
+
+        public virtual IMGUI Root { get; set; } = null!;
 
         public virtual Vector2 XY {
             get => new(X, Y);

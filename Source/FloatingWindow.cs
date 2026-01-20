@@ -12,7 +12,7 @@ namespace Apos.Gui {
             if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
                 _mousePressed = true;
                 _dragDelta = XY - GuiHelper.Mouse;
-                GrabFocus(this);
+                Root.GrabFocus(this);
             }
 
             if (IsFocused) {
