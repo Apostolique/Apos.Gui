@@ -33,7 +33,7 @@
     <PackageReference Include="KNI.Extended" Version="5.3.1" />
     <PackageReference Include="FontStashSharp.KNI" Version="1.5.2" />
     <PackageReference Include="Apos.Input.KNI" Version="2.5.0" />
-    <PackageReference Include="Apos.Shapes.KNI" Version="0.6.2-alpha" />
+    <PackageReference Include="Apos.Shapes.KNI" Version="0.6.3-alpha" />
     <PackageReference Include="Apos.Tweens.KNI" Version="0.2.0" />
   </ItemGroup>
 

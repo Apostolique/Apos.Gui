@@ -33,7 +33,7 @@
     <PackageReference Include="MonoGame.Extended" Version="5.3.1" />
     <PackageReference Include="FontStashSharp.MonoGame" Version="1.5.2" />
     <PackageReference Include="Apos.Input" Version="2.5.0" />
-    <PackageReference Include="Apos.Shapes" Version="0.6.2-alpha" />
+    <PackageReference Include="Apos.Shapes" Version="0.6.3-alpha" />
     <PackageReference Include="Apos.Tweens" Version="0.2.0" />
   </ItemGroup>
 
