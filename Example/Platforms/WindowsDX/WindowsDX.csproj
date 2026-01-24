@@ -15,7 +15,6 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.4.1" />
     <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.4.1" />
-    <PackageReference Include="Apos.Shapes" Version="0.6.2-alpha" />
 
     <ProjectReference Include="../../../Source/Apos.Gui.csproj">
       <NoWarn>CS1591</NoWarn>
