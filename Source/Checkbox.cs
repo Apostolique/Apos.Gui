@@ -63,7 +63,7 @@ namespace Apos.Gui {
         }
 
         public override void Draw(GameTime gameTime) {
-            GuiHelper.PushScissor(Clip);
+            GuiHelper.PushClip(Clip);
 
             if (IsChecked) {
                 GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left + 6, Top + 6), new Vector2(Width - 12, Height - 12), Color.White);
@@ -84,7 +84,7 @@ namespace Apos.Gui {
                 GuiHelper.ShapeBatch.BorderRectangle(new Vector2(Left + 6, Top + 6), new Vector2(Width - 12, Height - 12), new Color(76, 76, 76), 2f);
             }
 
-            GuiHelper.PopScissor();
+            GuiHelper.PopClip();
         }
 
         protected bool _mousePressed = false;

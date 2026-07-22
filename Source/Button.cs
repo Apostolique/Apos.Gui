@@ -86,7 +86,7 @@ namespace Apos.Gui {
         }
 
         public override void Draw(GameTime gameTime) {
-            GuiHelper.PushScissor(Clip);
+            GuiHelper.PushClip(Clip);
 
             if (Clicked) {
                 GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, new Color(Color.White, 0.5f));
@@ -103,7 +103,7 @@ namespace Apos.Gui {
 
             Child?.Draw(gameTime);
 
-            GuiHelper.PopScissor();
+            GuiHelper.PopClip();
         }
 
         public void Add(IComponent c) {

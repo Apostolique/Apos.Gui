@@ -126,8 +126,10 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="gameTime">Current gametime.</param>
         public override void Draw(GameTime gameTime) {
+            GuiHelper.Begin();
             foreach (var c in _childrenRenderOrder)
                 c.Draw(gameTime);
+            GuiHelper.End();
         }
 
         /// <summary>

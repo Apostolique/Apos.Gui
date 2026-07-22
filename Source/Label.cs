@@ -37,13 +37,13 @@ namespace Apos.Gui {
             PrefHeight = _cachedSize.Y + Padding * 2;
         }
         public override void Draw(GameTime gameTime) {
-            GuiHelper.PushScissor(Clip);
+            GuiHelper.PushClip(Clip);
 
             var font = GuiHelper.GetFont(_fontSize);
             // TODO: Hover color?
             GuiHelper.ShapeBatch.DrawString(font, _text, XY + new Vector2(Padding), Color, scale: GuiHelper.FontScale);
 
-            GuiHelper.PopScissor();
+            GuiHelper.PopClip();
         }
 
         protected void Cache() {

@@ -59,7 +59,7 @@ namespace Apos.Gui {
         }
 
         public override void Draw(GameTime gameTime) {
-            GuiHelper.PushScissor(Clip);
+            GuiHelper.PushClip(Clip);
             Color c;
             if (IsFocused) c = Color.White;
             else c = new Color(76, 76, 76);
@@ -69,7 +69,7 @@ namespace Apos.Gui {
             GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left + (Width - _thickness) * percent, Top), new Vector2(_thickness, Height), c);
             GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left + (Width - _thickness) * percent - _handleThickness / 2, Top + Height * 0.4f), new Vector2(_thickness + _handleThickness, 2), c);
             GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left + (Width - _thickness) * percent - _handleThickness / 2, Top + Height * 0.6f), new Vector2(_thickness + _handleThickness, 2), c);
-            GuiHelper.PopScissor();
+            GuiHelper.PopClip();
         }
 
         protected void SlideValue(ICondition condition, int direction) {

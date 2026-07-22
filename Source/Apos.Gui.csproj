@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
 
@@ -29,11 +29,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="All" Version="3.8.0.1641" />
+    <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="All" Version="3.8.2.1105" />
     <PackageReference Include="MonoGame.Extended" Version="5.3.1" />
     <PackageReference Include="FontStashSharp.MonoGame" Version="1.5.2" />
     <PackageReference Include="Apos.Input" Version="2.5.0" />
-    <PackageReference Include="Apos.Shapes" Version="0.6.8" />
+    <PackageReference Include="Apos.Shapes" Version="0.7.5" />
     <PackageReference Include="Apos.Tweens" Version="0.2.0" />
   </ItemGroup>
 

@@ -11,7 +11,7 @@ namespace Apos.Gui {
             PrefHeight = Region.Height;
         }
         public override void Draw(GameTime gameTime) {
-            GuiHelper.PushScissor(Clip);
+            GuiHelper.PushClip(Clip);
 
             int halfWidth = (int)(Width / 2);
             int iconHalfWidth = (int)(PrefWidth / 2);
@@ -23,7 +23,7 @@ namespace Apos.Gui {
 
             GuiHelper.ShapeBatch.Draw(Region.Texture, pos, Region.Bounds, Color.White);
 
-            GuiHelper.PopScissor();
+            GuiHelper.PopClip();
         }
 
         public static Icon Put(Texture2DRegion region, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {

@@ -92,56 +92,40 @@ namespace Apos.Gui {
         /// <summary>Used when drawing text to the screen. The text has to be scaled by this value.</summary>
         public static Vector2 FontScale => new Vector2(_finalScale);
         /// <summary>
-        /// Uses a rectangle to limit the area that the ShapeBatch is allowed to draw to.
-        /// The rectangle is converted into screen coordinates.
+        /// Limits the area that the ShapeBatch is allowed to draw to using the built-in
+        /// Apos.Shapes clip rect. Unlike a scissor rect, this is handled in the shader so it
+        /// doesn't break the current batch.
+        /// Clips don't intersect; pushing a new clip replaces the active one until it's popped.
         /// </summary>
-        /// <param name="r">The rectangle to use for the ShapeBatch scissor in UI coordinates.</param>
-        public static void PushScissor(RectangleF r) {
-            // TODO: Optimize begin call somehow. Maybe there is no drawing between scissor swaps?
-            bool wasBeginCalled = _beginCalled;
-            if (wasBeginCalled) {
-                End();
-            }
-
-            int x = (int)(r.X * Scale);
-            int y = (int)(r.Y * Scale);
-            int w = (int)(r.Width * Scale);
-            int h = (int)(r.Height * Scale);
-
-            _scissorStack.Push((ShapeBatch.GraphicsDevice.ScissorRectangle, wasBeginCalled));
-            ShapeBatch.GraphicsDevice.ScissorRectangle = new Rectangle(x, y, w, h);
-            Begin();
+        /// <param name="r">The clip rectangle in UI coordinates.</param>
+        public static void PushClip(RectangleF r) {
+            _clipStack.Push(_currentClip);
+            _currentClip = r;
+            ShapeBatch.SetClipRect(r);
         }
         /// <summary>
-        /// Uses a rectangle to limit the area that the spritebatch is allowed to draw to.
+        /// Restores the clip rectangle that was active before the matching <see cref="PushClip"/>.
         /// </summary>
-        public static void PopScissor() {
-            if (_beginCalled) {
-                End();
-            }
-
-            bool wasBeginCalled;
-
-            (ShapeBatch.GraphicsDevice.ScissorRectangle, wasBeginCalled) = _scissorStack.Pop();
-            if (wasBeginCalled) {
-                Begin();
-            }
+        public static void PopClip() {
+            _currentClip = _clipStack.Pop();
+            ShapeBatch.SetClipRect(_currentClip);
         }
 
         /// <summary>
-        /// Calls begin on the spritebatch with the UI rasterizer state, transform matrix and sampler state.
+        /// Calls begin on the ShapeBatch with the UI transform matrix and clears any active clip.
+        /// IMGUI.Draw calls this for you; only call it manually if you draw the UI yourself.
         /// </summary>
-        private static void Begin() {
-            ShapeBatch.GraphicsDevice.RasterizerState = _rasterState;
+        public static void Begin() {
+            _currentClip = null;
+            _clipStack.Clear();
             ShapeBatch.Begin(UIMatrix);
-            _beginCalled = true;
+            ShapeBatch.SetClipRect(null);
         }
         /// <summary>
-        /// Calls end on the spritebatch.
+        /// Calls end on the ShapeBatch.
         /// </summary>
-        private static void End() {
+        public static void End() {
             ShapeBatch.End();
-            _beginCalled = false;
         }
         private static int CountLines(string text) {
             // https://stackoverflow.com/a/40928366/1710293
@@ -159,8 +143,7 @@ namespace Apos.Gui {
         private static float _scale = 1f;
         private static float _virtualScale = 1f;
         private static float _finalScale = 1f;
-        private static RasterizerState _rasterState = new RasterizerState { ScissorTestEnable = true };
-        private static bool _beginCalled = false;
-        private static Stack<(Rectangle, bool)> _scissorStack = new Stack<(Rectangle, bool)>();
+        private static RectangleF? _currentClip = null;
+        private static Stack<RectangleF?> _clipStack = new Stack<RectangleF?>();
     }
 }

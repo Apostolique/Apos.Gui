@@ -32,7 +32,7 @@ namespace GameProject {
         }
 
         protected override void LoadContent() {
-            _sb = new ShapeBatch(GraphicsDevice, Content);
+            _sb = new ShapeBatch(GraphicsDevice);
 
             FontSystem fontSystem = new();
             fontSystem.AddFont(TitleContainer.OpenStream($"{Content.RootDirectory}/source-code-pro-medium.ttf"));

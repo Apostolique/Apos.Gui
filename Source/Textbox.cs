@@ -111,7 +111,7 @@ namespace Apos.Gui {
         }
 
         public override void Draw(GameTime gameTime) {
-            GuiHelper.PushScissor(Clip);
+            GuiHelper.PushClip(Clip);
 
             if (IsFocused) {
                 GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, Color.White, 2f);
@@ -132,7 +132,7 @@ namespace Apos.Gui {
             var font = GuiHelper.GetFont(_fontSize);
             GuiHelper.ShapeBatch.DrawString(font, _text, XY + new Vector2(Padding), Color, scale: GuiHelper.FontScale);
 
-            GuiHelper.PopScissor();
+            GuiHelper.PopClip();
         }
 
         protected void Cache() {
