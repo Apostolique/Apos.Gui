@@ -98,17 +98,20 @@ namespace Apos.Gui {
         /// Clips don't intersect; pushing a new clip replaces the active one until it's popped.
         /// </summary>
         /// <param name="r">The clip rectangle in UI coordinates.</param>
-        public static void PushClip(RectangleF r) {
+        /// <param name="rounding">Corner radius of the clip. A value equal to half the rectangle's smallest side makes it a circle.</param>
+        /// <param name="rotation">Rotation of the clip around its center, in radians.</param>
+        /// <param name="aaSize">Anti-aliasing size of the clip edge in pixels. Set to 0f for hard scissor-like edges.</param>
+        public static void PushClip(RectangleF r, float rounding = 0f, float rotation = 0f, float aaSize = 1.5f) {
             _clipStack.Push(_currentClip);
-            _currentClip = r;
-            ShapeBatch.SetClipRect(r);
+            _currentClip = (r, rounding, rotation, aaSize);
+            ShapeBatch.SetClipRect(r, rounding, rotation, aaSize);
         }
         /// <summary>
         /// Restores the clip rectangle that was active before the matching <see cref="PushClip"/>.
         /// </summary>
         public static void PopClip() {
             _currentClip = _clipStack.Pop();
-            ShapeBatch.SetClipRect(_currentClip);
+            ApplyClip(_currentClip);
         }
 
         /// <summary>
@@ -127,6 +130,13 @@ namespace Apos.Gui {
         public static void End() {
             ShapeBatch.End();
         }
+        private static void ApplyClip((RectangleF Rect, float Rounding, float Rotation, float AaSize)? clip) {
+            if (clip is { } c) {
+                ShapeBatch.SetClipRect(c.Rect, c.Rounding, c.Rotation, c.AaSize);
+            } else {
+                ShapeBatch.SetClipRect(null);
+            }
+        }
         private static int CountLines(string text) {
             // https://stackoverflow.com/a/40928366/1710293
             // Defaults to 1 because in a UI, you want the text to always have some height.
@@ -143,7 +153,7 @@ namespace Apos.Gui {
         private static float _scale = 1f;
         private static float _virtualScale = 1f;
         private static float _finalScale = 1f;
-        private static RectangleF? _currentClip = null;
-        private static Stack<RectangleF?> _clipStack = new Stack<RectangleF?>();
+        private static (RectangleF Rect, float Rounding, float Rotation, float AaSize)? _currentClip = null;
+        private static Stack<(RectangleF Rect, float Rounding, float Rotation, float AaSize)?> _clipStack = new Stack<(RectangleF Rect, float Rounding, float Rotation, float AaSize)?>();
     }
 }
