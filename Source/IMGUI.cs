@@ -255,19 +255,14 @@ namespace Apos.Gui {
             c.Parent = this;
             _children.Insert(c.Index, c);
 
-            // TODO: Optimize this?
-            _childrenRenderOrder.Add(c);
-            _childrenRenderOrder.Sort((a, b) => {
-                if (a.IsFloatable && b.IsFloatable) {
-                    return 0;
-                } else if (!a.IsFloatable && !b.IsFloatable) {
-                    return a.Index.CompareTo(b.Index);
-                } else if (a.IsFloatable) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-            });
+            // Render order invariant: non-floatables sorted by Index, then floatables in the order SendToTop promoted them.
+            if (c.IsFloatable) {
+                _childrenRenderOrder.Add(c);
+            } else {
+                int i = 0;
+                while (i < _childrenRenderOrder.Count && !_childrenRenderOrder[i].IsFloatable && _childrenRenderOrder[i].Index <= c.Index) i++;
+                _childrenRenderOrder.Insert(i, c);
+            }
         }
         public void Remove(IComponent c) {
             c.Parent = null;
@@ -376,8 +371,8 @@ namespace Apos.Gui {
         private static int CombineHash<T1, T2>(T1 value1, T2 value2) {
             unchecked {
                 int hash = 17;
-                hash *= 31 + value1!.GetHashCode();
-                hash *= 31 + value2!.GetHashCode();
+                hash = hash * 31 + value1!.GetHashCode();
+                hash = hash * 31 + value2!.GetHashCode();
 
                 return hash;
             }
@@ -387,7 +382,7 @@ namespace Apos.Gui {
                 int hash = 17;
 
                 foreach (var e in _idStack) {
-                    hash *= 31 + e.GetHashCode();
+                    hash = hash * 31 + e.GetHashCode();
                 }
 
                 _idHash = hash;
