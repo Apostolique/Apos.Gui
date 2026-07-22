@@ -21,7 +21,7 @@ namespace Apos.Gui {
         public static void Setup(Game game, FontSystem fontSystem) {
             InputHelper.Setup(game);
             FontSystem = fontSystem;
-            ShapeBatch = new ShapeBatch(game.GraphicsDevice, game.Content);
+            ShapeBatch = new ShapeBatch(game.GraphicsDevice);
         }
         /// <summary>
         /// Called at the start of an update loop.
