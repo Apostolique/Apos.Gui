@@ -110,16 +110,12 @@ namespace GameProject {
         }
 
         private void ControlsTab() {
-            Horizontal.Push().Align = CrossAlign.Center;
-            Checkbox.Put(ref _music);
-            Label.Put("Music");
-            Horizontal.Pop();
+            Checkbox.Put(ref _music, "Music");
 
-            Horizontal.Push().Align = CrossAlign.Center;
+            Horizontal.Push().Spacing = 20f;
             string[] difficulties = ["Easy", "Normal", "Hard"];
             for (int i = 0; i < difficulties.Length; i++) {
-                RadioButton.Put(ref _difficulty, i);
-                Label.Put(difficulties[i]);
+                RadioButton.Put(ref _difficulty, i, difficulties[i]);
             }
             Horizontal.Pop();
 
@@ -137,7 +133,7 @@ namespace GameProject {
 
         private void TextTab() {
             Paragraph p = Paragraph.Put("A paragraph wraps its text to the space it's given. Resize the window to see it flow. Textboxes have selection, copy and paste, and Ctrl moves a word at a time.", 22);
-            p.MaxWidth = 500f;
+            p.MaxWidth = 600f;
 
             Label.Put("Name");
             Textbox.Put(ref _name);
@@ -157,10 +153,7 @@ namespace GameProject {
             Vertical.Push().Padding = 10f;
             foreach (Quest q in _quests) {
                 _ui.PushId(q.Id);
-                Horizontal.Push().Align = CrossAlign.Center;
-                Checkbox.Put(ref q.Done);
-                Label.Put($"Quest {q.Id}");
-                Horizontal.Pop();
+                Checkbox.Put(ref q.Done, $"Quest {q.Id}");
                 _ui.PopId();
             }
             Vertical.Pop();
@@ -196,10 +189,7 @@ namespace GameProject {
             Slider.Put(ref rounding, 0f, 12f, 1f);
             Theme.Rounding = rounding;
 
-            Horizontal.Push().Align = CrossAlign.Center;
-            Checkbox.Put(ref _showWindow);
-            Label.Put("Floating window");
-            Horizontal.Pop();
+            Checkbox.Put(ref _showWindow, "Floating window");
 
             BackButton();
             MenuPanel.Pop();
@@ -223,8 +213,7 @@ namespace GameProject {
             MenuPanel.Push();
             Label.Put($"Player {index + 1}");
             Label.Put($"Gamepad {index + 1}", 20);
-            Checkbox.Put(ref _ready[index]);
-            Label.Put(_ready[index] ? "Ready!" : "Not ready");
+            Checkbox.Put(ref _ready[index], _ready[index] ? "Ready!" : "Not ready");
             Slider.Put(ref _sensitivity[index], 0f, 1f, 0.1f);
             MenuPanel.Pop();
             ui.UpdateEnd(gameTime);

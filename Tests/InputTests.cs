@@ -75,6 +75,24 @@ namespace Apos.Gui.Tests {
         }
 
         [Fact]
+        public void PressingTheEndsOfASliderReachesItsLimits() {
+            Theme.Rounding = 8f;
+            try {
+                float value = 5f;
+                Slider s = null!;
+                void Build() => s = Slider.Put(ref value, 0f, 10f);
+
+                Frame(Build);
+                Click(Build, new Vector2(s.Right - 1f, s.Top + s.Height / 2f));
+                Assert.Equal(10f, value);
+                Click(Build, new Vector2(s.Left + 1f, s.Top + s.Height / 2f));
+                Assert.Equal(0f, value);
+            } finally {
+                Theme.Rounding = 0f;
+            }
+        }
+
+        [Fact]
         public void TextboxTypesAndErases() {
             string text = "";
             Textbox t = null!;
@@ -104,6 +122,14 @@ namespace Apos.Gui.Tests {
             Frame(Build);
 
             Assert.False(b.Clicked);
+        }
+
+        /// <summary>Presses the left mouse button at a spot for one frame, then lets it go.</summary>
+        private void Click(Action build, Vector2 at) {
+            _input.Mouse = Mouse(at, ButtonState.Pressed);
+            Frame(build);
+            _input.Mouse = Mouse(at, ButtonState.Released);
+            Frame(build);
         }
 
         /// <summary>Presses a key for one frame, then lets it go for one frame.</summary>

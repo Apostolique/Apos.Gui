@@ -153,12 +153,23 @@ namespace Apos.Gui {
             Width = area.Width / Scale;
             Height = area.Height / Scale;
 
-            foreach (var c in _children) {
-                c.UpdatePrefSize(gameTime);
+            for (int pass = 0; pass < MaxLayoutPasses; pass++) {
+                _layoutAgain = false;
+                foreach (var c in _children) {
+                    c.UpdatePrefSize(gameTime);
+                }
+                base.UpdateLayout(gameTime);
+                if (!_layoutAgain) break;
             }
-            base.UpdateLayout(gameTime);
 
             GuiHelper.CurrentIMGUI = previous;
+        }
+        /// <summary>
+        /// Asks for another layout pass in this frame. For a component whose preferred size depends on the size its parent gave it,
+        /// like text that wraps. Call it from the component when that size changes. A frame does at most a few passes.
+        /// </summary>
+        public void InvalidateLayout() {
+            _layoutAgain = true;
         }
 
         /// <summary>
@@ -517,6 +528,8 @@ namespace Apos.Gui {
         private readonly Dictionary<long, int> _idsUsedThisFrame = [];
 
         private float _scale = 1f;
+        private bool _layoutAgain;
+        private const int MaxLayoutPasses = 3;
         private IMGUI? _previous;
 
         private bool _prevPressed = false;

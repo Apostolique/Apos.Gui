@@ -34,7 +34,7 @@ namespace Apos.Gui {
             Interaction.UpdateInput(this);
 
             if (Interaction.Pressed && Interaction.Source != InteractionSource.Button) {
-                float percent = (Interaction.Position.X - Left) / (Width - _thickness);
+                float percent = Travel > 0f ? (Interaction.Position.X - TravelStart) / Travel : 0f;
                 Value = MathHelper.Clamp(percent * (Max - Min) + Min, Min, Max);
             }
             if (IsFocused) {
@@ -58,12 +58,19 @@ namespace Apos.Gui {
             float handle = s._handleThickness;
             Color c = s.IsFocused ? Theme.Focus : Theme.Border;
 
-            float x = s.Left + (s.Width - thickness) * s.Percent;
+            float x = s.HandleX - thickness / 2f;
             GuiHelper.ShapeBatch.BorderRectangle(s.XY, s.Size, c, Theme.BorderThickness, Theme.Rounding);
             GuiHelper.ShapeBatch.FillRectangle(new Vector2(x, s.Top), new Vector2(thickness, s.Height), c);
             GuiHelper.ShapeBatch.FillRectangle(new Vector2(x - handle / 2f, s.Top + s.Height * 0.4f), new Vector2(thickness + handle, 2f), c);
             GuiHelper.ShapeBatch.FillRectangle(new Vector2(x - handle / 2f, s.Top + s.Height * 0.6f), new Vector2(thickness + handle, 2f), c);
         }
+
+        /// <summary>Where the middle of the handle is, in UI coordinates.</summary>
+        public float HandleX => TravelStart + Travel * Percent;
+        /// <summary>The handle stays this far from the ends so that it doesn't poke out of rounded corners.</summary>
+        protected float Inset => MathF.Max(Theme.Rounding, Theme.BorderThickness) + _thickness / 2f;
+        protected float TravelStart => Left + Inset;
+        protected float Travel => MathF.Max(Width - Inset * 2f, 0f);
 
         protected void Slide(int direction) {
             Value = MathHelper.Clamp(Value + direction * Step!.Value, Min, Max);

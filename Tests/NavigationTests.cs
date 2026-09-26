@@ -29,8 +29,46 @@ namespace Apos.Gui.Tests {
         }
 
         [Fact]
-        public void TheNextRowWinsEvenWhenItsOffCenter() {
-            // A centered slider, then a row with a checkbox on its left, then a centered button.
+        public void LeftAndRightStayInTheRow() {
+            // A centered checkbox, then a row of three radio buttons. The checkbox is a bit to the right of the middle radio.
+            var ui = new IMGUI();
+            Spot normal = null!, hard = null!;
+            Frame(ui, () => {
+                Spot.Put(new RectangleF(430, 0, 30, 30), id: 1);
+                Spot.Put(new RectangleF(300, 60, 30, 30), id: 2);
+                normal = Spot.Put(new RectangleF(422, 60, 30, 30), id: 3);
+                hard = Spot.Put(new RectangleF(580, 60, 30, 30), id: 4);
+                Spot.Put(new RectangleF(455, 300, 90, 50), id: 5);
+            });
+
+            ui.GrabFocus(normal);
+            ui.Navigate(Direction.Right);
+            Assert.True(hard.IsFocused);
+
+            ui.Navigate(Direction.Left);
+            Assert.True(normal.IsFocused);
+        }
+
+        [Fact]
+        public void UpAndDownGoDownAMenuWithOffCenterRows() {
+            // A centered slider, then a checkbox with its text, a bit off center, then a centered button.
+            var ui = new IMGUI();
+            Spot slider = null!, checkbox = null!;
+            Frame(ui, () => {
+                slider = Spot.Put(new RectangleF(450, 0, 100, 40), id: 1);
+                checkbox = Spot.Put(new RectangleF(355, 50, 290, 30), id: 2);
+                Spot.Put(new RectangleF(455, 90, 90, 50), id: 3);
+            });
+
+            ui.GrabFocus(slider);
+            ui.Navigate(Direction.Down);
+
+            Assert.True(checkbox.IsFocused);
+        }
+
+        [Fact]
+        public void DownStopsAtARowThatsOffCenter() {
+            // A centered slider, then a small checkbox left of center, then a centered button.
             var ui = new IMGUI();
             Spot slider = null!, checkbox = null!;
             Frame(ui, () => {
@@ -43,6 +81,24 @@ namespace Apos.Gui.Tests {
             ui.Navigate(Direction.Down);
 
             Assert.True(checkbox.IsFocused);
+        }
+
+        [Fact]
+        public void UpFromTheSideOfARowGoesToTheRowAbove() {
+            // Tabs, then a centered checkbox, then radio buttons that are wider than the checkbox.
+            var ui = new IMGUI();
+            Spot music = null!, easy = null!;
+            Frame(ui, () => {
+                Spot.Put(new RectangleF(262, 140, 163, 55), id: 1);
+                music = Spot.Put(new RectangleF(435, 200, 130, 30), id: 2);
+                easy = Spot.Put(new RectangleF(293, 236, 112, 34), id: 3);
+                Spot.Put(new RectangleF(425, 236, 150, 34), id: 4);
+            });
+
+            ui.GrabFocus(easy);
+            ui.Navigate(Direction.Up);
+
+            Assert.True(music.IsFocused);
         }
 
         [Fact]

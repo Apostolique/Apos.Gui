@@ -7,18 +7,25 @@ namespace Apos.Gui {
     /// <summary>
     /// Text that wraps to the width its parent gives it.
     /// </summary>
-    /// <remarks>
-    /// Sizes are worked out before the parent hands out widths, so it wraps at the width it got on the previous frame.
-    /// After a resize it takes one frame to settle.
-    /// </remarks>
     public class Paragraph(long id, string text, int fontSize, Color color) : Component(id) {
         public string Text { get; set; } = text;
         public int FontSize { get; set; } = fontSize;
         public Color Color { get; set; } = color;
         public TextAlign Align { get; set; } = TextAlign.Left;
         public int Padding { get; set; } = 10;
-        /// <summary>Wraps at this width instead of the parent's, padding included. Null follows the parent.</summary>
+        /// <summary>Wraps at this width, padding included, or earlier when the parent gives it less. Null follows the parent.</summary>
         public float? MaxWidth { get; set; }
+
+        public override float Width {
+            get => base.Width;
+            set {
+                // The height comes from the width, so a new width needs another layout pass.
+                if (value != base.Width) {
+                    base.Width = value;
+                    Root?.InvalidateLayout();
+                }
+            }
+        }
         /// <summary>The lines from the last layout.</summary>
         public IReadOnlyList<TextLine> Lines => _lines;
 
@@ -28,7 +35,7 @@ namespace Apos.Gui {
         public static Action<Paragraph> DefaultLook { get; set; } = DrawDefault;
 
         public override void UpdatePrefSize(GameTime gameTime) {
-            float given = MaxWidth ?? (_hasWidth ? Width : float.PositiveInfinity);
+            float given = MathF.Min(MaxWidth ?? float.PositiveInfinity, _hasWidth ? Width : float.PositiveInfinity);
             _hasWidth = true;
 
             float wrapWidth = MathF.Max(given - Padding * 2, 0f);
@@ -46,7 +53,6 @@ namespace Apos.Gui {
         }
 
         public override void Draw(GameTime gameTime) {
-            // The height can be a frame behind after a resize.
             bool overflows = PrefHeight > Height;
             if (overflows) GuiHelper.PushClip(Clip);
             (Look ?? DefaultLook)(this);
