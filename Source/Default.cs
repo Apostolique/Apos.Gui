@@ -57,5 +57,33 @@ namespace Apos.Gui {
                 new Track.GamePadCondition(GamePadButton.Back, 0),
                 new Track.MouseCondition(MouseButton.XButton2)
             );
+
+        /// <summary>Held to grow the selection while moving the cursor in a textbox.</summary>
+        public static ICondition ExtendSelection { get; set; } =
+            new AnyCondition(
+                new KeyboardCondition(Keys.LeftShift),
+                new KeyboardCondition(Keys.RightShift)
+            );
+        /// <summary>Held to move or delete a word at a time in a textbox.</summary>
+        public static ICondition ByWord { get; set; } =
+            new AnyCondition(
+                new KeyboardCondition(Keys.LeftControl),
+                new KeyboardCondition(Keys.RightControl)
+            );
+        public static ICondition LineStart { get; set; } = new Track.KeyboardCondition(Keys.Home);
+        public static ICondition LineEnd { get; set; } = new Track.KeyboardCondition(Keys.End);
+        public static ICondition SelectAll { get; set; } = Shortcut(Keys.A);
+        public static ICondition Copy { get; set; } = Shortcut(Keys.C);
+        public static ICondition Cut { get; set; } = Shortcut(Keys.X);
+        public static ICondition Paste { get; set; } = Shortcut(Keys.V);
+
+        private static ICondition Shortcut(Keys key) =>
+            new AllCondition(
+                new AnyCondition(
+                    new KeyboardCondition(Keys.LeftControl),
+                    new KeyboardCondition(Keys.RightControl)
+                ),
+                new Track.KeyboardCondition(key)
+            );
     }
 }

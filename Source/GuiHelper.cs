@@ -78,6 +78,8 @@ namespace Apos.Gui {
         public static ShapeBatch ShapeBatch { get; set; } = null!;
         /// <summary>Font used in the UI.</summary>
         public static ShapeFont Font { get; set; } = null!;
+        /// <summary>Where textboxes copy to and paste from. Defaults to a clipboard that stays inside the game.</summary>
+        public static IClipboard Clipboard { get; set; } = new GameClipboard();
         /// <summary>Defaults to LinearClamp.</summary>
         public static SamplerState GuiSampler { get; set; } = SamplerState.LinearClamp;
 
