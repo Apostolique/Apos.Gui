@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using Apos.Input;
 using Microsoft.Xna.Framework;
@@ -8,6 +9,10 @@ namespace Apos.Gui {
         public IComponent? Tip { get; set; }
         public override bool IsFocusable { get; set; } = false;
         public override bool IsFloatable { get; set; } = true;
+        /// <summary>Draws this tooltip under its tip. Null uses <see cref="DefaultLook"/>.</summary>
+        public Action<Tooltip>? Look { get; set; }
+        /// <summary>Draws every tooltip that doesn't have its own <see cref="Look"/>.</summary>
+        public static Action<Tooltip> DefaultLook { get; set; } = DrawDefault;
 
         public override void UpdateSetup(GameTime gameTime) {
             Main?.UpdateSetup(gameTime);
@@ -80,10 +85,18 @@ namespace Apos.Gui {
             Main?.Draw(gameTime);
 
             if (Tip != null && _hovered) {
-                GuiHelper.PushClip(Tip.Clip);
-                GuiHelper.ShapeBatch.FillRectangle(Tip.Bounds.Position, Tip.Bounds.Size, new Color(Color.Black, 0.7f));
-                GuiHelper.PopClip();
+                // The tip isn't bound by its parents, it only stays on screen.
+                GuiHelper.PushClip(Tip.Bounds.Intersect(Root.Clip));
+                (Look ?? DefaultLook)(this);
                 Tip.Draw(gameTime);
+                GuiHelper.PopClip();
+            }
+        }
+
+        /// <summary>A dark background behind the tip.</summary>
+        public static void DrawDefault(Tooltip t) {
+            if (t.Tip != null) {
+                GuiHelper.ShapeBatch.FillRectangle(t.Tip.XY, t.Tip.Size, new Color(Theme.Background, 0.7f), Theme.Rounding);
             }
         }
 

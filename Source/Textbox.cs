@@ -1,3 +1,4 @@
+using System;
 using Apos.Input;
 using Track = Apos.Input.Track;
 using Microsoft.Xna.Framework.Input;
@@ -47,6 +48,10 @@ namespace Apos.Gui {
             }
         }
         public override bool IsFocusable { get; set; } = true;
+        /// <summary>Draws this textbox. Null uses <see cref="DefaultLook"/>.</summary>
+        public Action<Textbox>? Look { get; set; }
+        /// <summary>Draws every textbox that doesn't have its own <see cref="Look"/>.</summary>
+        public static Action<Textbox> DefaultLook { get; set; } = DrawDefault;
         public Interaction Interaction { get; } = new() { UsesFocusButton = false };
 
         public override void UpdateInput(GameTime gameTime) {
@@ -103,28 +108,26 @@ namespace Apos.Gui {
             PrefHeight = _cachedSize.Y + Padding * 2f;
         }
 
+        /// <summary>X of the cursor in UI coordinates.</summary>
+        public float CursorX => Left + Padding + (Cursor > 0 ? GuiHelper.MeasureString(_text[..Math.Min(Cursor, _text.Length)], _fontSize).X : 0f);
+        /// <summary>True while focused and the blinking cursor is in its visible half.</summary>
+        public bool IsCursorVisible => IsFocused && _blink.Value <= 0.5f;
+
         public override void Draw(GameTime gameTime) {
-            GuiHelper.PushClip(Clip);
+            // Only clip when the text doesn't fit. The parent's clip already covers the rest.
+            bool overflows = _cachedSize.X + Padding * 2 > Width || _cachedSize.Y + Padding * 2 > Height;
+            if (overflows) GuiHelper.PushClip(Clip);
+            (Look ?? DefaultLook)(this);
+            if (overflows) GuiHelper.PopClip();
+        }
 
-            if (IsFocused) {
-                GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, Color.White, 2f);
-
-                float alignLeft = Left + Padding;
-
-                float cursorLeft = alignLeft;
-                if (Cursor > 0 && Cursor <= _text.Length) {
-                    cursorLeft = alignLeft + GuiHelper.MeasureString(_text[..Cursor], _fontSize).X;
-                }
-                if (_blink.Value <= 0.5f) {
-                    GuiHelper.ShapeBatch.FillRectangle(new Vector2(cursorLeft, Top), new Vector2(2f, Height), Color.White);
-                }
-            } else {
-                GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, new Color(76, 76, 76), 2f);
+        /// <summary>A border that lights up with focus, the text, and a blinking cursor.</summary>
+        public static void DrawDefault(Textbox t) {
+            GuiHelper.ShapeBatch.BorderRectangle(t.XY, t.Size, t.IsFocused ? Theme.Focus : Theme.Border, Theme.BorderThickness, Theme.Rounding);
+            if (t.IsCursorVisible) {
+                GuiHelper.ShapeBatch.FillRectangle(new Vector2(t.CursorX, t.Top), new Vector2(2f, t.Height), Theme.Focus);
             }
-
-            GuiHelper.ShapeBatch.DrawString(GuiHelper.Font, _text, XY + new Vector2(Padding), _fontSize, Color);
-
-            GuiHelper.PopClip();
+            GuiHelper.ShapeBatch.DrawString(GuiHelper.Font, t.Text, t.XY + new Vector2(t.Padding), t.FontSize, t.Color);
         }
 
         protected void Cache() {
@@ -157,10 +160,9 @@ namespace Apos.Gui {
         protected int _fontSize;
         protected bool _isDirty = false;
 
-        protected RectangleF _cursorRect;
-        protected int Cursor {
+        public int Cursor {
             get => _cursor;
-            set {
+            protected set {
                 if (value >= 0 && value <= _text.Length && _cursor != value) {
                     _cursor = value;
                     _blink.StartTime = TweenHelper.TotalMS;
@@ -174,7 +176,7 @@ namespace Apos.Gui {
         protected FloatTween _blink = new(0f, 1f, 1500, Easing.Linear);
 
         public static Textbox Put(ref string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            Color c = color ?? new Color(200, 200, 200);
+            Color c = color ?? Theme.Text;
 
             string initial = text;
             Textbox a = IMGUI.Put(id, isAbsoluteId, id => new Textbox(id, initial, fontSize, c));

@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 
@@ -7,6 +8,10 @@ namespace Apos.Gui {
         public bool Clicked => Interaction.Clicked;
         public bool IsChecked { get; set; } = isChecked;
         public override bool IsFocusable { get; set; } = true;
+        /// <summary>Draws this checkbox. Null uses <see cref="DefaultLook"/>.</summary>
+        public Action<Checkbox>? Look { get; set; }
+        /// <summary>Draws every checkbox that doesn't have its own <see cref="Look"/>.</summary>
+        public static Action<Checkbox> DefaultLook { get; set; } = DrawDefault;
 
         public override void UpdateInput(GameTime gameTime) {
             Interaction.UpdateInput(this);
@@ -21,25 +26,24 @@ namespace Apos.Gui {
         }
 
         public override void Draw(GameTime gameTime) {
-            GuiHelper.PushClip(Clip);
+            (Look ?? DefaultLook)(this);
+        }
 
-            if (IsChecked) {
-                GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left + 6, Top + 6), new Vector2(Width - 12, Height - 12), Color.White);
+        /// <summary>A box in a box. The inner one fills when checked.</summary>
+        public static void DrawDefault(Checkbox c) {
+            Vector2 innerXY = c.XY + new Vector2(6f);
+            Vector2 innerSize = c.Size - new Vector2(12f);
+            Color border = c.IsFocused ? Theme.Focus : Theme.Border;
+
+            if (c.IsChecked) {
+                GuiHelper.ShapeBatch.FillRectangle(innerXY, innerSize, Theme.Focus, Theme.Rounding);
             }
-
-            float highlight = Clicked ? 0.5f : 0.08f * Interaction.Hover + 0.15f * Interaction.Press;
+            float highlight = c.Clicked ? 0.5f : 0.08f * c.Interaction.Hover + 0.15f * c.Interaction.Press;
             if (highlight > 0f) {
-                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, new Color(Color.White, highlight));
+                GuiHelper.ShapeBatch.FillRectangle(c.XY, c.Size, new Color(Theme.Highlight, highlight), Theme.Rounding);
             }
-            if (IsFocused) {
-                GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, Color.White, 2f);
-                GuiHelper.ShapeBatch.BorderRectangle(new Vector2(Left + 6, Top + 6), new Vector2(Width - 12, Height - 12), Color.White, 2f);
-            } else {
-                GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, new Color(76, 76, 76), 2f);
-                GuiHelper.ShapeBatch.BorderRectangle(new Vector2(Left + 6, Top + 6), new Vector2(Width - 12, Height - 12), new Color(76, 76, 76), 2f);
-            }
-
-            GuiHelper.PopClip();
+            GuiHelper.ShapeBatch.BorderRectangle(c.XY, c.Size, border, Theme.BorderThickness, Theme.Rounding);
+            GuiHelper.ShapeBatch.BorderRectangle(innerXY, innerSize, border, Theme.BorderThickness, Theme.Rounding);
         }
 
 

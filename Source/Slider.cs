@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using Apos.Input;
 using Microsoft.Xna.Framework;
@@ -12,6 +13,8 @@ namespace Apos.Gui {
         }
 
         public float Value { get; set; }
+        /// <summary>Where the value sits between Min and Max, from 0 to 1.</summary>
+        public float Percent => Max == Min ? 0f : (Value - Min) / (Max - Min);
         public float Min { get; set; }
         public float Max { get; set; }
         public float? Step {
@@ -21,6 +24,10 @@ namespace Apos.Gui {
             }
         }
         public override bool IsFocusable { get; set; } = true;
+        /// <summary>Draws this slider. Null uses <see cref="DefaultLook"/>.</summary>
+        public Action<Slider>? Look { get; set; }
+        /// <summary>Draws every slider that doesn't have its own <see cref="Look"/>.</summary>
+        public static Action<Slider> DefaultLook { get; set; } = DrawDefault;
         public Interaction Interaction { get; } = new() { UsesFocusButton = false };
 
         public override void UpdateInput(GameTime gameTime) {
@@ -42,17 +49,20 @@ namespace Apos.Gui {
         }
 
         public override void Draw(GameTime gameTime) {
-            GuiHelper.PushClip(Clip);
-            Color c;
-            if (IsFocused) c = Color.White;
-            else c = new Color(76, 76, 76);
+            (Look ?? DefaultLook)(this);
+        }
 
-            float percent = (Value - Min) / (Max - Min);
-            GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, c, 2f);
-            GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left + (Width - _thickness) * percent, Top), new Vector2(_thickness, Height), c);
-            GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left + (Width - _thickness) * percent - _handleThickness / 2, Top + Height * 0.4f), new Vector2(_thickness + _handleThickness, 2), c);
-            GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left + (Width - _thickness) * percent - _handleThickness / 2, Top + Height * 0.6f), new Vector2(_thickness + _handleThickness, 2), c);
-            GuiHelper.PopClip();
+        /// <summary>A frame with a vertical handle at the value.</summary>
+        public static void DrawDefault(Slider s) {
+            float thickness = s._thickness;
+            float handle = s._handleThickness;
+            Color c = s.IsFocused ? Theme.Focus : Theme.Border;
+
+            float x = s.Left + (s.Width - thickness) * s.Percent;
+            GuiHelper.ShapeBatch.BorderRectangle(s.XY, s.Size, c, Theme.BorderThickness, Theme.Rounding);
+            GuiHelper.ShapeBatch.FillRectangle(new Vector2(x, s.Top), new Vector2(thickness, s.Height), c);
+            GuiHelper.ShapeBatch.FillRectangle(new Vector2(x - handle / 2f, s.Top + s.Height * 0.4f), new Vector2(thickness + handle, 2f), c);
+            GuiHelper.ShapeBatch.FillRectangle(new Vector2(x - handle / 2f, s.Top + s.Height * 0.6f), new Vector2(thickness + handle, 2f), c);
         }
 
         protected void Slide(int direction) {

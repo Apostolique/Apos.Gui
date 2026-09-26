@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 
@@ -19,6 +20,10 @@ namespace Apos.Gui {
             }
         }
         public int Padding { get; set; } = 10;
+        /// <summary>Draws this label. Null uses <see cref="DefaultLook"/>.</summary>
+        public Action<Label>? Look { get; set; }
+        /// <summary>Draws every label that doesn't have its own <see cref="Look"/>.</summary>
+        public static Action<Label> DefaultLook { get; set; } = DrawDefault;
         public Color Color { get; set; }
         public int FontSize {
             get => _fontSize;
@@ -36,12 +41,16 @@ namespace Apos.Gui {
             PrefHeight = _cachedSize.Y + Padding * 2;
         }
         public override void Draw(GameTime gameTime) {
-            GuiHelper.PushClip(Clip);
+            // Only clip when the text doesn't fit. The parent's clip already covers the rest.
+            bool overflows = _cachedSize.X + Padding * 2 > Width || _cachedSize.Y + Padding * 2 > Height;
+            if (overflows) GuiHelper.PushClip(Clip);
+            (Look ?? DefaultLook)(this);
+            if (overflows) GuiHelper.PopClip();
+        }
 
-            // TODO: Hover color?
-            GuiHelper.ShapeBatch.DrawString(GuiHelper.Font, _text, XY + new Vector2(Padding), _fontSize, Color);
-
-            GuiHelper.PopClip();
+        /// <summary>The text in its color.</summary>
+        public static void DrawDefault(Label l) {
+            GuiHelper.ShapeBatch.DrawString(GuiHelper.Font, l.Text, l.XY + new Vector2(l.Padding), l.FontSize, l.Color);
         }
 
         protected void Cache() {
@@ -57,7 +66,7 @@ namespace Apos.Gui {
         protected bool _isDirty = false;
 
         public static Label Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            Color c = color ?? new Color(200, 200, 200);
+            Color c = color ?? Theme.Text;
 
             Label a = IMGUI.Put(id, isAbsoluteId, id => new Label(id, text, fontSize, c));
             a.Text = text;

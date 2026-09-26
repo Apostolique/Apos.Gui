@@ -53,12 +53,20 @@ namespace Apos.Gui {
             }
         }
 
+        /// <summary>
+        /// Corner radius of the clip the children draw in. Only used while this parent is fully visible,
+        /// since a clip that was cut by a parent has straight corners where it was cut.
+        /// </summary>
+        public float ClipRounding { get; set; } = 0f;
+
         public override void Draw(GameTime gameTime) {
+            GuiHelper.PushClip(Clip, Clip == Bounds ? ClipRounding : 0f);
             foreach (var c in _childrenRenderOrder) {
                 if (Clip.Intersects(c.Clip)) {
                     c.Draw(gameTime);
                 }
             }
+            GuiHelper.PopClip();
         }
 
         public virtual void Add(IComponent c) {
