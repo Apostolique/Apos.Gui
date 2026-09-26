@@ -29,19 +29,37 @@ namespace Apos.Gui.Tests {
         }
 
         [Fact]
-        public void LinedUpWinsOverACloserOneOffToTheSide() {
+        public void TheNextRowWinsEvenWhenItsOffCenter() {
+            // A centered slider, then a row with a checkbox on its left, then a centered button.
             var ui = new IMGUI();
-            Spot from = null!, below = null!, diagonal = null!;
+            Spot slider = null!, checkbox = null!;
             Frame(ui, () => {
-                from = Spot.Put(new RectangleF(0, 0, 100, 20), id: 1);
-                diagonal = Spot.Put(new RectangleF(150, 30, 50, 20), id: 2);
-                below = Spot.Put(new RectangleF(0, 200, 100, 20), id: 3);
+                slider = Spot.Put(new RectangleF(450, 0, 100, 40), id: 1);
+                checkbox = Spot.Put(new RectangleF(355, 50, 30, 30), id: 2);
+                Spot.Put(new RectangleF(455, 90, 90, 50), id: 3);
+            });
+
+            ui.GrabFocus(slider);
+            ui.Navigate(Direction.Down);
+
+            Assert.True(checkbox.IsFocused);
+        }
+
+        [Fact]
+        public void InTheNextRowTheOneInLineWins() {
+            var ui = new IMGUI();
+            Spot from = null!, inLine = null!;
+            Frame(ui, () => {
+                from = Spot.Put(new RectangleF(100, 0, 50, 50), id: 1);
+                Spot.Put(new RectangleF(0, 60, 50, 50), id: 2);
+                inLine = Spot.Put(new RectangleF(100, 65, 50, 50), id: 3);
+                Spot.Put(new RectangleF(200, 60, 50, 50), id: 4);
             });
 
             ui.GrabFocus(from);
             ui.Navigate(Direction.Down);
 
-            Assert.True(below.IsFocused);
+            Assert.True(inLine.IsFocused);
         }
 
         [Fact]

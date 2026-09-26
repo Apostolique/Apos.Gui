@@ -16,75 +16,89 @@ namespace Apos.Gui {
     /// </summary>
     public static class Navigation {
         /// <summary>
-        /// Picks the candidate closest to <paramref name="from"/> in a direction. Candidates that line up with it, like the
-        /// next item in a row or a column, win over the ones that are off to the side. Returns null when nothing is in that direction.
+        /// Picks where the focus goes from <paramref name="from"/> in a direction. It looks at the next row first, the
+        /// candidates closest in that direction, then picks the one in that row that's the most in line with <paramref name="from"/>.
+        /// That way moving down a menu stops at every row, even when a row is off center. Returns null when nothing is in that direction.
         /// A parent that overrides <see cref="IParent.Navigate"/> can call this with its own children.
         /// </summary>
         /// <param name="from">The component that has focus.</param>
         /// <param name="direction">Where to look.</param>
         /// <param name="candidates">The components that can get focus. <paramref name="from"/> is skipped if it's in there.</param>
         public static IComponent? Closest(IComponent from, Direction direction, IEnumerable<IComponent> candidates) {
-            IComponent? best = null;
-            bool bestLinedUp = false;
-            float bestScore = float.MaxValue;
+            var ahead = new List<(IComponent C, Span Main, float CrossDistance)>();
+            float rowEnd = float.MaxValue;
 
             foreach (IComponent c in candidates) {
-                if (c == from || !TryScore(from.Bounds, c.Bounds, direction, out bool linedUp, out float score)) {
+                if (c == from || !TryMeasure(from.Bounds, c.Bounds, direction, out Span main, out float crossDistance)) {
                     continue;
                 }
-                if (best == null || linedUp && !bestLinedUp || linedUp == bestLinedUp && score < bestScore) {
+                ahead.Add((c, main, crossDistance));
+                rowEnd = MathF.Min(rowEnd, main.End);
+            }
+
+            // The next row is everything that starts before the closest candidate ends.
+            IComponent? best = null;
+            float bestCross = float.MaxValue;
+            float bestStart = float.MaxValue;
+            foreach (var (c, main, crossDistance) in ahead) {
+                if (main.Start >= rowEnd) {
+                    continue;
+                }
+                if (crossDistance < bestCross || crossDistance == bestCross && main.Start < bestStart) {
                     best = c;
-                    bestLinedUp = linedUp;
-                    bestScore = score;
+                    bestCross = crossDistance;
+                    bestStart = main.Start;
                 }
             }
 
             return best;
         }
 
-        private static bool TryScore(RectangleF from, RectangleF to, Direction direction, out bool linedUp, out float score) {
-            // Turns every direction into "down": main is the axis we move along, cross is the one beside it.
-            (float fromStart, float fromEnd, float toStart, float toEnd) main;
-            (float fromStart, float fromEnd, float toStart, float toEnd) cross;
+        private readonly record struct Span(float Start, float End) {
+            public float Center => (Start + End) / 2f;
+        }
+
+        /// <summary>
+        /// Turns every direction into "down": main is the axis the focus moves along, cross is the one beside it.
+        /// </summary>
+        /// <param name="main">Where the candidate is along the direction.</param>
+        /// <param name="crossDistance">How far the candidate's center is from the component's center across the direction.</param>
+        private static bool TryMeasure(RectangleF from, RectangleF to, Direction direction, out Span main, out float crossDistance) {
+            Span fromMain, fromCross, toCross;
             switch (direction) {
                 case Direction.Down:
-                    main = (from.Top, from.Bottom, to.Top, to.Bottom);
-                    cross = (from.Left, from.Right, to.Left, to.Right);
+                    fromMain = new(from.Top, from.Bottom);
+                    main = new(to.Top, to.Bottom);
+                    fromCross = new(from.Left, from.Right);
+                    toCross = new(to.Left, to.Right);
                     break;
                 case Direction.Up:
-                    main = (-from.Bottom, -from.Top, -to.Bottom, -to.Top);
-                    cross = (from.Left, from.Right, to.Left, to.Right);
+                    fromMain = new(-from.Bottom, -from.Top);
+                    main = new(-to.Bottom, -to.Top);
+                    fromCross = new(from.Left, from.Right);
+                    toCross = new(to.Left, to.Right);
                     break;
                 case Direction.Right:
-                    main = (from.Left, from.Right, to.Left, to.Right);
-                    cross = (from.Top, from.Bottom, to.Top, to.Bottom);
+                    fromMain = new(from.Left, from.Right);
+                    main = new(to.Left, to.Right);
+                    fromCross = new(from.Top, from.Bottom);
+                    toCross = new(to.Top, to.Bottom);
                     break;
                 default:
-                    main = (-from.Right, -from.Left, -to.Right, -to.Left);
-                    cross = (from.Top, from.Bottom, to.Top, to.Bottom);
+                    fromMain = new(-from.Right, -from.Left);
+                    main = new(-to.Right, -to.Left);
+                    fromCross = new(from.Top, from.Bottom);
+                    toCross = new(to.Top, to.Bottom);
                     break;
             }
 
-            linedUp = false;
-            score = 0f;
+            crossDistance = MathF.Abs(toCross.Center - fromCross.Center);
             if (to.Width <= 0f || to.Height <= 0f) {
                 return false;
             }
             // The candidate has to start, be centered and end further along than the component.
             // Something that covers it, like a window behind it, doesn't count.
-            float fromCenter = (main.fromStart + main.fromEnd) / 2f;
-            float toCenter = (main.toStart + main.toEnd) / 2f;
-            if (main.toStart <= main.fromStart || toCenter <= fromCenter || main.toEnd <= main.fromEnd) {
-                return false;
-            }
-
-            float gap = MathF.Max(main.toStart - main.fromEnd, 0f);
-            float overlap = MathF.Min(cross.fromEnd, cross.toEnd) - MathF.Max(cross.fromStart, cross.toStart);
-            float centerOffset = MathF.Abs((cross.toStart + cross.toEnd) / 2f - (cross.fromStart + cross.fromEnd) / 2f);
-
-            linedUp = overlap > 0f;
-            score = linedUp ? gap + centerOffset * 0.25f : gap + -overlap * 2f;
-            return true;
+            return main.Start > fromMain.Start && main.Center > fromMain.Center && main.End > fromMain.End;
         }
     }
 }
