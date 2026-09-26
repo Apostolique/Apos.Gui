@@ -24,8 +24,8 @@ namespace Apos.Gui {
 
         public override void UpdateLayout(GameTime gameTime) {
             if (Child != null) {
-                Child.Width = Child.PrefWidth;
-                Child.Height = Child.PrefHeight;
+                Child.Width = MathHelper.Min(Child.PrefWidth, Width - Padding * 2f);
+                Child.Height = MathHelper.Min(Child.PrefHeight, Height - Padding * 2f);
                 Child.X = X + Width / 2f - Child.Width / 2f;
                 Child.Y = Y + Height / 2f - Child.Height / 2f;
                 LayoutChild(gameTime);

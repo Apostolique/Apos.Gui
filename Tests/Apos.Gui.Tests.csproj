@@ -18,4 +18,8 @@
     <ProjectReference Include="../Source/Apos.Gui.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="../Example/Content/source-code-pro-medium.ttf" Link="source-code-pro-medium.ttf" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

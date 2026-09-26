@@ -43,7 +43,7 @@ namespace Apos.Gui {
 
             float currentY = 0f;
             foreach (var c in _children) {
-                c.Width = c.PrefWidth;
+                c.Width = MathHelper.Min(c.PrefWidth, Width);
                 c.Height = c.PrefHeight;
 
                 c.X = X + OffsetX + halfWidth - c.Width / 2f;
