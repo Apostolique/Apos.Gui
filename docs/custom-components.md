@@ -94,7 +94,7 @@ public class Card(long id) : SingleParent(id) {
         }
     }
     public override void Draw(GameTime gameTime) {
-        GuiHelper.ShapeBatch.FillRectangle(XY, Size, Theme.Background, Theme.Rounding);
+        GuiHelper.ShapeBatch.FillRectangle(XY, Size, Theme.Panel, Theme.Rounding);
         base.Draw(gameTime);
     }
 

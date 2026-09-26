@@ -109,7 +109,7 @@ namespace Apos.Gui {
 
         /// <summary>A background with a border.</summary>
         public static void DrawDefault(Popup p) {
-            GuiHelper.ShapeBatch.DrawRectangle(p.XY, p.Size, Theme.Background, Theme.Border, Theme.BorderThickness, Theme.Rounding);
+            GuiHelper.ShapeBatch.DrawRectangle(p.XY, p.Size, Theme.Panel, Theme.Border, Theme.BorderThickness, Theme.Rounding);
         }
 
         protected bool IsOutside(Vector2 p) => !Clip.Contains(p) && !(Anchor?.Contains(p) ?? false);

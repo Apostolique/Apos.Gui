@@ -124,6 +124,73 @@ namespace Apos.Gui.Tests {
             Assert.False(b.Clicked);
         }
 
+        [Fact]
+        public void TooltipOpensAfterTheDelayAndStaysInTheUI() {
+            Tooltip t = null!;
+            Button b = null!;
+            void Build() {
+                // In the bottom right corner, so the tip has to go above and to the left.
+                Dock.Put(700f, 430f, 800f, 480f);
+                t = Tooltip.Put();
+                b = Button.Put("Help");
+                Label.Put("A tip that is a lot wider than the button it explains.");
+            }
+
+            Frame(Build);
+            _ui.GrabFocus(b);
+            Frame(Build);
+            Assert.False(t.IsOpen);
+
+            for (int i = 0; i < 30; i++) Frame(Build);
+
+            Assert.True(t.IsOpen);
+            Assert.True(t.Bubble.Bottom <= b.Top);
+            Assert.True(t.Bubble.Right <= 800f);
+            Assert.True(t.Bubble.Left >= 0f);
+        }
+
+        [Fact]
+        public void TooltipOpensWhenTheMouseStaysOverItsComponent() {
+            Tooltip t = null!;
+            Button b = null!;
+            void Build() {
+                t = Tooltip.Put();
+                b = Button.Put("Help");
+                Label.Put("Tip");
+            }
+
+            Frame(Build);
+            _input.Mouse = Mouse(b.Bounds.Center, ButtonState.Released);
+            for (int i = 0; i < 30; i++) Frame(Build);
+            Assert.True(t.IsOpen);
+            Assert.True(t.Bubble.Top >= b.Bottom);
+
+            _input.Mouse = Mouse(new Vector2(700f, 400f), ButtonState.Released);
+            Frame(Build);
+            Assert.False(t.IsOpen);
+        }
+
+        [Fact]
+        public void TooltipWithoutATipDoesntTrapTheFocusWalk() {
+            Button before = null!, after = null!;
+            void Build() {
+                Vertical.Push();
+                before = Button.Put("Before");
+                Tooltip.Put();
+                Button.Put("Main");
+                Tooltip.Pop();
+                after = Button.Put("After");
+                Vertical.Pop();
+            }
+
+            Frame(Build);
+            _ui.GrabFocus(before);
+            Tap(Build, Keys.Tab);
+            Tap(Build, Keys.Tab);
+
+            Assert.True(after.IsFocused);
+        }
+
         /// <summary>Presses the left mouse button at a spot for one frame, then lets it go.</summary>
         private void Click(Action build, Vector2 at) {
             _input.Mouse = Mouse(at, ButtonState.Pressed);

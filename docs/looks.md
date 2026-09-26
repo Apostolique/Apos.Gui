@@ -14,7 +14,7 @@ Theme.Rounding = 6f;
 Theme.BorderThickness = 2f;
 ```
 
-`Highlight` is the color that fades in on hover and press, `Background` is behind popups and windows, and `Backdrop` darkens the screen behind a modal popup. Changes show up on the next draw.
+`Highlight` is the color that fades in on hover and press, `Panel` is behind popups and windows, and `Backdrop` darkens the screen behind a modal popup. Changes show up on the next draw.
 
 ## Looks
 

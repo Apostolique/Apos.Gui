@@ -40,7 +40,7 @@ namespace Apos.Gui {
 
         /// <summary>A background with a bar under the content.</summary>
         public static void DrawDefault(FloatingWindow w) {
-            GuiHelper.ShapeBatch.FillRectangle(w.XY, w.Size, Theme.Background, Theme.Rounding);
+            GuiHelper.ShapeBatch.FillRectangle(w.XY, w.Size, Theme.Panel, Theme.Rounding);
             GuiHelper.ShapeBatch.FillRectangle(new Vector2(w.Left, w.Bottom - w.BarHeight), new Vector2(w.Width, w.BarHeight), new Color(Theme.Highlight, 0.5f));
         }
 

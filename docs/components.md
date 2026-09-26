@@ -114,15 +114,15 @@ Icon.Put(new Texture2DRegion(_texture, 0, 0, 64, 64));
 
 ## Tooltip
 
-A tooltip takes two children. The first one is the tip and the second one is what it explains:
+A tooltip takes two children. The first one is the component, the second one is the tip:
 
 ```csharp
 Tooltip.Put();
-Label.Put("Deletes the save forever.");
 if (Button.Put("Delete").Clicked) Delete();
+Label.Put("Deletes the save forever.");
 ```
 
-The tip shows up while the mouse is over the second child or while it has focus.
+The tip shows up after a short `Delay` while the mouse is over the component or while it has focus, so it works with a gamepad too. It goes under the component, or over it when there isn't room, and it stays inside the UI. It draws on top of everything else.
 
 ## Popup
 

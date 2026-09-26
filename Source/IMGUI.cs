@@ -189,6 +189,10 @@ namespace Apos.Gui {
 
             GuiHelper.Begin();
             base.Draw(gameTime);
+            for (int i = 0; i < _onTop.Count; i++) {
+                _onTop[i](gameTime);
+            }
+            _onTop.Clear();
             GuiHelper.End();
 
             GuiHelper.CurrentIMGUI = previous;
@@ -318,6 +322,15 @@ namespace Apos.Gui {
                 GrabFocus(closest);
             }
         }
+        /// <summary>
+        /// Draws something over the whole UI once, after everything else is drawn. Call it from a component's Draw.
+        /// Tooltips use it so that the components that come after them don't cover the tip.
+        /// </summary>
+        public void DrawOnTop(Action<GameTime> draw) {
+            _onTop.Add(draw);
+        }
+        /// <summary>The component that has focus, or null.</summary>
+        public IComponent? Focused => _focus is long id && _activeComponents.TryGetValue(id, out IComponent? c) ? c : null;
         /// <summary>
         /// Claims the mouse hover for this frame. Components check from the top of the draw order down,
         /// so the first one under the mouse gets it and the ones below it don't.
@@ -528,6 +541,7 @@ namespace Apos.Gui {
         private readonly Dictionary<long, int> _idsUsedThisFrame = [];
 
         private float _scale = 1f;
+        private readonly List<Action<GameTime>> _onTop = [];
         private bool _layoutAgain;
         private const int MaxLayoutPasses = 3;
         private IMGUI? _previous;

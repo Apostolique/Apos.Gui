@@ -15,7 +15,7 @@ namespace Apos.Gui {
         /// <summary>Drawn over a component while it's hovered or pressed, faded by how much.</summary>
         public static Color Highlight { get; set; } = Color.White;
         /// <summary>Behind windows, tooltips and popups.</summary>
-        public static Color Background { get; set; } = Color.Black;
+        public static Color Panel { get; set; } = Color.Black;
         /// <summary>Over everything under a modal popup.</summary>
         public static Color Backdrop { get; set; } = new(0, 0, 0, 160);
         /// <summary>In UI units.</summary>

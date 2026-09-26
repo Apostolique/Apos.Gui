@@ -125,10 +125,9 @@ namespace GameProject {
 
             Dropdown.Put(ref _resolution, _resolutions);
 
-            // The tip goes first, then what it explains.
             Tooltip.Put();
-            Label.Put("Tooltips show up over what they explain.", 20);
             Button.Put("Hover me");
+            Label.Put("Tooltips show up next to what they explain.", 20);
         }
 
         private void TextTab() {

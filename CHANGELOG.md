@@ -26,6 +26,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - ClipRounding on stacks
 - Text on checkboxes and radio buttons, pressing it works like pressing the box
 - IMGUI.InvalidateLayout for components whose size depends on the size they get
+- IMGUI.DrawOnTop to draw over the whole UI, and IMGUI.Focused
+- Room for the scrollbar beside the children of a stack that scrolls
 
 ### Changed
 
