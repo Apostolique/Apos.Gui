@@ -90,7 +90,7 @@ namespace Apos.Gui {
             base.UpdateInput(gameTime);
 
             // Only a stack that can scroll takes the wheel, so an outer stack still gets it.
-            if (CanScroll && Clip.Contains(GuiHelper.Mouse) && Track.MouseCondition.Scrolled()) {
+            if (CanScroll && Root.Bindings.UsesPointer && Clip.Contains(Root.Mouse) && Track.MouseCondition.Scrolled()) {
                 // A wheel notch is 120. Touchpads send smaller steps, which scroll smoothly.
                 SetOffset(MainTween, ClampMain(MainTween.B + MouseCondition.ScrollDelta / 120f * ScrollIncrement));
             }

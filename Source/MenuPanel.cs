@@ -14,8 +14,8 @@ namespace Apos.Gui {
         public override void UpdatePrefSize(GameTime gameTime) {
             base.UpdatePrefSize(gameTime);
 
-            PrefWidth = GuiHelper.WindowWidth;
-            PrefHeight = GuiHelper.WindowHeight;
+            PrefWidth = Root.Width;
+            PrefHeight = Root.Height;
         }
         public override void UpdateLayout(GameTime gameTime) {
             // MenuPanel is a root component so it can set its own position.

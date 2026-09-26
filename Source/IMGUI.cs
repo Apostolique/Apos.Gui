@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Apos.Input;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 
 namespace Apos.Gui {
     // NOTE: IMGUI is NOT recursive. It should always be the top level component.
@@ -14,6 +16,50 @@ namespace Apos.Gui {
             GuiHelper.CurrentIMGUI = this;
         }
 
+        /// <summary>How big the UI is drawn. 2f makes everything twice as big. Defaults to 1f.</summary>
+        public float Scale {
+            get => _scale;
+            set {
+                if (value > 0f) {
+                    _scale = value;
+                }
+            }
+        }
+        /// <summary>
+        /// Where the UI goes on the screen, in pixels. The UI lays out in this area divided by <see cref="Scale"/>.
+        /// Null fills the window. When you draw the UI to a render target, set it to the render target's size.
+        /// </summary>
+        public RectangleF? Area { get; set; }
+        /// <summary>
+        /// Maps a screen position to the space the UI is drawn in, before <see cref="Area"/> and <see cref="Scale"/> apply.
+        /// Null means the UI is drawn straight to the screen. Set it when the UI is drawn to a render target that's shown somewhere else,
+        /// like on a screen in the game world, so the mouse and touch still hit the right spot.
+        /// </summary>
+        public Func<Vector2, Vector2>? PointerTransform { get; set; }
+        /// <summary>The inputs this UI listens to.</summary>
+        public Bindings Bindings { get; set; } = new();
+
+        /// <summary>Goes from the UI's coordinates to the pixels it's drawn to.</summary>
+        public Matrix Matrix {
+            get {
+                RectangleF area = AreaOrWindow;
+                return Matrix.CreateScale(Scale, Scale, 1f) * Matrix.CreateTranslation(area.X, area.Y, 0f);
+            }
+        }
+        /// <summary>Converts a position from the screen to the UI's coordinates.</summary>
+        public Vector2 ToUI(Vector2 screen) {
+            if (PointerTransform != null) {
+                screen = PointerTransform(screen);
+            }
+            return Vector2.Transform(screen, Matrix.Invert(Matrix));
+        }
+        /// <summary>Position of the mouse or of the oldest touch contact in the UI's coordinates.</summary>
+        public Vector2 Pointer => ToUI(Apos.Input.Pointer.Position);
+        /// <summary>Position of InputHelper.OldMouse in the UI's coordinates.</summary>
+        public Vector2 OldMouse => ToUI(InputHelper.OldMouse.Position.ToVector2());
+        /// <summary>Position of InputHelper.NewMouse in the UI's coordinates.</summary>
+        public Vector2 Mouse => ToUI(InputHelper.NewMouse.Position.ToVector2());
+
         /// <summary>
         /// Counts the UI's frames. Starts a new frame in UpdateSetup. Components that weren't put during the
         /// current frame are removed in Cleanup.
@@ -24,6 +70,9 @@ namespace Apos.Gui {
         /// Only call this if you didn't call UpdateStart. Starts a new frame.
         /// </summary>
         public override void UpdateSetup(GameTime gameTime) {
+            _previous = GuiHelper.CurrentIMGUI;
+            GuiHelper.CurrentIMGUI = this;
+
             CurrentFrame++;
             LastPing = CurrentFrame;
             _idsUsedThisFrame.Add(Id, 1);
@@ -37,25 +86,25 @@ namespace Apos.Gui {
         public override void UpdateInput(GameTime gameTime) {
             base.UpdateInput(gameTime);
 
-            if (!_nextPressed && Default.FocusPrev.Pressed()) {
+            if (!_nextPressed && Bindings.FocusPrev.Pressed()) {
                 _prevPressed = true;
             } else if (_prevPressed) {
-                if (Default.FocusPrev.Released()) {
+                if (Bindings.FocusPrev.Released()) {
                     FindPrevFocus();
                     _prevPressed = false;
                 } else {
-                    Default.FocusPrev.Consume();
+                    Bindings.FocusPrev.Consume();
                 }
             }
 
-            if (!_prevPressed && Default.FocusNext.Pressed()) {
+            if (!_prevPressed && Bindings.FocusNext.Pressed()) {
                 _nextPressed = true;
             } else if (_nextPressed) {
-                if (Default.FocusNext.Released()) {
+                if (Bindings.FocusNext.Released()) {
                     FindNextFocus();
                     _nextPressed = false;
                 } else {
-                    Default.FocusNext.Consume();
+                    Bindings.FocusNext.Consume();
                 }
             }
         }
@@ -89,16 +138,21 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="gameTime">Current gametime</param>
         public override void UpdateLayout(GameTime gameTime) {
+            IMGUI previous = MakeCurrent();
+
             // IMGUI manages itself so it can set its own position and size.
+            RectangleF area = AreaOrWindow;
             X = 0f;
             Y = 0f;
-            Width = GuiHelper.WindowWidth;
-            Height = GuiHelper.WindowHeight;
+            Width = area.Width / Scale;
+            Height = area.Height / Scale;
 
             foreach (var c in _children) {
                 c.UpdatePrefSize(gameTime);
             }
             base.UpdateLayout(gameTime);
+
+            GuiHelper.CurrentIMGUI = previous;
         }
 
         /// <summary>
@@ -114,9 +168,13 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="gameTime">Current gametime.</param>
         public override void Draw(GameTime gameTime) {
+            IMGUI previous = MakeCurrent();
+
             GuiHelper.Begin();
             base.Draw(gameTime);
             GuiHelper.End();
+
+            GuiHelper.CurrentIMGUI = previous;
         }
 
         /// <summary>
@@ -303,6 +361,7 @@ namespace Apos.Gui {
         /// <summary>
         /// Only call this if you didn't call UpdateEnd. Removes the components that weren't put during this frame.
         /// This should be called after all your components were put, before UpdateLayout.
+        /// Gives back the current UI spot to the one that had it before UpdateSetup.
         /// </summary>
         public void Cleanup() {
             Reset();
@@ -318,6 +377,9 @@ namespace Apos.Gui {
             _idStack.Clear();
             _idHash = 0;
             _idsUsedThisFrame.Clear();
+
+            GuiHelper.CurrentIMGUI = _previous ?? this;
+            _previous = null;
         }
         private void Remove(long id, IComponent c) {
             if (Focus == id) {
@@ -330,6 +392,13 @@ namespace Apos.Gui {
             _activeComponents.Remove(id);
             c.Parent?.Remove(c);
         }
+        private IMGUI MakeCurrent() {
+            IMGUI previous = GuiHelper.CurrentIMGUI;
+            GuiHelper.CurrentIMGUI = this;
+            return previous ?? this;
+        }
+        private RectangleF AreaOrWindow => Area ?? new RectangleF(0f, 0f, InputHelper.WindowWidth, InputHelper.WindowHeight);
+
         private void FindPrevFocus() {
             FindFocus(ExtractPrev);
         }
@@ -394,6 +463,9 @@ namespace Apos.Gui {
         private int _maxChildren = 0;
         private int _childrenCount = 0;
         private readonly Dictionary<long, int> _idsUsedThisFrame = [];
+
+        private float _scale = 1f;
+        private IMGUI? _previous;
 
         private bool _prevPressed = false;
         private bool _nextPressed = false;

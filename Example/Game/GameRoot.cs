@@ -69,7 +69,7 @@ namespace GameProject {
                 Slider.Put(ref _slider, 1f, 3f, 0.1f);
                 Label.Put($"{Math.Round(_slider, 3)}");
                 Icon.Put(_apos);
-                GuiHelper.Scale = _slider;
+                _ui.Scale = _slider;
                 if (Button.Put("Back").Clicked) _menu = Menu.Main;
             } else if (_menu == Menu.Quit) {
                 Label.Put("Quit Menu");

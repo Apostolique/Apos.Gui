@@ -36,43 +36,18 @@ namespace Apos.Gui {
             InputHelper.UpdateCleanup();
         }
         /// <summary>
-        /// Currently selected IMGUI. This is the IMGUI to use when adding components.
+        /// The IMGUI that components get added to. A UI makes itself current from UpdateSetup to Cleanup, and while it lays out and draws.
         /// </summary>
         public static IMGUI CurrentIMGUI { get; set; } = null!;
 
-        /// <value>The scale of the UI. Defaults to 1f.</value>
-        public static float Scale {
-            get => _scale;
-            set {
-                // TODO: Delay scale change until next frame? It's not likely to be desirable to update before a layout refresh.
-                if (value > 0f) {
-                    _scale = value;
-                }
-            }
-        }
-        public static float WindowWidth => InputHelper.WindowWidth / Scale;
-        public static float WindowHeight => InputHelper.WindowHeight / Scale;
-
-        /// <summary>
-        /// Used to convert between the screen and UI coordinate system.
-        /// </summary>
-        public static Matrix UIMatrix => Matrix.CreateScale(Scale, Scale, 1f);
-        /// <summary>
-        /// Converts a position from the screen to the UI coordinate system.
-        /// </summary>
-        public static Vector2 ToUI(Vector2 screen) => Vector2.Transform(screen, Matrix.Invert(UIMatrix));
-        /// <summary>
-        /// Position of the mouse or of the oldest touch contact in the UI coordinate system.
-        /// </summary>
-        public static Vector2 Pointer => ToUI(Apos.Input.Pointer.Position);
-        /// <summary>
-        /// Position of OldMouse in the UI coordinate system.
-        /// </summary>
-        public static Vector2 OldMouse => ToUI(InputHelper.OldMouse.Position.ToVector2());
-        /// <summary>
-        /// Position of NewMouse in the UI coordinate system.
-        /// </summary>
-        public static Vector2 Mouse => ToUI(InputHelper.NewMouse.Position.ToVector2());
+        /// <summary>Same as <see cref="IMGUI.ToUI"/> on the current UI.</summary>
+        public static Vector2 ToUI(Vector2 screen) => CurrentIMGUI.ToUI(screen);
+        /// <summary>Same as <see cref="IMGUI.Pointer"/> on the current UI.</summary>
+        public static Vector2 Pointer => CurrentIMGUI.Pointer;
+        /// <summary>Same as <see cref="IMGUI.OldMouse"/> on the current UI.</summary>
+        public static Vector2 OldMouse => CurrentIMGUI.OldMouse;
+        /// <summary>Same as <see cref="IMGUI.Mouse"/> on the current UI.</summary>
+        public static Vector2 Mouse => CurrentIMGUI.Mouse;
 
         /// <summary>ShapeBatch used to draw the UI.</summary>
         public static ShapeBatch ShapeBatch { get; set; } = null!;
@@ -112,13 +87,13 @@ namespace Apos.Gui {
         }
 
         /// <summary>
-        /// Calls begin on the ShapeBatch with the UI transform matrix and clears any active clip.
-        /// IMGUI.Draw calls this for you; only call it manually if you draw the UI yourself.
+        /// Calls begin on the ShapeBatch with the current UI's matrix and clears any active clip.
+        /// IMGUI.Draw calls this for you. Only call it if you draw the UI yourself.
         /// </summary>
         public static void Begin() {
             _currentClip = null;
             _clipStack.Clear();
-            ShapeBatch.Begin(UIMatrix, samplerState: GuiSampler);
+            ShapeBatch.Begin(CurrentIMGUI.Matrix, samplerState: GuiSampler);
             ShapeBatch.SetClipRect(null);
         }
         /// <summary>
@@ -135,7 +110,6 @@ namespace Apos.Gui {
             }
         }
 
-        private static float _scale = 1f;
         private static (RectangleF Rect, float Rounding, float Rotation, float AaSize)? _currentClip = null;
         private static Stack<(RectangleF Rect, float Rounding, float Rotation, float AaSize)?> _clipStack = new Stack<(RectangleF Rect, float Rounding, float Rotation, float AaSize)?>();
     }

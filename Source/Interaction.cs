@@ -10,11 +10,11 @@ namespace Apos.Gui {
     public enum InteractionSource {
         /// <summary>Nothing is pressing.</summary>
         None,
-        /// <summary>The mouse button in <see cref="Default.MouseInteraction"/>.</summary>
+        /// <summary>The mouse button in <see cref="Bindings.MouseInteraction"/>.</summary>
         Mouse,
         /// <summary>A touch screen contact.</summary>
         Touch,
-        /// <summary>The focus button in <see cref="Default.ButtonInteraction"/>, while the component has focus.</summary>
+        /// <summary>The focus button in <see cref="Bindings.ButtonInteraction"/>, while the component has focus.</summary>
         Button
     }
 
@@ -77,20 +77,22 @@ namespace Apos.Gui {
         public void UpdateInput(IComponent owner, RectangleF? area = null) {
             _owner = owner;
             RectangleF hit = area is RectangleF a ? a.Intersect(owner.Clip) : owner.Clip;
-            Vector2 mouse = GuiHelper.Mouse;
-            bool mouseInside = UsesMouse && Apos.Input.Pointer.Source == PointerSource.Mouse && InputHelper.IsActive && hit.Contains(mouse);
+            IMGUI ui = owner.Root;
+            Bindings bindings = ui.Bindings;
+            Vector2 mouse = ui.Mouse;
+            bool mouseInside = UsesMouse && bindings.UsesPointer && Apos.Input.Pointer.Source == PointerSource.Mouse && InputHelper.IsActive && hit.Contains(mouse);
 
-            IComponent? capture = owner.Root.MouseCapture;
-            Hovered = mouseInside && (capture == null || capture == owner) && owner.Root.TryClaimHover(owner);
+            IComponent? capture = ui.MouseCapture;
+            Hovered = mouseInside && (capture == null || capture == owner) && ui.TryClaimHover(owner);
 
             Vector2 old = Position;
             if (Source == InteractionSource.None) {
-                if (Hovered && Default.MouseInteraction.Pressed()) {
+                if (Hovered && bindings.MouseInteraction.Pressed()) {
                     Start(InteractionSource.Mouse, mouse);
-                } else if (UsesTouch && TryClaimTouch(hit, out TouchLocation touch)) {
+                } else if (UsesTouch && bindings.UsesPointer && TryClaimTouch(ui, hit, out TouchLocation touch)) {
                     _touchId = touch.Id;
-                    Start(InteractionSource.Touch, GuiHelper.ToUI(touch.Position));
-                } else if (UsesFocusButton && owner.IsFocused && Default.ButtonInteraction.Pressed()) {
+                    Start(InteractionSource.Touch, ui.ToUI(touch.Position));
+                } else if (UsesFocusButton && owner.IsFocused && bindings.ButtonInteraction.Pressed()) {
                     Start(InteractionSource.Button, owner.Bounds.Center);
                 }
                 old = Position;
@@ -98,16 +100,16 @@ namespace Apos.Gui {
                 End(false);
             } else if (Source == InteractionSource.Mouse) {
                 Position = mouse;
-                if (Default.MouseInteraction.Released()) {
+                if (bindings.MouseInteraction.Released()) {
                     End(hit.Contains(Position));
                 } else {
-                    Default.MouseInteraction.Consume();
+                    bindings.MouseInteraction.Consume();
                 }
             } else if (Source == InteractionSource.Touch) {
                 if (!InputHelper.NewTouch.FindById(_touchId, out TouchLocation touch)) {
                     End(false);
                 } else {
-                    Position = GuiHelper.ToUI(touch.Position);
+                    Position = ui.ToUI(touch.Position);
                     if (Input.TouchCondition.Released(touch)) {
                         End(hit.Contains(Position));
                     } else {
@@ -116,10 +118,10 @@ namespace Apos.Gui {
                 }
             } else if (Source == InteractionSource.Button) {
                 Position = owner.Bounds.Center;
-                if (Default.ButtonInteraction.Released()) {
+                if (bindings.ButtonInteraction.Released()) {
                     End(true);
                 } else {
-                    Default.ButtonInteraction.Consume();
+                    bindings.ButtonInteraction.Consume();
                 }
             }
 
@@ -164,9 +166,9 @@ namespace Apos.Gui {
             _grabbedFocus = false;
         }
 
-        private static bool TryClaimTouch(RectangleF hit, out TouchLocation touch) {
+        private static bool TryClaimTouch(IMGUI ui, RectangleF hit, out TouchLocation touch) {
             foreach (TouchLocation t in InputHelper.NewTouch) {
-                if (Input.TouchCondition.Pressed(t) && Track.TouchCondition.IsUnique(t.Id) && hit.Contains(GuiHelper.ToUI(t.Position))) {
+                if (Input.TouchCondition.Pressed(t) && Track.TouchCondition.IsUnique(t.Id) && hit.Contains(ui.ToUI(t.Position))) {
                     Track.TouchCondition.Consume(t.Id);
                     touch = t;
                     return true;

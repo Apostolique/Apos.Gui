@@ -139,46 +139,47 @@ namespace Apos.Gui {
                 return;
             }
 
-            bool extend = Default.ExtendSelection.Held(false);
-            bool byWord = Default.ByWord.Held(false);
+            Bindings bindings = Root.Bindings;
+            bool extend = bindings.ExtendSelection.Held(false);
+            bool byWord = bindings.ByWord.Held(false);
 
             if (Interaction.Pressed && Interaction.Source != InteractionSource.Button) {
                 MoveCursor(IndexAt(Interaction.Position), extend || !Interaction.JustPressed);
             }
 
-            if (_left.Pressed()) {
+            if (bindings.MoveLeft.Pressed()) {
                 int to = byWord ? PrevWord(_cursor) : HasSelection && !extend ? SelectionStart : _cursor - 1;
                 MoveCursor(to, extend);
             }
-            if (_right.Pressed()) {
+            if (bindings.MoveRight.Pressed()) {
                 int to = byWord ? NextWord(_cursor) : HasSelection && !extend ? SelectionEnd : _cursor + 1;
                 MoveCursor(to, extend);
             }
             // A single line textbox leaves up and down alone so that they still move the focus.
-            if (Multiline && _up.Pressed()) {
+            if (Multiline && bindings.MoveUp.Pressed()) {
                 MoveCursor(LineStep(-1), extend);
             }
-            if (Multiline && _down.Pressed()) {
+            if (Multiline && bindings.MoveDown.Pressed()) {
                 MoveCursor(LineStep(1), extend);
             }
-            if (Default.LineStart.Pressed()) {
+            if (bindings.LineStart.Pressed()) {
                 MoveCursor(byWord ? 0 : _lines[CurrentLine].Start, extend);
             }
-            if (Default.LineEnd.Pressed()) {
+            if (bindings.LineEnd.Pressed()) {
                 MoveCursor(byWord ? _text.Length : TextLayout.LineContentEnd(_text, _lines[CurrentLine]), extend);
             }
 
-            if (Default.SelectAll.Pressed()) {
+            if (bindings.SelectAll.Pressed()) {
                 Select(0, _text.Length);
             }
-            if (Default.Copy.Pressed() && HasSelection) {
+            if (bindings.Copy.Pressed() && HasSelection) {
                 GuiHelper.Clipboard.SetText(SelectedText);
             }
-            if (Default.Cut.Pressed() && HasSelection) {
+            if (bindings.Cut.Pressed() && HasSelection) {
                 GuiHelper.Clipboard.SetText(SelectedText);
                 Insert("");
             }
-            if (Default.Paste.Pressed()) {
+            if (bindings.Paste.Pressed()) {
                 string? pasted = GuiHelper.Clipboard.GetText();
                 if (pasted != null) {
                     pasted = pasted.Replace("\r\n", "\n");
@@ -322,10 +323,6 @@ namespace Apos.Gui {
         protected int _cursor;
         protected int _anchor;
 
-        protected RepeatCondition _left = new(Default.MoveLeft, 400, 50);
-        protected RepeatCondition _right = new(Default.MoveRight, 400, 50);
-        protected RepeatCondition _up = new(Default.MoveUp, 400, 50);
-        protected RepeatCondition _down = new(Default.MoveDown, 400, 50);
         protected FloatTween _blink = new(0f, 1f, 1500, Easing.Linear);
 
         public static Textbox Put(ref string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {

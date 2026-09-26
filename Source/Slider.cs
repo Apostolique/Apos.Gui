@@ -38,8 +38,8 @@ namespace Apos.Gui {
                 Value = MathHelper.Clamp(percent * (Max - Min) + Min, Min, Max);
             }
             if (IsFocused) {
-                if (_left.Pressed()) Slide(-1);
-                if (_right.Pressed()) Slide(1);
+                if (Root.Bindings.MoveLeft.Pressed()) Slide(-1);
+                if (Root.Bindings.MoveRight.Pressed()) Slide(1);
             }
         }
 
@@ -72,9 +72,6 @@ namespace Apos.Gui {
         protected float _thickness = 4;
         protected float _handleThickness = 8;
         protected float? _step;
-
-        protected RepeatCondition _left = new(Default.MoveLeft, 400, 50);
-        protected RepeatCondition _right = new(Default.MoveRight, 400, 50);
 
         public static Slider Put(ref float value, float min, float max, float? step = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
             float initial = value;

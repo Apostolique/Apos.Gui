@@ -27,7 +27,7 @@ namespace Apos.Gui {
         public bool CloseOnOutsidePress { get; set; } = true;
         /// <summary>The popup is at least this wide, in UI units.</summary>
         public float MinWidth { get; set; }
-        /// <summary>True on a frame where something asked the popup to close: a press outside it, or <see cref="Default.Back"/>.</summary>
+        /// <summary>True on a frame where something asked the popup to close: a press outside it, or <see cref="Bindings.Back"/>.</summary>
         public bool Dismissed => _dismissed;
 
         /// <summary>Draws this popup under its content. Null uses <see cref="DefaultLook"/>.</summary>
@@ -42,27 +42,33 @@ namespace Apos.Gui {
         public override void UpdateInput(GameTime gameTime) {
             base.UpdateInput(gameTime);
 
-            Vector2 mouse = GuiHelper.Mouse;
+            IMGUI ui = Root;
+            Bindings bindings = ui.Bindings;
+            if (bindings.Back.Pressed()) {
+                _dismissed = true;
+            }
+            if (!bindings.UsesPointer) {
+                return;
+            }
+
+            Vector2 mouse = ui.Mouse;
             if (CloseOnOutsidePress) {
-                bool outside = Default.MouseInteraction.Pressed(false) && IsOutside(mouse);
+                bool outside = bindings.MouseInteraction.Pressed(false) && IsOutside(mouse);
                 foreach (TouchLocation t in InputHelper.NewTouch) {
-                    outside |= Input.TouchCondition.Pressed(t) && Track.TouchCondition.IsUnique(t.Id) && IsOutside(GuiHelper.ToUI(t.Position));
+                    outside |= Input.TouchCondition.Pressed(t) && Track.TouchCondition.IsUnique(t.Id) && IsOutside(ui.ToUI(t.Position));
                 }
                 _dismissed |= outside;
-            }
-            if (Default.Back.Pressed()) {
-                _dismissed = true;
             }
 
             // Whatever is under the popup shouldn't react to it. A modal popup covers the whole screen.
             bool covers = Modal || Clip.Contains(mouse);
             if (covers) {
-                Root.TryClaimHover(this);
-                Default.MouseInteraction.Pressed();
+                ui.TryClaimHover(this);
+                bindings.MouseInteraction.Pressed();
                 Track.MouseCondition.Scrolled();
             }
             foreach (TouchLocation t in InputHelper.NewTouch) {
-                if (Input.TouchCondition.Pressed(t) && (Modal || Clip.Contains(GuiHelper.ToUI(t.Position)))) {
+                if (Input.TouchCondition.Pressed(t) && (Modal || Clip.Contains(ui.ToUI(t.Position)))) {
                     Track.TouchCondition.Consume(t.Id);
                 }
             }
