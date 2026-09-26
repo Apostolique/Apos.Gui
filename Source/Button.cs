@@ -24,11 +24,15 @@ namespace Apos.Gui {
 
         /// <summary>A border that lights up with focus, and a highlight that follows hover and press.</summary>
         public static void DrawDefault(Button b) {
-            float highlight = b.Clicked ? 0.5f : 0.08f * b.Interaction.Hover + 0.15f * b.Interaction.Press;
+            DrawPressable(b, b.Interaction);
+        }
+        /// <summary>The highlight and border every built-in clickable component draws. Useful as a base for your own looks.</summary>
+        public static void DrawPressable(IComponent c, Interaction i) {
+            float highlight = i.Clicked ? 0.5f : 0.08f * i.Hover + 0.15f * i.Press;
             if (highlight > 0f) {
-                GuiHelper.ShapeBatch.FillRectangle(b.XY, b.Size, new Color(Theme.Highlight, highlight), Theme.Rounding);
+                GuiHelper.ShapeBatch.FillRectangle(c.XY, c.Size, new Color(Theme.Highlight, highlight), Theme.Rounding);
             }
-            GuiHelper.ShapeBatch.BorderRectangle(b.XY, b.Size, b.IsFocused ? Theme.Focus : Theme.Border, Theme.BorderThickness, Theme.Rounding);
+            GuiHelper.ShapeBatch.BorderRectangle(c.XY, c.Size, c.IsFocused ? Theme.Focus : Theme.Border, Theme.BorderThickness, Theme.Rounding);
         }
 
         public static Button Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {

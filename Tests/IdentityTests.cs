@@ -133,6 +133,29 @@ namespace Apos.Gui.Tests {
         }
 
         [Fact]
+        public void PopupGoesToTheRootAndBackToTheParent() {
+            var ui = new IMGUI();
+            Vertical v = null!;
+            Popup p = null!;
+            Label inside = null!, after = null!;
+
+            Frame(ui, () => {
+                v = Vertical.Push(id: 1);
+                bool open = true;
+                p = Popup.Push(ref open, id: 2);
+                inside = Label.Put("In the popup", id: 3);
+                Popup.Pop();
+                after = Label.Put("Back in the stack", id: 4);
+                Vertical.Pop();
+            });
+
+            Assert.Same(ui, p.Parent);
+            Assert.Same(p, inside.Parent);
+            Assert.Same(v, after.Parent);
+            Assert.Same(p, RenderOrder(ui).Last());
+        }
+
+        [Fact]
         public void FloatingWindowStaysOnTopAfterFocus() {
             var ui = new IMGUI();
             FloatingWindow w1 = null!, w2 = null!;
