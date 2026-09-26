@@ -47,25 +47,18 @@ namespace Apos.Gui {
             }
         }
         public override bool IsFocusable { get; set; } = true;
+        public Interaction Interaction { get; } = new() { UsesFocusButton = false };
 
         public override void UpdateInput(GameTime gameTime) {
-            if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
-                _pressed = true;
-                Cursor = MouseToCursor(GuiHelper.Mouse.X, _text);
-                Root.GrabFocus(this);
-            }
+            Interaction.UpdateInput(this);
 
             if (IsFocused) {
-                if (_pressed && Default.MouseInteraction.HeldOnly()) {
-                    Cursor = MouseToCursor(GuiHelper.Mouse.X, _text);
-                }
-                if (_pressed && Default.MouseInteraction.Released()) {
-                    _pressed = false;
-                    Cursor = MouseToCursor(GuiHelper.Mouse.X, _text);
+                if (Interaction.Pressed) {
+                    Cursor = MouseToCursor(Interaction.Position.X, _text);
                 }
 
-                MoveCursor(Default.MoveLeft, -1);
-                MoveCursor(Default.MoveRight, 1);
+                if (_left.Pressed()) Cursor--;
+                if (_right.Pressed()) Cursor++;
 
                 if (Default.MoveUp.Released()) {
                     Cursor = 0;
@@ -144,20 +137,6 @@ namespace Apos.Gui {
             }
         }
 
-        protected void MoveCursor(ICondition condition, int direction) {
-            if (condition.Pressed()) {
-                Cursor += direction;
-                _input.StartTime = TweenHelper.TotalMS;
-                _input.Duration = _inputInitialDelay;
-            }
-            if (condition.HeldOnly()) {
-                if (TweenHelper.TotalMS > _input.StartTime + _input.Duration) {
-                    Cursor += direction;
-                    _input.StartTime = TweenHelper.TotalMS;
-                    _input.Duration = _inputDelay;
-                }
-            }
-        }
         protected int MouseToCursor(float x, string text) {
             float left = Left + Padding;
             float currentOffset = left;
@@ -190,12 +169,9 @@ namespace Apos.Gui {
         }
         protected int _cursor;
 
-        protected int _inputDelay = 50;
-        protected int _inputInitialDelay = 400;
-        protected FloatTween _input = new(0f, 1f, 50, Easing.Linear);
+        protected RepeatCondition _left = new(Default.MoveLeft, 400, 50);
+        protected RepeatCondition _right = new(Default.MoveRight, 400, 50);
         protected FloatTween _blink = new(0f, 1f, 1500, Easing.Linear);
-
-        protected bool _pressed = false;
 
         public static Textbox Put(ref string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);

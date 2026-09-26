@@ -6,24 +6,17 @@ namespace Apos.Gui {
         public override bool IsFocusable { get; set; } = true;
         public override bool IsFloatable { get; set; } = true;
 
+        public Interaction Interaction { get; } = new() { UsesFocusButton = false };
+
         public override void UpdateInput(GameTime gameTime) {
             base.UpdateInput(gameTime);
+            Interaction.UpdateInput(this);
 
-            if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
-                _mousePressed = true;
-                _dragDelta = XY - GuiHelper.Mouse;
-                Root.GrabFocus(this);
+            if (Interaction.JustPressed) {
+                _dragStart = XY;
             }
-
-            if (IsFocused) {
-                if (_mousePressed) {
-                    if (Default.MouseInteraction.Released()) {
-                        _mousePressed = false;
-                    } else {
-                        Default.MouseInteraction.Consume();
-                        XY = GuiHelper.Mouse + _dragDelta;
-                    }
-                }
+            if (Interaction.Pressed) {
+                XY = _dragStart + Interaction.Position - Interaction.PressPosition;
             }
         }
         public override void UpdatePrefSize(GameTime gameTime) {
@@ -41,8 +34,7 @@ namespace Apos.Gui {
             base.Draw(gameTime);
         }
 
-        protected bool _mousePressed = false;
-        protected Vector2 _dragDelta = Vector2.Zero;
+        protected Vector2 _dragStart = Vector2.Zero;
 
         public static new FloatingWindow Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);

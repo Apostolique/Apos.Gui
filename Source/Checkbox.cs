@@ -3,57 +3,15 @@ using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
     public class Checkbox(int id, bool isChecked) : Component(id) {
-        public bool Clicked { get; set; } = false;
+        public Interaction Interaction { get; } = new();
+        public bool Clicked => Interaction.Clicked;
         public bool IsChecked { get; set; } = isChecked;
         public override bool IsFocusable { get; set; } = true;
-        public override bool IsFocused {
-            get => base.IsFocused;
-            set {
-                base.IsFocused = value;
-                if (!value) {
-                    _mousePressed = false;
-                    _hovered = false;
-                    _buttonPressed = false;
-                }
-            }
-        }
 
-        public override void UpdateSetup(GameTime gameTime) {
-            if (Clicked) {
-                Clicked = false;
-            }
-        }
         public override void UpdateInput(GameTime gameTime) {
-            if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
-                _mousePressed = true;
-                Root.GrabFocus(this);
-            }
-
-            if (IsFocused) {
-                if (_mousePressed) {
-                    if (Default.MouseInteraction.Released()) {
-                        if (Clip.Contains(GuiHelper.Mouse)) {
-                            Clicked = true;
-                            IsChecked = !IsChecked;
-                        }
-                        _mousePressed = false;
-                    } else {
-                        Default.MouseInteraction.Consume();
-                        _hovered = Clip.Contains(GuiHelper.Mouse);
-                    }
-                }
-
-                if (Default.ButtonInteraction.Pressed()) {
-                    _buttonPressed = true;
-                } else if (_buttonPressed) {
-                    if (Default.ButtonInteraction.Released()) {
-                        Clicked = true;
-                        IsChecked = !IsChecked;
-                        _buttonPressed = false;
-                    } else {
-                        Default.ButtonInteraction.Consume();
-                    }
-                }
+            Interaction.UpdateInput(this);
+            if (Clicked) {
+                IsChecked = !IsChecked;
             }
         }
 
@@ -69,12 +27,9 @@ namespace Apos.Gui {
                 GuiHelper.ShapeBatch.FillRectangle(new Vector2(Left + 6, Top + 6), new Vector2(Width - 12, Height - 12), Color.White);
             }
 
-            if (Clicked) {
-                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, new Color(Color.White, 0.5f));
-            } else if (_mousePressed && _hovered || _buttonPressed) {
-                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, new Color(Color.White, 0.2f));
-            } else if (_mousePressed) {
-                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, new Color(Color.White, 0.15f));
+            float highlight = Clicked ? 0.5f : 0.08f * Interaction.Hover + 0.15f * Interaction.Press;
+            if (highlight > 0f) {
+                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, new Color(Color.White, highlight));
             }
             if (IsFocused) {
                 GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, Color.White, 2f);
@@ -87,9 +42,6 @@ namespace Apos.Gui {
             GuiHelper.PopClip();
         }
 
-        protected bool _mousePressed = false;
-        protected bool _buttonPressed = false;
-        protected bool _hovered = false;
 
         public static Checkbox Put(ref bool isChecked, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);

@@ -15,7 +15,8 @@ namespace Apos.Gui {
         }
         public override void UpdateInput(GameTime gameTime) {
             if (Main != null) {
-                if (Main.Clip.Contains(GuiHelper.OldMouse) && Tip != null) {
+                bool mouseOver = Pointer.Source == PointerSource.Mouse && Root.Hover == null && Main.Clip.Contains(GuiHelper.Mouse);
+                if (mouseOver && Tip != null) {
                     if (!_hovered && LastFocus != Root.LastFocus) {
                         SendToTop();
                     }

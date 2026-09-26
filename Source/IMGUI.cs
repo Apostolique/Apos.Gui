@@ -233,6 +233,24 @@ namespace Apos.Gui {
             }
         }
         /// <summary>
+        /// Claims the mouse hover for this frame. Components check from the top of the draw order down,
+        /// so the first one under the mouse gets it and the ones below it don't.
+        /// </summary>
+        /// <returns>True if the component got the hover or already had it this frame.</returns>
+        public bool TryClaimHover(IComponent c) {
+            if (_hoverFrame == CurrentFrame) {
+                return _hover == c;
+            }
+            _hover = c;
+            _hoverFrame = CurrentFrame;
+            return true;
+        }
+        /// <summary>The component under the mouse this frame, if one claimed it.</summary>
+        public IComponent? Hover => _hoverFrame == CurrentFrame ? _hover : null;
+        /// <summary>The component holding a mouse press. While it's set, other components don't get hovered.</summary>
+        public IComponent? MouseCapture { get; set; }
+
+        /// <summary>
         /// Guaranteed to return a unique id during the span of the current frame.
         /// </summary>
         /// <param name="id">An id that should be part of the generation process.</param>
@@ -344,6 +362,9 @@ namespace Apos.Gui {
             if (Focus == id) {
                 Focus = null;
             }
+            if (MouseCapture == c) {
+                MouseCapture = null;
+            }
 
             _activeComponents.Remove(id);
             c.Parent?.Remove(c);
@@ -410,6 +431,8 @@ namespace Apos.Gui {
             }
         }
         private int? _focus;
+        private IComponent? _hover;
+        private uint _hoverFrame;
         private IParent _currentParent;
         private int _maxChildren = 0;
         private int _childrenCount = 0;

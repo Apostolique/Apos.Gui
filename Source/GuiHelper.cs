@@ -58,13 +58,21 @@ namespace Apos.Gui {
         /// </summary>
         public static Matrix UIMatrix => Matrix.CreateScale(Scale, Scale, 1f);
         /// <summary>
+        /// Converts a position from the screen to the UI coordinate system.
+        /// </summary>
+        public static Vector2 ToUI(Vector2 screen) => Vector2.Transform(screen, Matrix.Invert(UIMatrix));
+        /// <summary>
+        /// Position of the mouse or of the oldest touch contact in the UI coordinate system.
+        /// </summary>
+        public static Vector2 Pointer => ToUI(Apos.Input.Pointer.Position);
+        /// <summary>
         /// Position of OldMouse in the UI coordinate system.
         /// </summary>
-        public static Vector2 OldMouse => Vector2.Transform(InputHelper.OldMouse.Position.ToVector2(), Matrix.Invert(UIMatrix));
+        public static Vector2 OldMouse => ToUI(InputHelper.OldMouse.Position.ToVector2());
         /// <summary>
         /// Position of NewMouse in the UI coordinate system.
         /// </summary>
-        public static Vector2 Mouse => Vector2.Transform(InputHelper.NewMouse.Position.ToVector2(), Matrix.Invert(UIMatrix));
+        public static Vector2 Mouse => ToUI(InputHelper.NewMouse.Position.ToVector2());
 
         /// <summary>ShapeBatch used to draw the UI.</summary>
         public static ShapeBatch ShapeBatch { get; set; } = null!;

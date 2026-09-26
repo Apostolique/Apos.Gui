@@ -21,35 +21,18 @@ namespace Apos.Gui {
             }
         }
         public override bool IsFocusable { get; set; } = true;
+        public Interaction Interaction { get; } = new() { UsesFocusButton = false };
 
         public override void UpdateInput(GameTime gameTime) {
-            if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
-                _isPressed = true;
-                float percent = (GuiHelper.Mouse.X - Left) / (Width - _thickness);
-                Value = MathHelper.Max(MathHelper.Min(percent * (Max - Min) + Min, Max), Min);
-                Root.GrabFocus(this);
+            Interaction.UpdateInput(this);
+
+            if (Interaction.Pressed && Interaction.Source != InteractionSource.Button) {
+                float percent = (Interaction.Position.X - Left) / (Width - _thickness);
+                Value = MathHelper.Clamp(percent * (Max - Min) + Min, Min, Max);
             }
             if (IsFocused) {
-                if (_isPressed) {
-                    float percent = (GuiHelper.Mouse.X - Left) / (Width - _thickness);
-                    Value = MathHelper.Max(MathHelper.Min(percent * (Max - Min) + Min, Max), Min);
-
-                    if (Default.MouseInteraction.Released()) {
-                        _isPressed = false;
-                    } else {
-                        Default.MouseInteraction.Consume();
-                    }
-                }
-
-                SlideValue(Default.MoveLeft, -1);
-                SlideValue(Default.MoveRight, 1);
-            }
-        }
-        public override void Update(GameTime gameTime) {
-            if (IsFocused) {
-                if (_inputDelay > 0) {
-                    _inputDelay -= (int)gameTime.ElapsedGameTime.TotalMilliseconds;
-                }
+                if (_left.Pressed()) Slide(-1);
+                if (_right.Pressed()) Slide(1);
             }
         }
 
@@ -72,27 +55,16 @@ namespace Apos.Gui {
             GuiHelper.PopClip();
         }
 
-        protected void SlideValue(ICondition condition, int direction) {
-            if (condition.Pressed()) {
-                Value = MathHelper.Max(MathHelper.Min(Value + direction * Step!.Value, Max), Min);
-                _inputDelay = _inputDelayInitialSpeed;
-            }
-            if (condition.HeldOnly()) {
-                if (_inputDelay <= 0) {
-                    Value = MathHelper.Max(MathHelper.Min(Value + direction * Step!.Value, Max), Min);
-                    _inputDelay = _inputDelaySpeed;
-                }
-            }
+        protected void Slide(int direction) {
+            Value = MathHelper.Clamp(Value + direction * Step!.Value, Min, Max);
         }
 
         protected float _thickness = 4;
         protected float _handleThickness = 8;
-        protected bool _isPressed = false;
         protected float? _step;
 
-        protected int _inputDelay = 0;
-        protected int _inputDelaySpeed = 50;
-        protected int _inputDelayInitialSpeed = 400;
+        protected RepeatCondition _left = new(Default.MoveLeft, 400, 50);
+        protected RepeatCondition _right = new(Default.MoveRight, 400, 50);
 
         public static Slider Put(ref float value, float min, float max, float? step = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);

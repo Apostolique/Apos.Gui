@@ -1,63 +1,20 @@
-using System;
 using System.Runtime.CompilerServices;
 using Apos.Input;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
     public class Button(int id) : Component(id), IParent {
-        public bool Clicked { get; set; } = false;
+        public Interaction Interaction { get; } = new();
+        public bool Clicked => Interaction.Clicked;
         public IComponent? Child { get; set; }
         public override bool IsFocusable { get; set; } = true;
-        public override bool IsFocused {
-            get => base.IsFocused;
-            set {
-                base.IsFocused = value;
-                if (!value) {
-                    _mousePressed = false;
-                    _hovered = false;
-                    _buttonPressed = false;
-                }
-            }
-        }
 
         public override void UpdateSetup(GameTime gameTime) {
-            if (Clicked) {
-                Clicked = false;
-            }
-
             Child?.UpdateSetup(gameTime);
         }
         public override void UpdateInput(GameTime gameTime) {
-            if (Clip.Contains(GuiHelper.Mouse) && Default.MouseInteraction.Pressed()) {
-                _mousePressed = true;
-                Root.GrabFocus(this);
-            }
-
-            if (IsFocused) {
-                if (_mousePressed) {
-                    if (Default.MouseInteraction.Released()) {
-                        if (Clip.Contains(GuiHelper.Mouse))
-                            Clicked = true;
-                        _mousePressed = false;
-                    } else {
-                        Default.MouseInteraction.Consume();
-                        _hovered = Clip.Contains(GuiHelper.Mouse);
-                    }
-                }
-
-                if (Default.ButtonInteraction.Pressed()) {
-                    _buttonPressed = true;
-                } else if (_buttonPressed) {
-                    if (Default.ButtonInteraction.Released()) {
-                        Clicked = true;
-                        _buttonPressed = false;
-                    } else {
-                        Default.ButtonInteraction.Consume();
-                    }
-                }
-            }
-
             Child?.UpdateInput(gameTime);
+            Interaction.UpdateInput(this);
         }
         public override void Update(GameTime gameTime) {
             Child?.Update(gameTime);
@@ -88,12 +45,9 @@ namespace Apos.Gui {
         public override void Draw(GameTime gameTime) {
             GuiHelper.PushClip(Clip);
 
-            if (Clicked) {
-                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, new Color(Color.White, 0.5f));
-            } else if (_mousePressed && _hovered || _buttonPressed) {
-                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, new Color(Color.White, 0.2f));
-            } else if (_mousePressed) {
-                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, new Color(Color.White, 0.15f));
+            float highlight = Clicked ? 0.5f : 0.08f * Interaction.Hover + 0.15f * Interaction.Press;
+            if (highlight > 0f) {
+                GuiHelper.ShapeBatch.FillRectangle(Bounds.Position, Bounds.Size, new Color(Color.White, highlight));
             }
             if (IsFocused) {
                 GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, Color.White, 2f);
@@ -136,10 +90,6 @@ namespace Apos.Gui {
             LastFocus = Root.CurrentFrame;
             Parent?.SendToTop(this);
         }
-
-        protected bool _mousePressed = false;
-        protected bool _buttonPressed = false;
-        protected bool _hovered = false;
 
         public static Button Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             Button b = Put(id, isAbsoluteId);
