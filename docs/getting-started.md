@@ -1,5 +1,7 @@
 # Getting started
 
+This guide will show you how to put a menu on screen that works with the mouse, the keyboard, a gamepad and touch.
+
 ## Install
 
 Install using the following dotnet command:
@@ -8,25 +10,25 @@ Install using the following dotnet command:
 dotnet add package Apos.Gui
 ```
 
+For KNI, use `Apos.Gui.KNI` instead.
+
 ## Setup
 
 Import the library with:
 
 ```csharp
 using Apos.Gui;
-using FontStashSharp;
+using Apos.Shapes;
 ```
 
 Find a font ttf file, call it `font-file.ttf` and put it in your content folder. Add it to the MonoGame content pipeline and select ***copy*** in "Build Action" instead of ~~build~~.
 
-In your game's `LoadContent()`, give your game instance and font to GuiHelper and create an `IMGUI` object:
+In your game's `LoadContent()`, give your game instance and your font to `GuiHelper`, then create an `IMGUI`:
 
 ```csharp
 protected override void LoadContent() {
-    FontSystem fontSystem = new FontSystem();
-    fontSystem.AddFont(TitleContainer.OpenStream($"{Content.RootDirectory}/font-file.ttf"));
-
-    GuiHelper.Setup(this, fontSystem);
+    using var fontStream = TitleContainer.OpenStream($"{Content.RootDirectory}/font-file.ttf");
+    GuiHelper.Setup(this, new ShapeFont(fontStream));
 
     _ui = new IMGUI();
 }
@@ -34,15 +36,17 @@ protected override void LoadContent() {
 IMGUI _ui;
 ```
 
-In your update loop, call the following functions:
+`GuiHelper.Setup` also sets up [Apos.Input](https://apostolique.github.io/Apos.Input/), which Apos.Gui reads its input from.
+
+## The update loop
+
+The UI is rebuilt every frame from your own variables. Put your components between `UpdateStart` and `UpdateEnd`:
 
 ```csharp
 protected override void Update(GameTime gameTime) {
-    // Call UpdateSetup at the start.
     GuiHelper.UpdateSetup(gameTime);
     _ui.UpdateStart(gameTime);
 
-    // Create your UI.
     MenuPanel.Push();
     if (Button.Put("Show fun").Clicked) {
         _showFun = !_showFun;
@@ -55,7 +59,6 @@ protected override void Update(GameTime gameTime) {
     }
     MenuPanel.Pop();
 
-    // Call UpdateEnd and UpdateCleanup at the end.
     _ui.UpdateEnd(gameTime);
     GuiHelper.UpdateCleanup();
 
@@ -65,9 +68,11 @@ protected override void Update(GameTime gameTime) {
 bool _showFun = false;
 ```
 
-This last code shows a simple menu with two buttons and a conditional label.
+`MenuPanel` fills the window and centers what's in it. Clicking "Show fun" puts a label between the two buttons, and clicking it again takes it away.
 
-Finally, in your draw loop:
+The components remember their state from one frame to the next even though you call `Put` every frame. [Identity](./identity.md) explains how.
+
+## The draw loop
 
 ```csharp
 protected override void Draw(GameTime gameTime) {
@@ -79,6 +84,21 @@ protected override void Draw(GameTime gameTime) {
 }
 ```
 
+## Moving around
+
+Without any setup:
+
+* The mouse and touch press whatever is under them.
+* The arrow keys and the d-pad move the focus to the closest component in that direction.
+* Tab and Shift+Tab go through the components in the order you put them.
+* Space, Enter and the gamepad's A button press the focused component.
+* Escape and the gamepad's B button close popups.
+
+[Focus](./focus.md) and [Input](./input.md) show how to change all of that.
+
 ## Read more
 
-Check the [Design choices](./design-choices.md) to understand the thinking process behind this library.
+* [Components](./components.md) lists what comes with the library.
+* [Layout](./layout.md) shows how to arrange them.
+* [Custom components](./custom-components.md) shows how to make your own.
+* The [example](https://github.com/Apostolique/Apos.Gui/tree/main/Example) uses everything in these guides.

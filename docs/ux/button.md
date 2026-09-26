@@ -23,7 +23,7 @@ Considerations for the user experience of a button.
 
 ### Interaction canceling
 
-* Press tab to focus a different component before releasing space or enter.
+* Press Tab or an arrow key to focus a different component before releasing space or enter.
 
 ## Gamepad
 
@@ -34,4 +34,4 @@ Considerations for the user experience of a button.
 
 ### Interaction canceling
 
-* Press Up or Down to focus a different component before releasing the A button.
+* Move the focus to a different component with the d-pad before releasing the A button.

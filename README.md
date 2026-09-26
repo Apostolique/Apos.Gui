@@ -3,13 +3,22 @@ UI library for MonoGame.
 
 ## Description
 
-This library is designed to allow the creation of custom user facing UIs. It doesn't provide much out of the box except some mechanics to manage user inputs, focus handling, component parenting and hierarchy. It is inspired by the IMGUI paradigm.
+This library is designed to allow the creation of custom user facing UIs. You use it like an IMGUI, putting components every frame from your game's own variables, while the components themselves are kept from frame to frame so they can hold focus, scrolling and animations. It comes with the common components, and the pieces they're built from are public so that your own work the same way.
 
 [![Discord](https://img.shields.io/discord/355231098122272778.svg)](https://discord.gg/N9t26Uv)
 
 ## Documentation
 
 * [Getting started](https://apostolique.github.io/Apos.Gui/getting-started/)
+* [Components](https://apostolique.github.io/Apos.Gui/components/)
+* [Layout](https://apostolique.github.io/Apos.Gui/layout/)
+* [Identity](https://apostolique.github.io/Apos.Gui/identity/)
+* [Focus](https://apostolique.github.io/Apos.Gui/focus/)
+* [Input](https://apostolique.github.io/Apos.Gui/input/)
+* [Looks](https://apostolique.github.io/Apos.Gui/looks/)
+* [Custom components](https://apostolique.github.io/Apos.Gui/custom-components/)
+* [Testing](https://apostolique.github.io/Apos.Gui/testing/)
+* [Moving from 2.x](https://apostolique.github.io/Apos.Gui/migration/)
 
 ## Build
 
@@ -17,8 +26,13 @@ This library is designed to allow the creation of custom user facing UIs. It doe
 
 ## Features
 
-* Mouse, Keyboard, Gamepad (touch input is possible but not provided out of the box)
-* UI scaling
+* Mouse, touch, keyboard and gamepad, with arrow and d-pad navigation that works on any layout
+* Buttons, checkboxes, radio buttons, sliders, progress bars, textboxes, dropdowns, tabs, tooltips, popups
+* Stacks with spacing, padding, alignment and scrolling
+* Text wrapping, and textboxes with selection, copy and paste
+* Themes, and looks you can replace per component
+* One UI per player for split screen, UI scaling, and UIs drawn to render targets
+* Hooks for the system clipboard and on-screen keyboards
 * Used like IMGUI but components can be coded like a retained UI
 
 ## Showcase
@@ -43,7 +57,7 @@ if (Button.Put("Quit").Clicked) {
 MenuPanel.Pop();
 ```
 
-This code will create 2 buttons, "Show Fun" and "Quit". You can use your mouse, keyboard, or gamepad to interact with them. Clicking on "Show Fun" will insert a label in between them with the text "This is fun!".
+This code will create 2 buttons, "Show Fun" and "Quit". You can use the mouse, touch, the keyboard or a gamepad to interact with them. Clicking on "Show Fun" will insert a label in between them with the text "This is fun!".
 
 You can read more in the [Getting started](https://apostolique.github.io/Apos.Gui/getting-started/) guide.
 
