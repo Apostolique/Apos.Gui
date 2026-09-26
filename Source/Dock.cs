@@ -90,7 +90,7 @@ namespace Apos.Gui {
         }
 
         public virtual void SendToTop(IComponent c) {
-            LastFocus = InputHelper.CurrentFrame;
+            LastFocus = Root.CurrentFrame;
             Parent?.SendToTop(this);
         }
 

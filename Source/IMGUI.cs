@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Apos.Input;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
@@ -15,7 +14,13 @@ namespace Apos.Gui {
         }
 
         /// <summary>
-        /// Only call this if you didn't call UpdateStart. This should be called after UpdatePrefSize.
+        /// Counts the UI's frames. Starts a new frame in UpdateSetup. Components that weren't put during the
+        /// current frame are removed in Cleanup.
+        /// </summary>
+        public uint CurrentFrame { get; private set; } = 0;
+
+        /// <summary>
+        /// Only call this if you didn't call UpdateStart. Starts a new frame.
         /// </summary>
         public override void UpdateSetup(GameTime gameTime) {
             // 1. Ping ourself to prevent cleanup.
@@ -25,7 +30,8 @@ namespace Apos.Gui {
             // 4. Update pref sizes.
             // 5. Apply pref sizes.
             // 6. Update setup.
-            LastPing = InputHelper.CurrentFrame;
+            CurrentFrame++;
+            LastPing = CurrentFrame;
             _idsUsedThisFrame.Add(Id, 1);
 
             foreach (var c in _children) {
@@ -90,7 +96,7 @@ namespace Apos.Gui {
         /// </summary>
         public override void UpdatePrefSize(GameTime gameTime) { }
         /// <summary>
-        /// Only call this if you didn't call UpdateEnd. This should be called after UpdateInput.
+        /// Only call this if you didn't call UpdateEnd. This should be called after Cleanup.
         /// </summary>
         /// <param name="gameTime">Current gametime</param>
         public void UpdateLayout(GameTime gameTime) {
@@ -197,19 +203,22 @@ namespace Apos.Gui {
                 p.Reset();
             }
 
-            if (c.Parent != current || c.Parent.PeekNextIndex() != c.Index) {
+            if (c.Parent != current || current.PeekNextIndex() != c.Index) {
                 c.Parent?.Remove(c);
                 c.Index = current.NextIndex();
                 c.Root = this;
 
                 current.Add(c);
+            } else {
+                // Same parent, same slot as last frame. Leave it in place so that its render order is kept.
+                current.NextIndex();
             }
 
             if (_maxChildren > 0 && ++_childrenCount >= _maxChildren) {
                 Pop();
             }
 
-            c.LastPing = InputHelper.CurrentFrame;
+            c.LastPing = CurrentFrame;
         }
         /// <summary>
         /// Gives focus to a component. Can also clear the focus if null is passed.
@@ -253,28 +262,18 @@ namespace Apos.Gui {
 
         public void Add(IComponent c) {
             c.Parent = this;
-            _children.Insert(c.Index, c);
-
-            // Render order invariant: non-floatables sorted by Index, then floatables in the order SendToTop promoted them.
-            if (c.IsFloatable) {
-                _childrenRenderOrder.Add(c);
-            } else {
-                int i = 0;
-                while (i < _childrenRenderOrder.Count && !_childrenRenderOrder[i].IsFloatable && _childrenRenderOrder[i].Index <= c.Index) i++;
-                _childrenRenderOrder.Insert(i, c);
-            }
+            ChildList.Insert(_children, _childrenRenderOrder, c);
         }
         public void Remove(IComponent c) {
             c.Parent = null;
-            _children.Remove(c);
-            _childrenRenderOrder.Remove(c);
+            ChildList.Remove(_children, _childrenRenderOrder, c);
         }
         public void Reset() {
             _nextChildIndex = 0;
         }
-        public int PeekNextIndex() => _nextChildIndex + 1;
+        public int PeekNextIndex() => _nextChildIndex;
         public int NextIndex() => _nextChildIndex++;
-        public new uint LastFocus { get; set; } = uint.MaxValue;
+        public override uint LastFocus { get; set; } = uint.MaxValue;
 
         /// <summary>
         /// If this component has a parent, it will ask the parent to return this component's previous neighbor.
@@ -317,17 +316,21 @@ namespace Apos.Gui {
         }
 
         public void SendToTop(IComponent c) {
-            LastFocus = InputHelper.CurrentFrame;
+            LastFocus = CurrentFrame;
             if (c.IsFloatable) {
                 _childrenRenderOrder.Remove(c);
                 _childrenRenderOrder.Add(c);
             }
         }
 
-        private void Cleanup() {
+        /// <summary>
+        /// Only call this if you didn't call UpdateEnd. Removes the components that weren't put during this frame.
+        /// This should be called after all your components were put, before UpdateLayout.
+        /// </summary>
+        public void Cleanup() {
             Reset();
             foreach (var kc in _activeComponents.Reverse()) {
-                if (kc.Value.LastPing != InputHelper.CurrentFrame) {
+                if (kc.Value.LastPing != CurrentFrame) {
                     Remove(kc.Key, kc.Value);
                 }
             }

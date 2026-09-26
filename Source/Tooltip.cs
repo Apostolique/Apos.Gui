@@ -113,7 +113,7 @@ namespace Apos.Gui {
         public virtual void Reset() {
             _nextChildIndex = 0;
         }
-        public virtual int PeekNextIndex() => _nextChildIndex + 1;
+        public virtual int PeekNextIndex() => _nextChildIndex;
         public virtual int NextIndex() => _nextChildIndex++;
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace Apos.Gui {
         }
 
         public virtual void SendToTop(IComponent c) {
-            LastFocus = InputHelper.CurrentFrame;
+            LastFocus = Root.CurrentFrame;
             Parent?.SendToTop(this);
         }
 

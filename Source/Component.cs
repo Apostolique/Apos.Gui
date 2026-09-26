@@ -59,7 +59,7 @@ namespace Apos.Gui {
         }
 
         public virtual void SendToTop() {
-            LastFocus = InputHelper.CurrentFrame;
+            LastFocus = Root.CurrentFrame;
             Parent?.SendToTop(this);
         }
 

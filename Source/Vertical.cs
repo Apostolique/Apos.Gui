@@ -123,26 +123,16 @@ namespace Apos.Gui {
 
         public virtual void Add(IComponent c) {
             c.Parent = this;
-            _children.Insert(c.Index, c);
-
-            // Render order invariant: non-floatables sorted by Index, then floatables in the order SendToTop promoted them.
-            if (c.IsFloatable) {
-                _childrenRenderOrder.Add(c);
-            } else {
-                int i = 0;
-                while (i < _childrenRenderOrder.Count && !_childrenRenderOrder[i].IsFloatable && _childrenRenderOrder[i].Index <= c.Index) i++;
-                _childrenRenderOrder.Insert(i, c);
-            }
+            ChildList.Insert(_children, _childrenRenderOrder, c);
         }
         public virtual void Remove(IComponent c) {
             c.Parent = null;
-            _children.Remove(c);
-            _childrenRenderOrder.Remove(c);
+            ChildList.Remove(_children, _childrenRenderOrder, c);
         }
         public virtual void Reset() {
             _nextChildIndex = 0;
         }
-        public virtual int PeekNextIndex() => _nextChildIndex + 1;
+        public virtual int PeekNextIndex() => _nextChildIndex;
         public virtual int NextIndex() => _nextChildIndex++;
 
         /// <summary>
@@ -186,7 +176,7 @@ namespace Apos.Gui {
         }
 
         public virtual void SendToTop(IComponent c) {
-            LastFocus = InputHelper.CurrentFrame;
+            LastFocus = Root.CurrentFrame;
             if (c.IsFloatable) {
                 _childrenRenderOrder.Remove(c);
                 _childrenRenderOrder.Add(c);
