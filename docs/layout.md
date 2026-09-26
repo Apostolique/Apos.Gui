@@ -84,14 +84,26 @@ Label.Put("Top left corner");
 
 ## FloatingWindow
 
-A vertical stack you can drag around. It comes to the front when it gets focus.
+A window with a title bar you drag it by. It opens in the middle of the UI, stays inside it, and comes to the front when it's pressed or gets focus.
 
 ```csharp
-FloatingWindow.Push();
-Label.Put("Inventory");
+FloatingWindow.Push("Inventory");
+Label.Put("Sword");
 // ...
 FloatingWindow.Pop();
 ```
+
+With `ref` to your open state, it gets a close button, and back closes it while the focus is in it:
+
+```csharp
+if (_inventoryOpen) {
+    FloatingWindow.Push(ref _inventoryOpen, "Inventory");
+    // ...
+    FloatingWindow.Pop();
+}
+```
+
+Its components go in `Content`, a vertical stack, so you can change its spacing and padding there. It scrolls when the window is taller than the UI.
 
 The arrow keys and the d-pad stay inside a floating window once the focus is in it. [Focus](./focus.md) explains why.
 

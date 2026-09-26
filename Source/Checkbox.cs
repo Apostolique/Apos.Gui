@@ -51,15 +51,20 @@ namespace Apos.Gui {
             Vector2 innerSize = boxSize - new Vector2(12f);
             Color border = c.IsFocused ? Theme.Focus : Theme.Border;
 
+            if (Theme.Surface.A > 0) {
+                GuiHelper.ShapeBatch.FillRectangle(box.Position, boxSize, Theme.Surface, Theme.Rounding);
+            }
             if (c.IsChecked) {
-                GuiHelper.ShapeBatch.FillRectangle(innerXY, innerSize, Theme.Focus, Theme.Rounding);
+                GuiHelper.ShapeBatch.FillRectangle(innerXY, innerSize, Theme.Accent, MathF.Max(Theme.Rounding - 4f, 0f));
             }
             float highlight = c.Clicked ? 0.5f : 0.08f * c.Interaction.Hover + 0.15f * c.Interaction.Press;
             if (highlight > 0f) {
                 GuiHelper.ShapeBatch.FillRectangle(box.Position, boxSize, new Color(Theme.Highlight, highlight), Theme.Rounding);
             }
             GuiHelper.ShapeBatch.BorderRectangle(box.Position, boxSize, border, Theme.BorderThickness, Theme.Rounding);
-            GuiHelper.ShapeBatch.BorderRectangle(innerXY, innerSize, border, Theme.BorderThickness, Theme.Rounding);
+            if (Theme.Surface.A == 0) {
+                GuiHelper.ShapeBatch.BorderRectangle(innerXY, innerSize, border, Theme.BorderThickness, MathF.Max(Theme.Rounding - 4f, 0f));
+            }
             if (c.Text.Length > 0) {
                 GuiHelper.ShapeBatch.DrawString(GuiHelper.Font, c.Text, c.TextPosition, c.FontSize, Theme.Text);
             }

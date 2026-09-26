@@ -9,6 +9,7 @@ namespace Apos.Gui {
     public class MenuPanel : Vertical {
         public MenuPanel(long id) : base(id) {
             Align = CrossAlign.Center;
+            Spacing = 8f;
         }
 
         public override void UpdatePrefSize(GameTime gameTime) {

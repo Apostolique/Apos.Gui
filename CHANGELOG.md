@@ -28,6 +28,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - IMGUI.InvalidateLayout for components whose size depends on the size they get
 - IMGUI.DrawOnTop to draw over the whole UI, and IMGUI.Focused
 - Room for the scrollbar beside the children of a stack that scrolls
+- Theme.UseOutline and Theme.UseFilled, and Surface, Panel and Accent colors
+- A title bar, a close button and Content on FloatingWindow
+- Delay, Gap, Padding and Bubble on Tooltip
 
 ### Changed
 
@@ -43,6 +46,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - IMGUI.Draw begins and ends the batch
 - Buttons don't clip their content
 - Clicked, FullWidth and FullHeight are read only
+- Tooltip takes the component first and the tip second, shows after a delay, goes next to the component and stays inside the UI
+- FloatingWindow is dragged by its title bar, opens centered and stays inside the UI
+- Slider is a track with a thumb, 200 wide by default
+- MenuPanel has 8 units of spacing
 
 ### Removed
 

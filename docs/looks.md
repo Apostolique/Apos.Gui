@@ -4,17 +4,22 @@ This guide will show you how to change the way the built-in components draw.
 
 ## Theme
 
-`Theme` holds the colors and sizes that every built-in look reads:
+`Theme` holds the colors and sizes that every built-in look reads. It comes with two presets:
 
 ```csharp
-Theme.Text = new Color(230, 230, 230);
-Theme.Border = new Color(90, 90, 110);
-Theme.Focus = Color.Gold;
-Theme.Rounding = 6f;
-Theme.BorderThickness = 2f;
+Theme.UseOutline(); // Thin borders on black. This is the default.
+Theme.UseFilled();  // Filled surfaces, rounded corners and a blue accent.
 ```
 
-`Highlight` is the color that fades in on hover and press, `Panel` is behind popups and windows, and `Backdrop` darkens the screen behind a modal popup. Changes show up on the next draw.
+You can start from one and change what you want:
+
+```csharp
+Theme.UseFilled();
+Theme.Accent = new Color(230, 160, 40);
+Theme.Rounding = 10f;
+```
+
+`Surface` fills buttons, boxes, tracks and title bars, and transparent leaves only their borders. `Panel` is behind popups, windows and tooltips. `Accent` is what's on or picked: checkmarks, the filled part of bars, slider thumbs, the selected tab and selected text. `Focus` is the border of the focused component. `Highlight` fades in on hover and press, and `Backdrop` darkens the screen behind a modal popup. Changes show up on the next draw.
 
 ## Looks
 

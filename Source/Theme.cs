@@ -7,20 +7,55 @@ namespace Apos.Gui {
     /// </summary>
     public static class Theme {
         /// <summary>Text, and the default color passed to Put methods that take one.</summary>
-        public static Color Text { get; set; } = new(200, 200, 200);
+        public static Color Text { get; set; }
         /// <summary>Borders of components that don't have focus.</summary>
-        public static Color Border { get; set; } = new(76, 76, 76);
+        public static Color Border { get; set; }
         /// <summary>Borders of the focused component, and the textbox cursor.</summary>
-        public static Color Focus { get; set; } = Color.White;
+        public static Color Focus { get; set; }
         /// <summary>Drawn over a component while it's hovered or pressed, faded by how much.</summary>
-        public static Color Highlight { get; set; } = Color.White;
+        public static Color Highlight { get; set; }
         /// <summary>Behind windows, tooltips and popups.</summary>
-        public static Color Panel { get; set; } = Color.Black;
+        public static Color Panel { get; set; }
+        /// <summary>Inside buttons, boxes, tracks and title bars. Transparent leaves only their borders.</summary>
+        public static Color Surface { get; set; }
+        /// <summary>What's on or picked: checkmarks, the filled part of bars, slider thumbs, the selected tab, selected text.</summary>
+        public static Color Accent { get; set; }
         /// <summary>Over everything under a modal popup.</summary>
-        public static Color Backdrop { get; set; } = new(0, 0, 0, 160);
+        public static Color Backdrop { get; set; }
         /// <summary>In UI units.</summary>
-        public static float BorderThickness { get; set; } = 2f;
+        public static float BorderThickness { get; set; }
         /// <summary>Corner radius of the built-in looks, in UI units.</summary>
-        public static float Rounding { get; set; } = 0f;
+        public static float Rounding { get; set; }
+
+        static Theme() {
+            UseOutline();
+        }
+
+        /// <summary>Thin borders on black, with white for focus and what's picked. This is the default.</summary>
+        public static void UseOutline() {
+            Text = new Color(200, 200, 200);
+            Border = new Color(76, 76, 76);
+            Focus = Color.White;
+            Highlight = Color.White;
+            Panel = new Color(10, 10, 10);
+            Surface = Color.Transparent;
+            Accent = new Color(220, 220, 220);
+            Backdrop = new Color(0, 0, 0, 160);
+            BorderThickness = 2f;
+            Rounding = 0f;
+        }
+        /// <summary>Filled surfaces a bit lighter than their panels, rounded corners, and a blue accent.</summary>
+        public static void UseFilled() {
+            Text = new Color(228, 231, 237);
+            Border = new Color(58, 63, 75);
+            Focus = new Color(138, 176, 255);
+            Highlight = Color.White;
+            Panel = new Color(24, 26, 32);
+            Surface = new Color(40, 44, 54);
+            Accent = new Color(82, 128, 250);
+            Backdrop = new Color(0, 0, 0, 170);
+            BorderThickness = 2f;
+            Rounding = 6f;
+        }
     }
 }

@@ -30,11 +30,12 @@ namespace Apos.Gui {
 
         /// <summary>A button's look, with a filled background and a line under it when selected.</summary>
         public static void DrawDefault(TabButton t) {
-            if (t.IsSelected) {
-                GuiHelper.ShapeBatch.FillRectangle(t.XY, t.Size, new Color(Theme.Highlight, 0.15f), Theme.Rounding);
-                GuiHelper.ShapeBatch.FillRectangle(new Vector2(t.Left, t.Bottom - 3f), new Vector2(t.Width, 3f), Theme.Focus);
-            }
             Button.DrawPressable(t, t.Interaction);
+            if (t.IsSelected) {
+                GuiHelper.ShapeBatch.FillRectangle(t.XY, t.Size, new Color(Theme.Accent, 0.2f), Theme.Rounding);
+                float inset = MathF.Max(Theme.Rounding, Theme.BorderThickness);
+                GuiHelper.ShapeBatch.FillRectangle(new Vector2(t.Left + inset, t.Bottom - 3f - Theme.BorderThickness), new Vector2(t.Width - inset * 2f, 3f), Theme.Accent, 1.5f);
+            }
         }
 
         public static TabButton Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {

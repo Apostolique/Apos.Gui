@@ -51,8 +51,11 @@ namespace Apos.Gui {
             if (highlight > 0f) {
                 GuiHelper.ShapeBatch.FillCircle(center, radius, new Color(Theme.Highlight, highlight));
             }
+            if (Theme.Surface.A > 0) {
+                GuiHelper.ShapeBatch.FillCircle(center, radius, Theme.Surface);
+            }
             if (r.IsChecked) {
-                GuiHelper.ShapeBatch.FillCircle(center, radius - 7f, Theme.Focus);
+                GuiHelper.ShapeBatch.FillCircle(center, radius - 7f, Theme.Accent);
             }
             GuiHelper.ShapeBatch.BorderCircle(center, radius, r.IsFocused ? Theme.Focus : Theme.Border, Theme.BorderThickness);
             if (r.Text.Length > 0) {

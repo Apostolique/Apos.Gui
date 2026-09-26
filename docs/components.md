@@ -68,7 +68,7 @@ Like the checkbox, the text is optional and pressing it picks the radio button.
 Slider.Put(ref _volume, 0f, 1f, step: 0.05f);
 ```
 
-Left and right move it while it has focus.
+Left and right move it while it has focus. `BarSize` sets how big it wants to be.
 
 ## ProgressBar
 

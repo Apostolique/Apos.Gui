@@ -191,6 +191,49 @@ namespace Apos.Gui.Tests {
             Assert.True(after.IsFocused);
         }
 
+        [Fact]
+        public void WindowOpensCenteredAndCantBeDraggedOut() {
+            FloatingWindow w = null!;
+            void Build() {
+                w = FloatingWindow.Push("Inventory");
+                Label.Put("Sword");
+                FloatingWindow.Pop();
+            }
+
+            Frame(Build);
+            Frame(Build);
+            Assert.Equal((800f - w.Width) / 2f, w.X, 1);
+            Assert.Equal(w.Top + w.TitleHeight, w.Content!.Top, 1);
+
+            Vector2 grab = w.TitleBar.Center;
+            _input.Mouse = Mouse(grab, ButtonState.Pressed);
+            Frame(Build);
+            _input.Mouse = Mouse(grab + new Vector2(2000f, 0f), ButtonState.Pressed);
+            Frame(Build);
+            _input.Mouse = Mouse(grab + new Vector2(2000f, 0f), ButtonState.Released);
+            Frame(Build);
+
+            Assert.Equal(800f, w.Right, 1);
+        }
+
+        [Fact]
+        public void WindowCloseButtonClosesIt() {
+            bool open = true;
+            FloatingWindow w = null!;
+            void Build() {
+                if (!open) return;
+                w = FloatingWindow.Push(ref open, "Inventory");
+                Label.Put("Sword");
+                FloatingWindow.Pop();
+            }
+
+            Frame(Build);
+            Frame(Build);
+            Click(Build, w.CloseButton.Center);
+
+            Assert.False(open);
+        }
+
         /// <summary>Presses the left mouse button at a spot for one frame, then lets it go.</summary>
         private void Click(Action build, Vector2 at) {
             _input.Mouse = Mouse(at, ButtonState.Pressed);

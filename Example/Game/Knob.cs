@@ -45,9 +45,12 @@ namespace GameProject {
             Vector2 tip = center + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * radius * 0.75f;
 
             float highlight = 0.08f * Interaction.Hover + 0.15f * Interaction.Press;
+            if (Theme.Surface.A > 0) {
+                GuiHelper.ShapeBatch.FillCircle(center, radius, Theme.Surface);
+            }
             GuiHelper.ShapeBatch.FillCircle(center, radius, new Color(Theme.Highlight, highlight));
             GuiHelper.ShapeBatch.BorderCircle(center, radius, IsFocused ? Theme.Focus : Theme.Border, Theme.BorderThickness);
-            GuiHelper.ShapeBatch.FillLine(center, tip, 3f, Theme.Focus);
+            GuiHelper.ShapeBatch.FillLine(center, tip, 3f, Theme.Accent);
         }
 
         private float _value;

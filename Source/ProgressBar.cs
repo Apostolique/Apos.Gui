@@ -27,10 +27,16 @@ namespace Apos.Gui {
 
         /// <summary>A frame that fills from the left.</summary>
         public static void DrawDefault(ProgressBar p) {
+            if (Theme.Surface.A > 0) {
+                GuiHelper.ShapeBatch.FillRectangle(p.XY, p.Size, Theme.Surface, Theme.Rounding);
+            }
             float inset = Theme.BorderThickness * 2f;
             Vector2 inner = p.Size - new Vector2(inset * 2f);
-            if (p.Value > 0f && inner.X > 0f && inner.Y > 0f) {
-                GuiHelper.ShapeBatch.FillRectangle(p.XY + new Vector2(inset), new Vector2(inner.X * p.Value, inner.Y), Theme.Focus, MathF.Max(Theme.Rounding - inset, 0f));
+            float filled = inner.X * p.Value;
+            if (filled > 0f && inner.Y > 0f) {
+                // Never narrower than it is tall, so the rounded ends keep their shape.
+                float radius = MathF.Max(Theme.Rounding - inset, 0f);
+                GuiHelper.ShapeBatch.FillRectangle(p.XY + new Vector2(inset), new Vector2(MathF.Max(filled, MathF.Min(radius * 2f, inner.X)), inner.Y), Theme.Accent, radius);
             }
             GuiHelper.ShapeBatch.BorderRectangle(p.XY, p.Size, Theme.Border, Theme.BorderThickness, Theme.Rounding);
         }

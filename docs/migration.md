@@ -66,3 +66,17 @@ public static MyThing Put([CallerLineNumber] int id = 0, bool isAbsoluteId = fal
 ## Layout
 
 `Vertical` and `Horizontal` are both a `StackPanel` now, with `Spacing`, `Padding`, `Align` and scrollbars. [Layout](./layout.md) shows them.
+
+`MenuPanel` puts 8 units of space between its children.
+
+`FloatingWindow` isn't a stack anymore. It has a title bar, and its components go in its `Content`, which is. Set spacing and padding there.
+
+## Tooltips
+
+A tooltip takes the component first and the tip second, the other way around from before:
+
+```csharp
+Tooltip.Put();
+Button.Put("Delete");
+Label.Put("Deletes the save forever.");
+```

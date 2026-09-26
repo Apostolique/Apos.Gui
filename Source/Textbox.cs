@@ -256,11 +256,14 @@ namespace Apos.Gui {
 
         /// <summary>A border that lights up with focus, the selection, the text, and a blinking cursor.</summary>
         public static void DrawDefault(Textbox t) {
+            if (Theme.Surface.A > 0) {
+                GuiHelper.ShapeBatch.FillRectangle(t.XY, t.Size, Theme.Surface, Theme.Rounding);
+            }
             GuiHelper.ShapeBatch.BorderRectangle(t.XY, t.Size, t.IsFocused ? Theme.Focus : Theme.Border, Theme.BorderThickness, Theme.Rounding);
 
             GuiHelper.PushClip(t.ContentBounds.Intersect(t.Clip));
             if (t.HasSelection) {
-                DrawSelection(t, new Color(Theme.Highlight, 0.3f));
+                DrawSelection(t, new Color(Theme.Accent, 0.4f));
             }
             DrawText(t, t.Color);
             if (t.IsCursorVisible) {

@@ -148,8 +148,7 @@ namespace GameProject {
 
             // Each row is keyed by its quest, so removing one doesn't move the checkboxes to other rows.
             Block.Put(420f, 250f);
-            // Leaves room for the scrollbar.
-            Vertical.Push().Padding = 10f;
+            Vertical.Push();
             foreach (Quest q in _quests) {
                 _ui.PushId(q.Id);
                 Checkbox.Put(ref q.Done, $"Quest {q.Id}");
@@ -179,6 +178,12 @@ namespace GameProject {
 
         private void SettingsScreen() {
             MenuPanel.Push();
+            Label.Put("Style");
+            Horizontal.Push().Spacing = 20f;
+            if (RadioButton.Put(ref _style, 0, "Outline").Clicked) Theme.UseOutline();
+            if (RadioButton.Put(ref _style, 1, "Filled").Clicked) Theme.UseFilled();
+            Horizontal.Pop();
+
             Label.Put($"UI scale {_scale:0.00}");
             Slider.Put(ref _scale, 1f, 2f, 0.25f);
             _ui.Scale = _scale;
@@ -219,9 +224,9 @@ namespace GameProject {
         }
 
         private void FloatingWindowDemo() {
-            FloatingWindow.Push();
-            Label.Put("Drag me", 20);
-            if (Button.Put("Close").Clicked) _showWindow = false;
+            FloatingWindow.Push(ref _showWindow, "Window");
+            Label.Put("Drag me by the title.", 20);
+            Button.Put("A button");
             FloatingWindow.Pop();
         }
 
@@ -284,6 +289,7 @@ namespace GameProject {
         private bool _focusQuit;
         private bool _showWindow;
         private float _scale = 1f;
+        private int _style;
 
         private int _tab;
         private bool _music = true;

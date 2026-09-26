@@ -28,6 +28,9 @@ namespace Apos.Gui {
         }
         /// <summary>The highlight and border every built-in clickable component draws. Useful as a base for your own looks.</summary>
         public static void DrawPressable(IComponent c, Interaction i) {
+            if (Theme.Surface.A > 0) {
+                GuiHelper.ShapeBatch.FillRectangle(c.XY, c.Size, Theme.Surface, Theme.Rounding);
+            }
             float highlight = i.Clicked ? 0.5f : 0.08f * i.Hover + 0.15f * i.Press;
             if (highlight > 0f) {
                 GuiHelper.ShapeBatch.FillRectangle(c.XY, c.Size, new Color(Theme.Highlight, highlight), Theme.Rounding);
