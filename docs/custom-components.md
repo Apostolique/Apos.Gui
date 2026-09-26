@@ -56,6 +56,8 @@ Components get `UpdateInput` from the top of the draw order down, so the one dra
 
 `UpdatePrefSize` says how big the component would like to be. The parent then sets `X`, `Y`, `Width` and `Height`, which might not be what it asked for.
 
+Some components want a size that depends on the size they get, like text that wraps: a narrower width means more lines, so a taller component. Those can call `Root.InvalidateLayout()` when their width changes, and the UI lays out again in the same frame. `Paragraph` does that.
+
 ```csharp
 public override void UpdatePrefSize(GameTime gameTime) {
     PrefWidth = 70f;

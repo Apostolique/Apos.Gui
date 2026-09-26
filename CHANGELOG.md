@@ -24,6 +24,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - IOnScreenKeyboard and SystemKeyboard for phones and consoles
 - PushClip and PopClip, clips drawn by the shader that don't break the batch
 - ClipRounding on stacks
+- Text on checkboxes and radio buttons, pressing it works like pressing the box
+- IMGUI.InvalidateLayout for components whose size depends on the size they get
 
 ### Changed
 

@@ -26,12 +26,12 @@ v.Align = CrossAlign.Center;
 
 `Spacing` goes between children and `Padding` around all of them. `Align` places the children across the stack: `Start`, `Center`, `End`, or `Stretch` to give them the full width of a vertical or the full height of a horizontal.
 
-A row with a checkbox and its label usually wants `CrossAlign.Center` so the two line up:
+A row of components with different heights usually wants `CrossAlign.Center` so they line up:
 
 ```csharp
 Horizontal.Push().Align = CrossAlign.Center;
-Checkbox.Put(ref _music);
-Label.Put("Music");
+Icon.Put(_coin);
+Label.Put($"{_coins}");
 Horizontal.Pop();
 ```
 

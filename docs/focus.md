@@ -22,7 +22,13 @@ Tab goes to the next focusable component in the order you put them, and Shift+Ta
 
 ## Arrows and the d-pad
 
-The arrow keys and the d-pad move the focus in a direction. It looks at the next row of components in that direction first, even when that row is off center, then picks the one in that row that's the most in line with the focused one. So moving down a menu stops at every row, and moving in a grid goes to the neighbor.
+The arrow keys and the d-pad move the focus in a direction. Only components that start past the focused one's edge count.
+
+Up and down go to the next row, then to the component in that row that's the most in line with the focused one. So moving down a menu stops at every row, even when a row is off center.
+
+Left and right stay in the row. The closest component wins, and being above or below counts a lot more than being far. So moving right in a row of radio buttons goes to the next one, even when something in the row above is closer.
+
+In a grid, both of those go to the neighbor.
 
 The focused component gets the arrows first. A slider uses left and right, and a textbox uses left and right to move its caret, so those don't move the focus. Up and down still do, unless the textbox is multiline. Holding a direction repeats it.
 

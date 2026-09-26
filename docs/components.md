@@ -17,7 +17,7 @@ Font sizes are em sizes, the same as `ShapeFont`.
 
 ## Paragraph
 
-Text that wraps to the space its parent gives it.
+Text that wraps to the space its parent gives it. `MaxWidth` keeps it from getting wider than that, even when there's more room.
 
 ```csharp
 Paragraph p = Paragraph.Put(_story, align: TextAlign.Center);
@@ -45,18 +45,22 @@ The button pops itself after its child.
 ## Checkbox
 
 ```csharp
-Checkbox.Put(ref _music);
+Checkbox.Put(ref _music, "Music");
 ```
+
+The text is part of the checkbox, so pressing it toggles the checkbox too. Leave it out for a box on its own.
 
 ## RadioButton
 
 Each radio button has a value, and it's checked when your variable equals that value:
 
 ```csharp
-RadioButton.Put(ref _difficulty, 0);
-RadioButton.Put(ref _difficulty, 1);
-RadioButton.Put(ref _difficulty, 2);
+RadioButton.Put(ref _difficulty, 0, "Easy");
+RadioButton.Put(ref _difficulty, 1, "Normal");
+RadioButton.Put(ref _difficulty, 2, "Hard");
 ```
+
+Like the checkbox, the text is optional and pressing it picks the radio button.
 
 ## Slider
 
