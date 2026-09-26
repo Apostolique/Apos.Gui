@@ -60,9 +60,8 @@ namespace Apos.Gui {
 
         /// <summary>
         /// Turns every direction into "down": main is the axis the focus moves along, cross is the one beside it.
+        /// Gives where the candidate is along the direction, and how far its center is from the component's center across it.
         /// </summary>
-        /// <param name="main">Where the candidate is along the direction.</param>
-        /// <param name="crossDistance">How far the candidate's center is from the component's center across the direction.</param>
         private static bool TryMeasure(RectangleF from, RectangleF to, Direction direction, out Span main, out float crossDistance) {
             Span fromMain, fromCross, toCross;
             switch (direction) {
