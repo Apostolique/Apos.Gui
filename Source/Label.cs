@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using FontStashSharp;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
@@ -39,9 +38,8 @@ namespace Apos.Gui {
         public override void Draw(GameTime gameTime) {
             GuiHelper.PushClip(Clip);
 
-            var font = GuiHelper.GetFont(_fontSize);
             // TODO: Hover color?
-            GuiHelper.ShapeBatch.DrawString(font, _text, XY + new Vector2(Padding), Color, scale: GuiHelper.FontScale);
+            GuiHelper.ShapeBatch.DrawString(GuiHelper.Font, _text, XY + new Vector2(Padding), _fontSize, Color);
 
             GuiHelper.PopClip();
         }

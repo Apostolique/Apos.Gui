@@ -120,7 +120,7 @@ namespace Apos.Gui {
 
                 float cursorLeft = alignLeft;
                 if (Cursor > 0 && Cursor <= _text.Length) {
-                    cursorLeft = alignLeft + GuiHelper.MeasureStringTight(_text[..Cursor], _fontSize).X;
+                    cursorLeft = alignLeft + GuiHelper.MeasureString(_text[..Cursor], _fontSize).X;
                 }
                 if (_blink.Value <= 0.5f) {
                     GuiHelper.ShapeBatch.FillRectangle(new Vector2(cursorLeft, Top), new Vector2(2f, Height), Color.White);
@@ -129,8 +129,7 @@ namespace Apos.Gui {
                 GuiHelper.ShapeBatch.BorderRectangle(Bounds.Position, Bounds.Size, new Color(76, 76, 76), 2f);
             }
 
-            var font = GuiHelper.GetFont(_fontSize);
-            GuiHelper.ShapeBatch.DrawString(font, _text, XY + new Vector2(Padding), Color, scale: GuiHelper.FontScale);
+            GuiHelper.ShapeBatch.DrawString(GuiHelper.Font, _text, XY + new Vector2(Padding), _fontSize, Color);
 
             GuiHelper.PopClip();
         }
@@ -168,7 +167,7 @@ namespace Apos.Gui {
                     break;
                 }
                 currentPosition++;
-                currentOffset = left + GuiHelper.MeasureStringTight(text[..currentPosition], _fontSize).X;
+                currentOffset = left + GuiHelper.MeasureString(text[..currentPosition], _fontSize).X;
             }
             return currentPosition;
         }

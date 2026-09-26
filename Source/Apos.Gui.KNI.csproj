@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
 
@@ -31,9 +31,8 @@
   <ItemGroup>
     <PackageReference Include="nkast.Xna.Framework" Version="4.2.9001" />
     <PackageReference Include="KNI.Extended" Version="5.3.1" />
-    <PackageReference Include="FontStashSharp.KNI" Version="1.5.2" />
-    <PackageReference Include="Apos.Input.KNI" Version="2.5.0" />
-    <PackageReference Include="Apos.Shapes.KNI" Version="0.7.5" />
+    <PackageReference Include="Apos.Input.KNI" Version="3.0.0" />
+    <PackageReference Include="Apos.Shapes.KNI" Version="0.8.5" />
     <PackageReference Include="Apos.Tweens.KNI" Version="0.2.0" />
   </ItemGroup>
 

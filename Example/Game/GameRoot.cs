@@ -2,7 +2,6 @@ using System;
 using Apos.Gui;
 using Apos.Input;
 using Apos.Shapes;
-using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -34,10 +33,9 @@ namespace GameProject {
         protected override void LoadContent() {
             _sb = new ShapeBatch(GraphicsDevice);
 
-            FontSystem fontSystem = new();
-            fontSystem.AddFont(TitleContainer.OpenStream($"{Content.RootDirectory}/source-code-pro-medium.ttf"));
+            using var fontStream = TitleContainer.OpenStream($"{Content.RootDirectory}/source-code-pro-medium.ttf");
 
-            GuiHelper.Setup(this, fontSystem);
+            GuiHelper.Setup(this, new ShapeFont(fontStream));
             _ui = new IMGUI();
             GuiHelper.CurrentIMGUI = _ui;
 
