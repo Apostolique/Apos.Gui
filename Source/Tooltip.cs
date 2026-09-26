@@ -4,7 +4,7 @@ using Apos.Input;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
-    public class Tooltip(int id) : Component(id), IParent {
+    public class Tooltip(long id) : Component(id), IParent {
         public IComponent? Main { get; set; }
         public IComponent? Tip { get; set; }
         public override bool IsFocusable { get; set; } = false;
@@ -178,8 +178,8 @@ namespace Apos.Gui {
         protected float _x;
         protected float _y;
 
-        public static Tooltip Put([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            return IMGUI.Push(id, isAbsoluteId, id => new Tooltip(id), 2);
+        public static Tooltip Put([CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
+            return IMGUI.Push(id, isAbsoluteId, file, id => new Tooltip(id), 2);
         }
     }
 }

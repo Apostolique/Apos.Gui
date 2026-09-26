@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
     public class Label : Component {
-        public Label(int id, string text, int fontSize, Color c) : base(id) {
+        public Label(long id, string text, int fontSize, Color c) : base(id) {
             Text = text;
             FontSize = fontSize;
             Color = c;
@@ -65,10 +65,10 @@ namespace Apos.Gui {
         protected Vector2 _cachedSize;
         protected bool _isDirty = false;
 
-        public static Label Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+        public static Label Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
             Color c = color ?? Theme.Text;
 
-            Label a = IMGUI.Put(id, isAbsoluteId, id => new Label(id, text, fontSize, c));
+            Label a = IMGUI.Put(id, isAbsoluteId, file, id => new Label(id, text, fontSize, c));
             a.Text = text;
             a.Color = c;
             a.FontSize = fontSize;

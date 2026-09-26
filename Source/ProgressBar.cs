@@ -6,7 +6,7 @@ namespace Apos.Gui {
     /// <summary>
     /// Shows how far along something is, from 0 to 1.
     /// </summary>
-    public class ProgressBar(int id) : Component(id) {
+    public class ProgressBar(long id) : Component(id) {
         public float Value {
             get => _value;
             set => _value = MathHelper.Clamp(value, 0f, 1f);
@@ -40,8 +40,9 @@ namespace Apos.Gui {
         /// <param name="value">From 0 to 1.</param>
         /// <param name="id">Usually the caller's line number.</param>
         /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the current parent's.</param>
-        public static ProgressBar Put(float value, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            ProgressBar a = IMGUI.Put(id, isAbsoluteId, id => new ProgressBar(id));
+        /// <param name="file">The caller's file. The same line in two files gives two different ids.</param>
+        public static ProgressBar Put(float value, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
+            ProgressBar a = IMGUI.Put(id, isAbsoluteId, file, id => new ProgressBar(id));
             a.Value = value;
 
             return a;

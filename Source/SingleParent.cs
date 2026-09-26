@@ -5,7 +5,7 @@ namespace Apos.Gui {
     /// A parent with at most one child. By default the child gets the parent's size, and the parent prefers the child's size.
     /// Override UpdatePrefSize and UpdateLayout to place the child differently.
     /// </summary>
-    public class SingleParent(int id) : Component(id), IParent {
+    public class SingleParent(long id) : Component(id), IParent {
         public IComponent? Child { get; set; }
 
         public override void UpdateSetup(GameTime gameTime) {

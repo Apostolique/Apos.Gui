@@ -13,7 +13,7 @@ namespace Apos.Gui {
     /// Dropdowns and dialogs are made of it.
     /// </summary>
     public class Popup : Vertical {
-        public Popup(int id) : base(id) {
+        public Popup(long id) : base(id) {
             Padding = 4f;
             Align = CrossAlign.Stretch;
         }
@@ -118,11 +118,12 @@ namespace Apos.Gui {
         /// <param name="modal">Darkens and blocks everything under it.</param>
         /// <param name="id">Usually the caller's line number.</param>
         /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the current parent's.</param>
-        public static Popup Push(ref bool isOpen, RectangleF? anchor = null, bool modal = false, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+        /// <param name="file">The caller's file. The same line in two files gives two different ids.</param>
+        public static Popup Push(ref bool isOpen, RectangleF? anchor = null, bool modal = false, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
             IMGUI ui = GuiHelper.CurrentIMGUI;
             ui.Push(ui);
 
-            Popup a = IMGUI.Push(id, isAbsoluteId, id => new Popup(id));
+            Popup a = IMGUI.Push(id, isAbsoluteId, file, id => new Popup(id));
             a.Anchor = anchor;
             a.Modal = modal;
             if (a.Dismissed) {

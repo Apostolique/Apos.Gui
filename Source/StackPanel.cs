@@ -24,7 +24,7 @@ namespace Apos.Gui {
     /// Lines up its children one after the other, with spacing between them and padding around them.
     /// When they don't fit it scrolls with the mouse wheel, a scrollbar, or a touch drag that starts on the stack itself.
     /// </summary>
-    public class StackPanel(int id, Orientation orientation) : ListParent(id) {
+    public class StackPanel(long id, Orientation orientation) : ListParent(id) {
         public Orientation Orientation { get; set; } = orientation;
         /// <summary>Space between two children, in UI units.</summary>
         public float Spacing { get; set; } = 0f;

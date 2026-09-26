@@ -6,7 +6,7 @@ namespace Apos.Gui {
     /// <summary>
     /// One choice out of a group. Every radio button in a group shares the same selected value, and the one holding its own value is checked.
     /// </summary>
-    public class RadioButton(int id) : Component(id) {
+    public class RadioButton(long id) : Component(id) {
         public Interaction Interaction { get; } = new();
         public bool Clicked => Interaction.Clicked;
         public bool IsChecked { get; set; }
@@ -46,8 +46,9 @@ namespace Apos.Gui {
         /// <param name="value">The value this radio button stands for.</param>
         /// <param name="id">Usually the caller's line number.</param>
         /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the current parent's.</param>
-        public static RadioButton Put(ref int selected, int value, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            RadioButton a = IMGUI.Put(id, isAbsoluteId, id => new RadioButton(id));
+        /// <param name="file">The caller's file. The same line in two files gives two different ids.</param>
+        public static RadioButton Put(ref int selected, int value, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
+            RadioButton a = IMGUI.Put(id, isAbsoluteId, file, id => new RadioButton(id));
             if (a.Clicked) {
                 selected = value;
             }

@@ -14,7 +14,7 @@ namespace Apos.Gui {
     /// Supports selection with the mouse, touch and shift, word jumps, and copy, cut and paste through <see cref="GuiHelper.Clipboard"/>.
     /// </summary>
     public class Textbox : Component {
-        public Textbox(int id, string text, int fontSize, Color c) : base(id) {
+        public Textbox(long id, string text, int fontSize, Color c) : base(id) {
             Text = text;
             FontSize = fontSize;
             Color = c;
@@ -328,11 +328,11 @@ namespace Apos.Gui {
         protected RepeatCondition _down = new(Default.MoveDown, 400, 50);
         protected FloatTween _blink = new(0f, 1f, 1500, Easing.Linear);
 
-        public static Textbox Put(ref string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+        public static Textbox Put(ref string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
             Color c = color ?? Theme.Text;
 
             string initial = text;
-            Textbox a = IMGUI.Put(id, isAbsoluteId, id => new Textbox(id, initial, fontSize, c));
+            Textbox a = IMGUI.Put(id, isAbsoluteId, file, id => new Textbox(id, initial, fontSize, c));
             if (a.IsFocused) {
                 text = a.Text;
             } else {

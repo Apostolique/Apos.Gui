@@ -178,6 +178,67 @@ namespace Apos.Gui.Tests {
             Assert.Same(w1, RenderOrder(ui).Last());
         }
 
+        [Fact]
+        public void ChildrenOfNeighborParentsDontCollide() {
+            // With a linear hash, parents at lines 10 and 11 get consecutive ids, so line 32 under the first
+            // and line 1 under the second end up with the same id.
+            var ui = new IMGUI();
+            Label b1 = null!, b2 = null!;
+
+            Frame(ui, () => {
+                Vertical.Push(id: 10);
+                Label.Put("a", id: 32);
+                Vertical.Pop();
+                Vertical.Push(id: 11);
+                b1 = Label.Put("b", id: 1);
+                Vertical.Pop();
+            });
+            Frame(ui, () => {
+                Vertical.Push(id: 10);
+                Vertical.Pop();
+                Vertical.Push(id: 11);
+                b2 = Label.Put("b", id: 1);
+                Vertical.Pop();
+            });
+
+            Assert.Same(b1, b2);
+        }
+
+        [Fact]
+        public void SameLineInAnotherFileDoesntCollide() {
+            var ui = new IMGUI();
+            Label b1 = null!, b2 = null!;
+
+            Frame(ui, () => {
+                Label.Put("a", id: 5, file: "A.cs");
+                b1 = Label.Put("b", id: 5, file: "B.cs");
+            });
+            Frame(ui, () => b2 = Label.Put("b", id: 5, file: "B.cs"));
+
+            Assert.Same(b1, b2);
+        }
+
+        [Fact]
+        public void PushIdKeepsListItemsWhenOneIsRemoved() {
+            var ui = new IMGUI();
+            var first = new Dictionary<int, Label>();
+            var second = new Dictionary<int, Label>();
+
+            void Build(int[] keys, Dictionary<int, Label> labels) {
+                foreach (int key in keys) {
+                    ui.PushId(key);
+                    labels[key] = Label.Put($"{key}", id: 1);
+                    ui.PopId();
+                }
+            }
+
+            Frame(ui, () => Build([1, 2, 3], first));
+            Frame(ui, () => Build([2, 3], second));
+
+            Assert.Same(first[2], second[2]);
+            Assert.Same(first[3], second[3]);
+        }
+
         private static void Frame(IMGUI ui, Action build) {
             ui.UpdateSetup(_gameTime);
             build();

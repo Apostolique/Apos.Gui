@@ -5,7 +5,7 @@ namespace Apos.Gui {
     /// <summary>
     /// Places itself at a fixed rectangle in UI coordinates, then gives its child that space.
     /// </summary>
-    public class Dock(int id, float left, float top, float right, float bottom) : SingleParent(id) {
+    public class Dock(long id, float left, float top, float right, float bottom) : SingleParent(id) {
         public float DockLeft { get; set; } = left;
         public float DockTop { get; set; } = top;
         public float DockRight { get; set; } = right;
@@ -36,8 +36,8 @@ namespace Apos.Gui {
             }
         }
 
-        public static Dock Put(float left, float top, float right, float bottom, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            Dock a = IMGUI.Push(id, isAbsoluteId, id => new Dock(id, left, top, right, bottom), 1);
+        public static Dock Put(float left, float top, float right, float bottom, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
+            Dock a = IMGUI.Push(id, isAbsoluteId, file, id => new Dock(id, left, top, right, bottom), 1);
             a.DockLeft = left;
             a.DockTop = top;
             a.DockRight = right;

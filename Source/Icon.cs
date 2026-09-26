@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended.Graphics;
 
 namespace Apos.Gui {
-    public class Icon(int id, Texture2DRegion region) : Component(id) {
+    public class Icon(long id, Texture2DRegion region) : Component(id) {
         public Texture2DRegion Region { get; set; } = region;
         /// <summary>Draws this icon. Null uses <see cref="DefaultLook"/>.</summary>
         public Action<Icon>? Look { get; set; }
@@ -28,8 +28,8 @@ namespace Apos.Gui {
             GuiHelper.ShapeBatch.Draw(i.Region.Texture, pos, i.Region.Bounds, Color.White);
         }
 
-        public static Icon Put(Texture2DRegion region, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            Icon a = IMGUI.Put(id, isAbsoluteId, id => new Icon(id, region));
+        public static Icon Put(Texture2DRegion region, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
+            Icon a = IMGUI.Put(id, isAbsoluteId, file, id => new Icon(id, region));
             a.Region = region;
 
             return a;

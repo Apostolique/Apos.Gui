@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
-    public class Button(int id) : SingleParent(id) {
+    public class Button(long id) : SingleParent(id) {
         public Interaction Interaction { get; } = new();
         public bool Clicked => Interaction.Clicked;
         public override bool IsFocusable { get; set; } = true;
@@ -35,14 +35,14 @@ namespace Apos.Gui {
             GuiHelper.ShapeBatch.BorderRectangle(c.XY, c.Size, c.IsFocused ? Theme.Focus : Theme.Border, Theme.BorderThickness, Theme.Rounding);
         }
 
-        public static Button Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            Button b = Put(id, isAbsoluteId);
-            Label.Put(text, fontSize: fontSize, color: color, id: id, isAbsoluteId: isAbsoluteId);
+        public static Button Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
+            Button b = Put(id, isAbsoluteId, file);
+            Label.Put(text, fontSize: fontSize, color: color);
 
             return b;
         }
-        public static Button Put([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            return IMGUI.Push(id, isAbsoluteId, id => new Button(id), 1);
+        public static Button Put([CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
+            return IMGUI.Push(id, isAbsoluteId, file, id => new Button(id), 1);
         }
     }
 }

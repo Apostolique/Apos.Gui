@@ -7,8 +7,8 @@ namespace Apos.Gui {
     /// An empty component that doesn't really do anything.
     /// Used as a base class for other components.
     /// </summary>
-    public class Component(int id) : IComponent {
-        public virtual int Id { get; set; } = id;
+    public class Component(long id) : IComponent {
+        public virtual long Id { get; set; } = id;
         public virtual int Index { get; set; } = 0;
         public virtual uint LastPing { get; set; } = 0;
         public virtual uint LastFocus { get; set; }

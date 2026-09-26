@@ -145,18 +145,15 @@ namespace Apos.Gui {
         /// Inserts an id at the top of the id stack.
         /// </summary>
         /// <param name="id">The id to push onto the id stack.</param>
-        public void PushId(int id) {
-            _idStack.Push(id);
-
-            ComputeIdStack();
+        public void PushId(long id) {
+            _idStack.Push(_idHash);
+            _idHash = Combine(_idHash, id);
         }
         /// <summary>
         /// Removes an id from the top of the id stack.
         /// </summary>
         public void PopId() {
-            int _ = _idStack.Pop();
-
-            ComputeIdStack();
+            _idHash = _idStack.Pop();
         }
         /// <summary>
         /// Tries to get the component with the given id if it exists.
@@ -164,7 +161,7 @@ namespace Apos.Gui {
         /// <param name="id">The id of the component to get.</param>
         /// <param name="c">When this method returns, contains the component associated with the specified id.</param>
         /// <returns>true if the component with the specified id is found; otherwise false.</returns>
-        public bool TryGetValue(int id, out IComponent? c) {
+        public bool TryGetValue(long id, out IComponent? c) {
             return _activeComponents.TryGetValue(id, out c);
         }
         /// <summary>
@@ -233,30 +230,35 @@ namespace Apos.Gui {
 
         /// <summary>
         /// Guaranteed to return a unique id during the span of the current frame.
+        /// Calls that would get the same id, like a loop or two calls on one line, are told apart by their order.
         /// </summary>
         /// <param name="id">An id that should be part of the generation process.</param>
-        /// <param name="isAbsoluteId">Whether to use the current parent for the id generation.</param>
-        public int CreateId(int id, bool isAbsoluteId) {
-            if (!isAbsoluteId) {
-                id = CombineHash(_idHash, id);
-            }
+        /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the id stack and the file.</param>
+        /// <param name="file">The caller's file.</param>
+        public long CreateId(int id, bool isAbsoluteId, string file) {
+            long result = isAbsoluteId ? id : Combine(Combine(_idHash, file.GetHashCode()), id);
 
-            if (_idsUsedThisFrame.TryGetValue(id, out int count)) {
-                count++;
-                _idsUsedThisFrame[id] = count;
-                id = CombineHash(id, count);
+            if (_idsUsedThisFrame.TryGetValue(result, out int count)) {
+                long unique;
+                do {
+                    count++;
+                    unique = Combine(result, count);
+                } while (_idsUsedThisFrame.ContainsKey(unique));
+                _idsUsedThisFrame[result] = count;
+                _idsUsedThisFrame.Add(unique, 1);
+                result = unique;
             } else {
-                _idsUsedThisFrame.Add(id, 1);
+                _idsUsedThisFrame.Add(result, 1);
             }
 
-            return id;
+            return result;
         }
 
-        public static int TryCreateId(int id, bool isAbsoluteId, out IComponent? c) {
-            id = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId);
-            GuiHelper.CurrentIMGUI.TryGetValue(id, out c);
+        public static long TryCreateId(int id, bool isAbsoluteId, string file, out IComponent? c) {
+            long result = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId, file);
+            GuiHelper.CurrentIMGUI.TryGetValue(result, out c);
 
-            return id;
+            return result;
         }
 
         /// <summary>
@@ -265,17 +267,18 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="id">Usually the caller's line number.</param>
         /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the current parent's.</param>
+        /// <param name="file">The caller's file. Forward the one your Put method got from [CallerFilePath].</param>
         /// <param name="create">Creates the component when there isn't one yet. Gets the final id.</param>
-        public static T Put<T>(int id, bool isAbsoluteId, Func<int, T> create) where T : IComponent {
+        public static T Put<T>(int id, bool isAbsoluteId, string file, Func<long, T> create) where T : IComponent {
             IMGUI ui = GuiHelper.CurrentIMGUI;
-            id = TryCreateId(id, isAbsoluteId, out IComponent? c);
+            long key = TryCreateId(id, isAbsoluteId, file, out IComponent? c);
 
             if (c is not T a) {
                 if (c != null) {
                     // A different kind of component had this id last frame.
-                    ui.Remove(id, c);
+                    ui.Remove(key, c);
                 }
-                a = create(id);
+                a = create(key);
             }
 
             ui.GrabParent(a);
@@ -286,10 +289,11 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="id">Usually the caller's line number.</param>
         /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the current parent's.</param>
+        /// <param name="file">The caller's file. Forward the one your Push method got from [CallerFilePath].</param>
         /// <param name="create">Creates the component when there isn't one yet. Gets the final id.</param>
         /// <param name="maxChildren">Pops the parent by itself after this many children. 0 means no limit.</param>
-        public static T Push<T>(int id, bool isAbsoluteId, Func<int, T> create, int maxChildren = 0) where T : IParent {
-            T a = Put(id, isAbsoluteId, create);
+        public static T Push<T>(int id, bool isAbsoluteId, string file, Func<long, T> create, int maxChildren = 0) where T : IParent {
+            T a = Put(id, isAbsoluteId, file, create);
             GuiHelper.CurrentIMGUI.Push(a, maxChildren);
             return a;
         }
@@ -311,9 +315,11 @@ namespace Apos.Gui {
             _maxChildren = 0;
             _childrenCount = 0;
             _parents.Clear();
+            _idStack.Clear();
+            _idHash = 0;
             _idsUsedThisFrame.Clear();
         }
-        private void Remove(int id, IComponent c) {
+        private void Remove(long id, IComponent c) {
             if (Focus == id) {
                 Focus = null;
             }
@@ -330,14 +336,14 @@ namespace Apos.Gui {
         private void FindNextFocus() {
             FindFocus(ExtractNext);
         }
-        private IComponent ExtractPrev(int id) => _activeComponents[id].GetPrev();
-        private IComponent ExtractNext(int id) => _activeComponents[id].GetNext();
-        private void FindFocus(Func<int, IComponent> getNeighbor) {
-            int initialFocus = Id;
+        private IComponent ExtractPrev(long id) => _activeComponents[id].GetPrev();
+        private IComponent ExtractNext(long id) => _activeComponents[id].GetNext();
+        private void FindFocus(Func<long, IComponent> getNeighbor) {
+            long initialFocus = Id;
             if (Focus != null) {
                 initialFocus = Focus.Value;
             }
-            int newFocus = initialFocus;
+            long newFocus = initialFocus;
             do {
                 var c = getNeighbor(newFocus);
                 newFocus = c.Id;
@@ -347,33 +353,29 @@ namespace Apos.Gui {
                 }
             } while (initialFocus != newFocus);
         }
-        private static int CombineHash<T1, T2>(T1 value1, T2 value2) {
+        /// <summary>
+        /// Mixes every bit of both values into the result with Murmur3's 64 bit finalizer.
+        /// A linear combine gives neighbor parents neighbor ids, which lines up their children's ids.
+        /// </summary>
+        private static long Combine(long seed, long value) {
             unchecked {
-                int hash = 17;
-                hash = hash * 31 + value1!.GetHashCode();
-                hash = hash * 31 + value2!.GetHashCode();
-
-                return hash;
-            }
-        }
-        private void ComputeIdStack() {
-            unchecked {
-                int hash = 17;
-
-                foreach (var e in _idStack) {
-                    hash = hash * 31 + e.GetHashCode();
-                }
-
-                _idHash = hash;
+                ulong h = (ulong)seed * 0x9E3779B97F4A7C15UL + (ulong)value;
+                h ^= h >> 33;
+                h *= 0xFF51AFD7ED558CCDUL;
+                h ^= h >> 33;
+                h *= 0xC4CEB9FE1A85EC53UL;
+                h ^= h >> 33;
+                return (long)h;
             }
         }
 
-        private readonly Stack<int> _idStack = new();
-        private int _idHash = 17;
+        /// <summary>The id hash that each PushId saved so that PopId can restore it.</summary>
+        private readonly Stack<long> _idStack = new();
+        private long _idHash = 0;
 
         private readonly Stack<(IParent Parent, int MaxChildren, int ChildrenCount)> _parents = new();
-        private readonly Dictionary<int, IComponent> _activeComponents = [];
-        private int? Focus {
+        private readonly Dictionary<long, IComponent> _activeComponents = [];
+        private long? Focus {
             get => _focus;
             set {
                 if (_focus != null) {
@@ -385,13 +387,13 @@ namespace Apos.Gui {
                 }
             }
         }
-        private int? _focus;
+        private long? _focus;
         private IComponent? _hover;
         private uint _hoverFrame;
         private IParent _currentParent;
         private int _maxChildren = 0;
         private int _childrenCount = 0;
-        private readonly Dictionary<int, int> _idsUsedThisFrame = [];
+        private readonly Dictionary<long, int> _idsUsedThisFrame = [];
 
         private bool _prevPressed = false;
         private bool _nextPressed = false;

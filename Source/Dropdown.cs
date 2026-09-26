@@ -7,7 +7,7 @@ namespace Apos.Gui {
     /// <summary>
     /// A button that shows the selected option and opens a <see cref="Popup"/> with every option when clicked.
     /// </summary>
-    public class Dropdown(int id) : SingleParent(id) {
+    public class Dropdown(long id) : SingleParent(id) {
         public Interaction Interaction { get; } = new();
         public bool Clicked => Interaction.Clicked;
         public override bool IsFocusable { get; set; } = true;
@@ -65,9 +65,10 @@ namespace Apos.Gui {
         /// <param name="fontSize">Size of the text.</param>
         /// <param name="id">Usually the caller's line number.</param>
         /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the current parent's.</param>
-        public static Dropdown Put(ref int selected, IReadOnlyList<string> options, int fontSize = 30, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+        /// <param name="file">The caller's file. The same line in two files gives two different ids.</param>
+        public static Dropdown Put(ref int selected, IReadOnlyList<string> options, int fontSize = 30, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
             IMGUI ui = GuiHelper.CurrentIMGUI;
-            Dropdown d = IMGUI.Push(id, isAbsoluteId, id => new Dropdown(id), 1);
+            Dropdown d = IMGUI.Push(id, isAbsoluteId, file, id => new Dropdown(id), 1);
             Label.Put(selected >= 0 && selected < options.Count ? options[selected] : "", fontSize);
 
             if (d.Clicked) {
@@ -77,7 +78,8 @@ namespace Apos.Gui {
 
             if (d.IsOpen) {
                 bool open = true;
-                Popup p = Popup.Push(ref open, d.Bounds, id: id, isAbsoluteId: isAbsoluteId);
+                ui.PushId(d.Id);
+                Popup p = Popup.Push(ref open, d.Bounds);
                 p.MinWidth = d.Width;
 
                 for (int i = 0; i < options.Count; i++) {
@@ -93,6 +95,7 @@ namespace Apos.Gui {
                 }
 
                 Popup.Pop();
+                ui.PopId();
 
                 if (!open) {
                     d.IsOpen = false;

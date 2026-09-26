@@ -7,7 +7,7 @@ namespace Apos.Gui {
     /// Fills the window and centers its children in it. Scrolls when they're taller than the window.
     /// </summary>
     public class MenuPanel : Vertical {
-        public MenuPanel(int id) : base(id) {
+        public MenuPanel(long id) : base(id) {
             Align = CrossAlign.Center;
         }
 
@@ -42,8 +42,8 @@ namespace Apos.Gui {
 
         protected float _lastHeight = -1f;
 
-        public static new MenuPanel Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            return IMGUI.Push(id, isAbsoluteId, id => new MenuPanel(id));
+        public static new MenuPanel Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
+            return IMGUI.Push(id, isAbsoluteId, file, id => new MenuPanel(id));
         }
         public static new void Pop() {
             GuiHelper.CurrentIMGUI.Pop();

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
-    public class FloatingWindow(int id) : Vertical(id) {
+    public class FloatingWindow(long id) : Vertical(id) {
         public override bool IsFocusable { get; set; } = true;
         public override bool IsFloatable { get; set; } = true;
 
@@ -45,8 +45,8 @@ namespace Apos.Gui {
 
         protected Vector2 _dragStart = Vector2.Zero;
 
-        public static new FloatingWindow Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            return IMGUI.Push(id, isAbsoluteId, id => new FloatingWindow(id));
+        public static new FloatingWindow Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
+            return IMGUI.Push(id, isAbsoluteId, file, id => new FloatingWindow(id));
         }
         public static new void Pop() {
             GuiHelper.CurrentIMGUI.Pop();

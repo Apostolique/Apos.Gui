@@ -7,7 +7,7 @@ namespace Apos.Gui {
     /// Children draw in that order, except floatables which stay on top in the order they were brought there.
     /// By default each child keeps its own position and gets its preferred size. Override UpdatePrefSize and UpdateLayout to arrange them.
     /// </summary>
-    public class ListParent(int id) : Component(id), IParent {
+    public class ListParent(long id) : Component(id), IParent {
         public override void UpdateSetup(GameTime gameTime) {
             foreach (var c in _children)
                 c.UpdateSetup(gameTime);

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
     public class Slider : Component {
-        public Slider(int id, float value, float min, float max, float? step) : base(id) {
+        public Slider(long id, float value, float min, float max, float? step) : base(id) {
             Value = value;
             Min = min;
             Max = max;
@@ -76,9 +76,9 @@ namespace Apos.Gui {
         protected RepeatCondition _left = new(Default.MoveLeft, 400, 50);
         protected RepeatCondition _right = new(Default.MoveRight, 400, 50);
 
-        public static Slider Put(ref float value, float min, float max, float? step = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+        public static Slider Put(ref float value, float min, float max, float? step = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
             float initial = value;
-            Slider a = IMGUI.Put(id, isAbsoluteId, id => new Slider(id, initial, min, max, step));
+            Slider a = IMGUI.Put(id, isAbsoluteId, file, id => new Slider(id, initial, min, max, step));
             if (a.IsFocused) {
                 value = a.Value;
             } else {

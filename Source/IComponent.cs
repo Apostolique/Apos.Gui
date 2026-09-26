@@ -9,7 +9,7 @@ namespace Apos.Gui {
         /// <summary>
         /// Used by IMGUI to efficiently access any component in the UI.
         /// </summary>
-        int Id { get; set; }
+        long Id { get; set; }
         /// <summary>
         /// Managed automatically when a component is created. Used by an IParent to keep track of its children.
         /// </summary>

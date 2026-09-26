@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
-    public class Checkbox(int id, bool isChecked) : Component(id) {
+    public class Checkbox(long id, bool isChecked) : Component(id) {
         public Interaction Interaction { get; } = new();
         public bool Clicked => Interaction.Clicked;
         public bool IsChecked { get; set; } = isChecked;
@@ -47,9 +47,9 @@ namespace Apos.Gui {
         }
 
 
-        public static Checkbox Put(ref bool isChecked, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+        public static Checkbox Put(ref bool isChecked, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
             bool initial = isChecked;
-            Checkbox a = IMGUI.Put(id, isAbsoluteId, id => new Checkbox(id, initial));
+            Checkbox a = IMGUI.Put(id, isAbsoluteId, file, id => new Checkbox(id, initial));
             if (a.IsFocused) {
                 isChecked = a.IsChecked;
             } else {

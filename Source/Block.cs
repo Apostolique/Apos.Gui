@@ -5,7 +5,7 @@ namespace Apos.Gui {
     /// <summary>
     /// Gives its child a fixed size, or the child's size plus padding, and centers the child in it.
     /// </summary>
-    public class Block(int id, float? width, float? height, float padding) : SingleParent(id) {
+    public class Block(long id, float? width, float? height, float padding) : SingleParent(id) {
         public float? ForcedWidth { get; set; } = width;
         public float? ForcedHeight { get; set; } = height;
         public float Padding { get; set; } = padding;
@@ -32,8 +32,8 @@ namespace Apos.Gui {
             }
         }
 
-        public static Block Put(float? width = null, float? height = null, float padding = 0f, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            Block a = IMGUI.Push(id, isAbsoluteId, id => new Block(id, width, height, padding), 1);
+        public static Block Put(float? width = null, float? height = null, float padding = 0f, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
+            Block a = IMGUI.Push(id, isAbsoluteId, file, id => new Block(id, width, height, padding), 1);
             a.ForcedWidth = width;
             a.ForcedHeight = height;
             a.Padding = padding;

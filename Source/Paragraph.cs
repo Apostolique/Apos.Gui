@@ -11,7 +11,7 @@ namespace Apos.Gui {
     /// Sizes are worked out before the parent hands out widths, so it wraps at the width it got on the previous frame.
     /// After a resize it takes one frame to settle.
     /// </remarks>
-    public class Paragraph(int id, string text, int fontSize, Color color) : Component(id) {
+    public class Paragraph(long id, string text, int fontSize, Color color) : Component(id) {
         public string Text { get; set; } = text;
         public int FontSize { get; set; } = fontSize;
         public Color Color { get; set; } = color;
@@ -74,10 +74,10 @@ namespace Apos.Gui {
         protected float _cachedWrap = -1f;
         protected float _natural;
 
-        public static Paragraph Put(string text, int fontSize = 30, Color? color = null, TextAlign align = TextAlign.Left, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+        public static Paragraph Put(string text, int fontSize = 30, Color? color = null, TextAlign align = TextAlign.Left, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
             Color c = color ?? Theme.Text;
 
-            Paragraph a = IMGUI.Put(id, isAbsoluteId, id => new Paragraph(id, text, fontSize, c));
+            Paragraph a = IMGUI.Put(id, isAbsoluteId, file, id => new Paragraph(id, text, fontSize, c));
             a.Text = text;
             a.FontSize = fontSize;
             a.Color = c;

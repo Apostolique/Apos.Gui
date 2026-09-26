@@ -7,7 +7,7 @@ namespace Apos.Gui {
     /// <summary>
     /// A button in a row of tabs. The selected one is marked.
     /// </summary>
-    public class TabButton(int id) : SingleParent(id) {
+    public class TabButton(long id) : SingleParent(id) {
         public Interaction Interaction { get; } = new();
         public bool Clicked => Interaction.Clicked;
         public override bool IsFocusable { get; set; } = true;
@@ -37,9 +37,9 @@ namespace Apos.Gui {
             Button.DrawPressable(t, t.Interaction);
         }
 
-        public static TabButton Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            TabButton t = IMGUI.Push(id, isAbsoluteId, id => new TabButton(id), 1);
-            Label.Put(text, fontSize: fontSize, color: color, id: id, isAbsoluteId: isAbsoluteId);
+        public static TabButton Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
+            TabButton t = IMGUI.Push(id, isAbsoluteId, file, id => new TabButton(id), 1);
+            Label.Put(text, fontSize: fontSize, color: color);
 
             return t;
         }
@@ -54,8 +54,9 @@ namespace Apos.Gui {
         /// <param name="fontSize">Size of the text.</param>
         /// <param name="id">Usually the caller's line number.</param>
         /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the current parent's.</param>
-        public static Horizontal Put(ref int selected, IReadOnlyList<string> names, int fontSize = 30, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            Horizontal row = Horizontal.Push(id, isAbsoluteId);
+        /// <param name="file">The caller's file. The same line in two files gives two different ids.</param>
+        public static Horizontal Put(ref int selected, IReadOnlyList<string> names, int fontSize = 30, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
+            Horizontal row = Horizontal.Push(id, isAbsoluteId, file);
 
             _tabs.Clear();
             for (int i = 0; i < names.Count; i++) {
