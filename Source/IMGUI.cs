@@ -5,8 +5,9 @@ using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
     // NOTE: IMGUI is NOT recursive. It should always be the top level component.
-    public class IMGUI : Component, IParent {
+    public class IMGUI : ListParent {
         public IMGUI() : base(0) {
+            Root = this;
             _currentParent = this;
             _activeComponents.Add(Id, this);
 
@@ -23,29 +24,18 @@ namespace Apos.Gui {
         /// Only call this if you didn't call UpdateStart. Starts a new frame.
         /// </summary>
         public override void UpdateSetup(GameTime gameTime) {
-            // 1. Ping ourself to prevent cleanup.
-            // 2. Cleanup last cycle
-            // 3. Pending components become active.
-            //      a. Set parenting.
-            // 4. Update pref sizes.
-            // 5. Apply pref sizes.
-            // 6. Update setup.
             CurrentFrame++;
             LastPing = CurrentFrame;
             _idsUsedThisFrame.Add(Id, 1);
 
-            foreach (var c in _children) {
-                c.UpdateSetup(gameTime);
-            }
+            base.UpdateSetup(gameTime);
         }
         /// <summary>
         /// Only call this if you didn't call UpdateStart. This should be called after UpdateSetup.
         /// </summary>
         /// <param name="gameTime">Current gametime.</param>
         public override void UpdateInput(GameTime gameTime) {
-            for (int i = _childrenRenderOrder.Count - 1; i >= 0; i--) {
-                _childrenRenderOrder[i].UpdateInput(gameTime);
-            }
+            base.UpdateInput(gameTime);
 
             if (!_nextPressed && Default.FocusPrev.Pressed()) {
                 _prevPressed = true;
@@ -74,8 +64,7 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="gameTime">Current gametime</param>
         public override void Update(GameTime gameTime) {
-            foreach (var c in _children)
-                c.Update(gameTime);
+            base.Update(gameTime);
         }
 
         /// <summary>
@@ -99,7 +88,7 @@ namespace Apos.Gui {
         /// Only call this if you didn't call UpdateEnd. This should be called after Cleanup.
         /// </summary>
         /// <param name="gameTime">Current gametime</param>
-        public void UpdateLayout(GameTime gameTime) {
+        public override void UpdateLayout(GameTime gameTime) {
             // IMGUI manages itself so it can set its own position and size.
             X = 0f;
             Y = 0f;
@@ -108,15 +97,8 @@ namespace Apos.Gui {
 
             foreach (var c in _children) {
                 c.UpdatePrefSize(gameTime);
-                c.Width = c.PrefWidth;
-                c.Height = c.PrefHeight;
-
-                c.Clip = c.Bounds.Intersect(Clip);
-
-                if (c is IParent p) {
-                    p.UpdateLayout(gameTime);
-                }
             }
+            base.UpdateLayout(gameTime);
         }
 
         /// <summary>
@@ -133,8 +115,7 @@ namespace Apos.Gui {
         /// <param name="gameTime">Current gametime.</param>
         public override void Draw(GameTime gameTime) {
             GuiHelper.Begin();
-            foreach (var c in _childrenRenderOrder)
-                c.Draw(gameTime);
+            base.Draw(gameTime);
             GuiHelper.End();
         }
 
@@ -278,68 +259,42 @@ namespace Apos.Gui {
             return id;
         }
 
-        public void Add(IComponent c) {
-            c.Parent = this;
-            ChildList.Insert(_children, _childrenRenderOrder, c);
-        }
-        public void Remove(IComponent c) {
-            c.Parent = null;
-            ChildList.Remove(_children, _childrenRenderOrder, c);
-        }
-        public void Reset() {
-            _nextChildIndex = 0;
-        }
-        public int PeekNextIndex() => _nextChildIndex;
-        public int NextIndex() => _nextChildIndex++;
-        public override uint LastFocus { get; set; } = uint.MaxValue;
+        /// <summary>
+        /// Gets the component that was put with this id last frame, or creates it, then parents it to the current parent.
+        /// This is what a component's static Put method is made of.
+        /// </summary>
+        /// <param name="id">Usually the caller's line number.</param>
+        /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the current parent's.</param>
+        /// <param name="create">Creates the component when there isn't one yet. Gets the final id.</param>
+        public static T Put<T>(int id, bool isAbsoluteId, Func<int, T> create) where T : IComponent {
+            IMGUI ui = GuiHelper.CurrentIMGUI;
+            id = TryCreateId(id, isAbsoluteId, out IComponent? c);
 
-        /// <summary>
-        /// If this component has a parent, it will ask the parent to return this component's previous neighbor.
-        /// If it has children, it will return the last one.
-        /// Otherwise it will return itself.
-        /// </summary>
-        public override IComponent GetPrev() {
-            return Parent?.GetPrev(this) ?? (_children.Count > 0 ? _children.Last().GetLast() : this);
-        }
-        /// <summary>
-        /// If this component has children, it will return the first one.
-        /// If it has a parent it will ask the parent to return this component's next neighbor.
-        /// Otherwise, it will return itself.
-        /// </summary>
-        public override IComponent GetNext() {
-            return _children.Count > 0 ? _children.First() : Parent?.GetNext(this) ?? this;
-        }
-        /// <summary>
-        /// If the child isn't the first one, it will return the child before it.
-        /// Otherwise it will return itself.
-        /// </summary>
-        public IComponent GetPrev(IComponent c) {
-            int index = c.Index - 1;
-            return index >= 0 ? _children[index].GetLast() : this;
-        }
-        /// <summary>
-        /// If the child isn't the last one, it will return the child after it.
-        /// If it has a parent, it will ask the parent to return this component's next neighbor.
-        /// Otherwise it will return itself.
-        /// </summary>
-        public IComponent GetNext(IComponent c) {
-            int index = c.Index + 1;
-            return index < _children.Count ? _children[index] : Parent?.GetNext(this) ?? this;
-        }
-        /// <summary>
-        /// Returns the last child in this component tree.
-        /// </summary>
-        public override IComponent GetLast() {
-            return _children.Count > 0 ? _children.Last().GetLast() : this;
-        }
-
-        public void SendToTop(IComponent c) {
-            LastFocus = CurrentFrame;
-            if (c.IsFloatable) {
-                _childrenRenderOrder.Remove(c);
-                _childrenRenderOrder.Add(c);
+            if (c is not T a) {
+                if (c != null) {
+                    // A different kind of component had this id last frame.
+                    ui.Remove(id, c);
+                }
+                a = create(id);
             }
+
+            ui.GrabParent(a);
+            return a;
         }
+        /// <summary>
+        /// Same as <see cref="Put{T}"/> for a parent. The components put after it become its children until it's popped.
+        /// </summary>
+        /// <param name="id">Usually the caller's line number.</param>
+        /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the current parent's.</param>
+        /// <param name="create">Creates the component when there isn't one yet. Gets the final id.</param>
+        /// <param name="maxChildren">Pops the parent by itself after this many children. 0 means no limit.</param>
+        public static T Push<T>(int id, bool isAbsoluteId, Func<int, T> create, int maxChildren = 0) where T : IParent {
+            T a = Put(id, isAbsoluteId, create);
+            GuiHelper.CurrentIMGUI.Push(a, maxChildren);
+            return a;
+        }
+
+        public override uint LastFocus { get; set; } = uint.MaxValue;
 
         /// <summary>
         /// Only call this if you didn't call UpdateEnd. Removes the components that weren't put during this frame.
@@ -440,9 +395,5 @@ namespace Apos.Gui {
 
         private bool _prevPressed = false;
         private bool _nextPressed = false;
-
-        private int _nextChildIndex = 0;
-        private readonly List<IComponent> _children = [];
-        private readonly List<IComponent> _childrenRenderOrder = [];
     }
 }

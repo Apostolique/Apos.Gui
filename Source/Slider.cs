@@ -67,24 +67,16 @@ namespace Apos.Gui {
         protected RepeatCondition _right = new(Default.MoveRight, 400, 50);
 
         public static Slider Put(ref float value, float min, float max, float? step = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
-
-            Slider a;
-            if (c is Slider d) {
-                a = d;
-                if (a.IsFocused) {
-                    value = a.Value;
-                } else {
-                    a.Value = value;
-                    a.Min = min;
-                    a.Max = max;
-                    a.Step = step;
-                }
+            float initial = value;
+            Slider a = IMGUI.Put(id, isAbsoluteId, id => new Slider(id, initial, min, max, step));
+            if (a.IsFocused) {
+                value = a.Value;
             } else {
-                a = new Slider(id, value, min, max, step);
+                a.Value = value;
+                a.Min = min;
+                a.Max = max;
+                a.Step = step;
             }
-
-            GuiHelper.CurrentIMGUI.GrabParent(a);
 
             return a;
         }

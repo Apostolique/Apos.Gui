@@ -119,6 +119,20 @@ namespace Apos.Gui.Tests {
         }
 
         [Fact]
+        public void SameIdWithAnotherTypeReplacesTheComponent() {
+            var ui = new IMGUI();
+            Label label = null!;
+            Icon icon = null!;
+
+            Frame(ui, () => label = Label.Put("A", id: 1));
+            Frame(ui, () => icon = Icon.Put(null!, id: 1));
+
+            Assert.Null(label.Parent);
+            Assert.Same(ui, icon.Parent);
+            Assert.True(ui.TryGetValue(icon.Id, out IComponent? c) && c == icon);
+        }
+
+        [Fact]
         public void FloatingWindowStaysOnTopAfterFocus() {
             var ui = new IMGUI();
             FloatingWindow w1 = null!, w2 = null!;
@@ -159,7 +173,7 @@ namespace Apos.Gui.Tests {
         }
 
         private static List<IComponent> RenderOrder(IMGUI ui) {
-            var field = typeof(IMGUI).GetField("_childrenRenderOrder", BindingFlags.NonPublic | BindingFlags.Instance)!;
+            var field = typeof(ListParent).GetField("_childrenRenderOrder", BindingFlags.NonPublic | BindingFlags.Instance)!;
             return (List<IComponent>)field.GetValue(ui)!;
         }
 

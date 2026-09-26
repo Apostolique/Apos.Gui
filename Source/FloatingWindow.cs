@@ -37,20 +37,7 @@ namespace Apos.Gui {
         protected Vector2 _dragStart = Vector2.Zero;
 
         public static new FloatingWindow Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
-
-            FloatingWindow a;
-            if (c is FloatingWindow d) {
-                a = d;
-            } else {
-                a = new FloatingWindow(id);
-            }
-
-            GuiHelper.CurrentIMGUI.GrabParent(a);
-
-            GuiHelper.CurrentIMGUI.Push(a);
-
-            return a;
+            return IMGUI.Push(id, isAbsoluteId, id => new FloatingWindow(id));
         }
         public static new void Pop() {
             GuiHelper.CurrentIMGUI.Pop();

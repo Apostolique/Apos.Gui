@@ -174,26 +174,17 @@ namespace Apos.Gui {
         protected FloatTween _blink = new(0f, 1f, 1500, Easing.Linear);
 
         public static Textbox Put(ref string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
+            Color c = color ?? new Color(200, 200, 200);
 
-            color ??= new Color(200, 200, 200);
-
-            Textbox a;
-            if (c is Textbox d) {
-                a = d;
-                if (a.IsFocused) {
-                    text = a.Text;
-                } else {
-                    a.Text = text;
-                }
-
-                a.Color = color.Value;
-                a.FontSize = fontSize;
+            string initial = text;
+            Textbox a = IMGUI.Put(id, isAbsoluteId, id => new Textbox(id, initial, fontSize, c));
+            if (a.IsFocused) {
+                text = a.Text;
             } else {
-                a = new Textbox(id, text, fontSize, color.Value);
+                a.Text = text;
             }
-
-            GuiHelper.CurrentIMGUI.GrabParent(a);
+            a.Color = c;
+            a.FontSize = fontSize;
 
             return a;
         }

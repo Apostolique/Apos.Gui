@@ -1,25 +1,14 @@
 using System.Runtime.CompilerServices;
-using Apos.Input;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
-    public class Block(int id, float? width, float? height, float padding) : Component(id), IParent {
+    /// <summary>
+    /// Gives its child a fixed size, or the child's size plus padding, and centers the child in it.
+    /// </summary>
+    public class Block(int id, float? width, float? height, float padding) : SingleParent(id) {
         public float? ForcedWidth { get; set; } = width;
         public float? ForcedHeight { get; set; } = height;
         public float Padding { get; set; } = padding;
-        public IComponent? Child { get; set; }
-
-        public override void UpdateSetup(GameTime gameTime) {
-            Child?.UpdateSetup(gameTime);
-        }
-
-        public override void UpdateInput(GameTime gameTime) {
-            Child?.UpdateInput(gameTime);
-        }
-
-        public override void Update(GameTime gameTime) {
-            Child?.Update(gameTime);
-        }
 
         public override void UpdatePrefSize(GameTime gameTime) {
             if (Child != null) {
@@ -33,84 +22,21 @@ namespace Apos.Gui {
             }
         }
 
-        public virtual void UpdateLayout(GameTime gameTime) {
+        public override void UpdateLayout(GameTime gameTime) {
             if (Child != null) {
                 Child.Width = Child.PrefWidth;
                 Child.Height = Child.PrefHeight;
                 Child.X = X + Width / 2f - Child.Width / 2f;
                 Child.Y = Y + Height / 2f - Child.Height / 2f;
-
-                Child.Clip = Child.Bounds.Intersect(Clip);
-
-                if (Child is IParent p) {
-                    p.UpdateLayout(gameTime);
-                }
+                LayoutChild(gameTime);
             }
-        }
-
-        public override void Draw(GameTime gameTime) {
-            Child?.Draw(gameTime);
-        }
-
-        public void Add(IComponent c) {
-            if (c != Child) {
-                if (Child != null) {
-                    Child.Parent = null;
-                }
-                Child = c;
-                Child.Parent = this;
-            }
-        }
-
-        public void Remove(IComponent c) {
-            if (Child == c) {
-                Child.Parent = null;
-                Child = null;
-            }
-        }
-
-        public void Reset() { }
-
-        public virtual int PeekNextIndex() => 0;
-        public virtual int NextIndex() => 0;
-
-        public override IComponent GetPrev() {
-            return Parent?.GetPrev(this) ?? Child?.GetLast() ?? this;
-        }
-        public override IComponent GetNext() {
-            return Child ?? Parent?.GetNext(this) ?? this;
-        }
-        public virtual IComponent GetPrev(IComponent c) {
-            return this;
-        }
-        public virtual IComponent GetNext(IComponent c) {
-            return Parent?.GetNext(this) ?? this;
-        }
-        public override IComponent GetLast() {
-            return Child?.GetLast() ?? this;
-        }
-
-        public virtual void SendToTop(IComponent c) {
-            LastFocus = Root.CurrentFrame;
-            Parent?.SendToTop(this);
         }
 
         public static Block Put(float? width = null, float? height = null, float padding = 0f, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
-
-            Block a;
-            if (c is Block d) {
-                a = d;
-                a.ForcedWidth = width;
-                a.ForcedHeight = height;
-                a.Padding = padding;
-            } else {
-                a = new Block(id, width, height, padding);
-            }
-
-            GuiHelper.CurrentIMGUI.GrabParent(a);
-
-            GuiHelper.CurrentIMGUI.Push(a, 1);
+            Block a = IMGUI.Push(id, isAbsoluteId, id => new Block(id, width, height, padding), 1);
+            a.ForcedWidth = width;
+            a.ForcedHeight = height;
+            a.Padding = padding;
 
             return a;
         }

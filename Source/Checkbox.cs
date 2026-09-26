@@ -44,21 +44,13 @@ namespace Apos.Gui {
 
 
         public static Checkbox Put(ref bool isChecked, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
-
-            Checkbox a;
-            if (c is Checkbox d) {
-                a = d;
-                if (a.IsFocused) {
-                    isChecked = a.IsChecked;
-                } else {
-                    a.IsChecked = isChecked;
-                }
+            bool initial = isChecked;
+            Checkbox a = IMGUI.Put(id, isAbsoluteId, id => new Checkbox(id, initial));
+            if (a.IsFocused) {
+                isChecked = a.IsChecked;
             } else {
-                a = new Checkbox(id, isChecked);
+                a.IsChecked = isChecked;
             }
-
-            GuiHelper.CurrentIMGUI.GrabParent(a);
 
             return a;
         }

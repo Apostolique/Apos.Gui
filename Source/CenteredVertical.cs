@@ -41,20 +41,7 @@ namespace Apos.Gui {
         }
 
         public static new CenteredVertical Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
-
-            CenteredVertical a;
-            if (c is CenteredVertical d) {
-                a = d;
-            } else {
-                a = new CenteredVertical(id);
-            }
-
-            GuiHelper.CurrentIMGUI.GrabParent(a);
-
-            GuiHelper.CurrentIMGUI.Push(a);
-
-            return a;
+            return IMGUI.Push(id, isAbsoluteId, id => new CenteredVertical(id));
         }
         public static new void Pop() {
             GuiHelper.CurrentIMGUI.Pop();

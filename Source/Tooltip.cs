@@ -166,20 +166,7 @@ namespace Apos.Gui {
         protected float _y;
 
         public static Tooltip Put([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
-
-            Tooltip a;
-            if (c is Tooltip d) {
-                a = d;
-            } else {
-                a = new Tooltip(id);
-            }
-
-            GuiHelper.CurrentIMGUI.GrabParent(a);
-
-            GuiHelper.CurrentIMGUI.Push(a, 2);
-
-            return a;
+            return IMGUI.Push(id, isAbsoluteId, id => new Tooltip(id), 2);
         }
     }
 }

@@ -57,21 +57,12 @@ namespace Apos.Gui {
         protected bool _isDirty = false;
 
         public static Label Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
+            Color c = color ?? new Color(200, 200, 200);
 
-            color ??= new Color(200, 200, 200);
-
-            Label a;
-            if (c is Label d) {
-                a = d;
-                a.Text = text;
-                a.Color = color.Value;
-                a.FontSize = fontSize;
-            } else {
-                a = new Label(id, text, fontSize, color.Value);
-            }
-
-            GuiHelper.CurrentIMGUI.GrabParent(a);
+            Label a = IMGUI.Put(id, isAbsoluteId, id => new Label(id, text, fontSize, c));
+            a.Text = text;
+            a.Color = c;
+            a.FontSize = fontSize;
 
             return a;
         }

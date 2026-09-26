@@ -27,17 +27,8 @@ namespace Apos.Gui {
         }
 
         public static Icon Put(Texture2DRegion region, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
-            id = IMGUI.TryCreateId(id, isAbsoluteId, out IComponent? c);
-
-            Icon a;
-            if (c is Icon d) {
-                a = d;
-                a.Region = region;
-            } else {
-                a = new Icon(id, region);
-            }
-
-            GuiHelper.CurrentIMGUI.GrabParent(a);
+            Icon a = IMGUI.Put(id, isAbsoluteId, id => new Icon(id, region));
+            a.Region = region;
 
             return a;
         }
