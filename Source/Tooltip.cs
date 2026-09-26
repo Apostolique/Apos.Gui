@@ -9,6 +9,8 @@ namespace Apos.Gui {
         public IComponent? Tip { get; set; }
         public override bool IsFocusable { get; set; } = false;
         public override bool IsFloatable { get; set; } = true;
+        public virtual bool IsFocusScope { get; set; } = false;
+        public virtual IComponent? Navigate(IComponent from, Direction direction) => null;
         /// <summary>Draws this tooltip under its tip. Null uses <see cref="DefaultLook"/>.</summary>
         public Action<Tooltip>? Look { get; set; }
         /// <summary>Draws every tooltip that doesn't have its own <see cref="Look"/>.</summary>

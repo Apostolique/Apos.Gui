@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Apos.Shapes;
 using Microsoft.Xna.Framework;
 using Xunit;
@@ -8,6 +9,45 @@ namespace Apos.Gui.Tests {
     public class TextboxTests {
         public TextboxTests() {
             GuiHelper.Font = _font;
+        }
+
+        [Fact]
+        public void OnScreenKeyboardTextReachesTheCaller() {
+            var keyboard = new FakeKeyboard();
+            GuiHelper.OnScreenKeyboard = keyboard;
+            try {
+                var ui = new IMGUI();
+                string text = "old";
+                Textbox t = null!;
+
+                ui.UpdateSetup(_gameTime);
+                t = Textbox.Put(ref text, id: 1);
+                ui.Cleanup();
+
+                t.OpenKeyboard();
+                Assert.Equal("old", keyboard.ShownWith);
+                keyboard.Done.SetResult("typed\non a phone");
+
+                ui.UpdateSetup(_gameTime);
+                Textbox.Put(ref text, id: 1);
+                ui.Cleanup();
+
+                Assert.Equal("typed on a phone", text);
+            } finally {
+                GuiHelper.OnScreenKeyboard = null;
+            }
+        }
+
+        private static readonly GameTime _gameTime = new();
+
+        private class FakeKeyboard : IOnScreenKeyboard {
+            public TaskCompletionSource<string?> Done { get; } = new();
+            public string? ShownWith { get; private set; }
+
+            public Task<string?> Show(Textbox textbox) {
+                ShownWith = textbox.Text;
+                return Done.Task;
+            }
         }
 
         [Fact]

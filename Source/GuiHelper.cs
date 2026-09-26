@@ -55,6 +55,8 @@ namespace Apos.Gui {
         public static ShapeFont Font { get; set; } = null!;
         /// <summary>Where textboxes copy to and paste from. Defaults to a clipboard that stays inside the game.</summary>
         public static IClipboard Clipboard { get; set; } = new GameClipboard();
+        /// <summary>Types into textboxes when there's no physical keyboard. Null turns it off, which is the default.</summary>
+        public static IOnScreenKeyboard? OnScreenKeyboard { get; set; }
         /// <summary>Defaults to LinearClamp.</summary>
         public static SamplerState GuiSampler { get; set; } = SamplerState.LinearClamp;
 

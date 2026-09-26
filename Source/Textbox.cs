@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Apos.Input;
 using Apos.Tweens;
 using Microsoft.Xna.Framework;
@@ -140,6 +141,12 @@ namespace Apos.Gui {
             }
 
             Bindings bindings = Root.Bindings;
+            if (Interaction.JustPressed) {
+                _touchPress = Interaction.Source == InteractionSource.Touch;
+            }
+            if (Interaction.Clicked && _touchPress || bindings.OpenKeyboard.Pressed()) {
+                OpenKeyboard();
+            }
             bool extend = bindings.ExtendSelection.Held(false);
             bool byWord = bindings.ByWord.Held(false);
 
@@ -209,6 +216,27 @@ namespace Apos.Gui {
                 Track.KeyboardCondition.Consume(te.Key);
             }
         }
+        /// <summary>Opens <see cref="GuiHelper.OnScreenKeyboard"/> for this textbox, if there's one and it isn't already open.</summary>
+        public void OpenKeyboard() {
+            if (_keyboard == null && GuiHelper.OnScreenKeyboard is IOnScreenKeyboard keyboard) {
+                _keyboard = keyboard.Show(this);
+            }
+        }
+        /// <returns>True when the on-screen keyboard just gave back some text.</returns>
+        private bool TakeKeyboardText() {
+            if (_keyboard is not { IsCompleted: true } done) {
+                return false;
+            }
+            _keyboard = null;
+            if (done.Status != TaskStatus.RanToCompletion || done.Result is not string typed) {
+                return false;
+            }
+            typed = typed.Replace("\r\n", "\n");
+            Select(0, _text.Length);
+            Insert(Multiline ? typed : typed.Replace("\n", " "));
+            return true;
+        }
+
         public override void Update(GameTime gameTime) {
             if (IsFocused && TweenHelper.TotalMS > _blink.StartTime + _blink.Duration) {
                 _blink.StartTime = TweenHelper.TotalMS;
@@ -324,13 +352,15 @@ namespace Apos.Gui {
         protected int _anchor;
 
         protected FloatTween _blink = new(0f, 1f, 1500, Easing.Linear);
+        protected Task<string?>? _keyboard;
+        protected bool _touchPress;
 
         public static Textbox Put(ref string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
             Color c = color ?? Theme.Text;
 
             string initial = text;
             Textbox a = IMGUI.Put(id, isAbsoluteId, file, id => new Textbox(id, initial, fontSize, c));
-            if (a.IsFocused) {
+            if (a.TakeKeyboardText() || a.IsFocused) {
                 text = a.Text;
             } else {
                 a.Text = text;

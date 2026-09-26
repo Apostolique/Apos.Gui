@@ -13,6 +13,7 @@ namespace Apos.Gui {
     /// Dropdowns and dialogs are made of it.
     /// </summary>
     public class Popup : Vertical {
+        public override bool IsFocusScope { get; set; } = true;
         public Popup(long id) : base(id) {
             Padding = 4f;
             Align = CrossAlign.Stretch;

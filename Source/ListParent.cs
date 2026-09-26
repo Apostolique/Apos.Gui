@@ -133,6 +133,9 @@ namespace Apos.Gui {
             Parent?.SendToTop(this);
         }
 
+        public virtual bool IsFocusScope { get; set; } = false;
+        public virtual IComponent? Navigate(IComponent from, Direction direction) => null;
+
         protected int _nextChildIndex = 0;
         protected List<IComponent> _children = [];
         protected List<IComponent> _childrenRenderOrder = [];

@@ -17,12 +17,13 @@ namespace Apos.Gui {
 
             MouseInteraction = new Track.MouseCondition(MouseButton.LeftButton);
             ButtonInteraction = Any(Key(Keys.Space), Key(Keys.Enter), Pad(GamePadButton.A));
-            FocusPrev = Any(Key(Keys.Up), desktop ? new AllCondition(Shift(), new Track.KeyboardCondition(Keys.Tab)) : null, Pad(GamePadButton.Up));
-            FocusNext = Any(Key(Keys.Down), Key(Keys.Tab), Pad(GamePadButton.Down));
+            FocusPrev = Any(desktop ? new AllCondition(Shift(), new Track.KeyboardCondition(Keys.Tab)) : null);
+            FocusNext = Any(Key(Keys.Tab));
             MoveLeft = Repeat(Any(Key(Keys.Left), Pad(GamePadButton.Left)));
             MoveRight = Repeat(Any(Key(Keys.Right), Pad(GamePadButton.Right)));
             MoveUp = Repeat(Any(Key(Keys.Up), Pad(GamePadButton.Up)));
             MoveDown = Repeat(Any(Key(Keys.Down), Pad(GamePadButton.Down)));
+            OpenKeyboard = Any(Pad(GamePadButton.A));
             Back = Any(Key(Keys.Escape), Pad(GamePadButton.B), Pad(GamePadButton.Back), desktop ? new Track.MouseCondition(MouseButton.XButton2) : null);
 
             ExtendSelection = Shift();
@@ -47,9 +48,14 @@ namespace Apos.Gui {
 
         public ICondition MouseInteraction { get; set; }
         public ICondition ButtonInteraction { get; set; }
+        /// <summary>Moves the focus to the previous component in the order they were put.</summary>
         public ICondition FocusPrev { get; set; }
+        /// <summary>Moves the focus to the next component in the order they were put.</summary>
         public ICondition FocusNext { get; set; }
-        /// <summary>Repeats while held. Wrap your own condition in a <see cref="RepeatCondition"/> to keep that.</summary>
+        /// <summary>
+        /// Moves the focus, or whatever the focused component does with it, like a slider or a textbox's cursor.
+        /// Repeats while held. Wrap your own condition in a <see cref="RepeatCondition"/> to keep that.
+        /// </summary>
         public ICondition MoveLeft { get; set; }
         /// <summary>Repeats while held. Wrap your own condition in a <see cref="RepeatCondition"/> to keep that.</summary>
         public ICondition MoveRight { get; set; }
@@ -58,6 +64,8 @@ namespace Apos.Gui {
         /// <summary>Repeats while held. Wrap your own condition in a <see cref="RepeatCondition"/> to keep that.</summary>
         public ICondition MoveDown { get; set; }
         public ICondition Back { get; set; }
+        /// <summary>Opens <see cref="GuiHelper.OnScreenKeyboard"/> on the focused textbox.</summary>
+        public ICondition OpenKeyboard { get; set; }
 
         /// <summary>Held to grow the selection while moving the cursor in a textbox.</summary>
         public ICondition ExtendSelection { get; set; }

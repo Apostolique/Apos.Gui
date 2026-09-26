@@ -107,6 +107,12 @@ namespace Apos.Gui {
                     Bindings.FocusNext.Consume();
                 }
             }
+
+            // The focused component already had its turn, so a slider or a textbox that used the arrows consumed them.
+            if (Bindings.MoveLeft.Pressed()) Navigate(Direction.Left);
+            if (Bindings.MoveRight.Pressed()) Navigate(Direction.Right);
+            if (Bindings.MoveUp.Pressed()) Navigate(Direction.Up);
+            if (Bindings.MoveDown.Pressed()) Navigate(Direction.Down);
         }
         /// <summary>
         /// Only call this if you didn't call UpdateStart. This should be called after UpdateInput.
@@ -269,6 +275,39 @@ namespace Apos.Gui {
             }
         }
         /// <summary>
+        /// Moves the focus in a direction. See <see cref="IParent.Navigate"/> for how the next component is picked.
+        /// When nothing has focus, the first focusable component gets it.
+        /// </summary>
+        public void Navigate(Direction direction) {
+            if (Focus is not long id || !_activeComponents.TryGetValue(id, out IComponent? from)) {
+                FindNextFocus();
+                return;
+            }
+
+            // A focused scope, like a floating window, lets the focus in.
+            if (from is IParent { IsFocusScope: true } s) {
+                IComponent? first = Walk().FirstOrDefault(c => c.IsFocusable && ScopeOf(c) == s);
+                if (first != null) {
+                    GrabFocus(first);
+                }
+                return;
+            }
+
+            IParent scope = ScopeOf(from);
+            for (IParent? p = from.Parent; p != null; p = p == scope ? null : p.Parent) {
+                IComponent? target = p.Navigate(from, direction);
+                if (target != null) {
+                    GrabFocus(target);
+                    return;
+                }
+            }
+
+            IComponent? closest = Navigation.Closest(from, direction, Walk().Where(c => c.IsFocusable && ScopeOf(c) == scope));
+            if (closest != null) {
+                GrabFocus(closest);
+            }
+        }
+        /// <summary>
         /// Claims the mouse hover for this frame. Components check from the top of the draw order down,
         /// so the first one under the mouse gets it and the ones below it don't.
         /// </summary>
@@ -391,6 +430,19 @@ namespace Apos.Gui {
 
             _activeComponents.Remove(id);
             c.Parent?.Remove(c);
+        }
+        /// <summary>The closest parent that's a focus scope, or the root.</summary>
+        private IParent ScopeOf(IComponent c) {
+            for (IParent? p = c.Parent; p != null; p = p.Parent) {
+                if (p.IsFocusScope) return p;
+            }
+            return this;
+        }
+        /// <summary>Every component in the order they were put.</summary>
+        private IEnumerable<IComponent> Walk() {
+            for (IComponent c = GetNext(); c != this; c = c.GetNext()) {
+                yield return c;
+            }
         }
         private IMGUI MakeCurrent() {
             IMGUI previous = GuiHelper.CurrentIMGUI;

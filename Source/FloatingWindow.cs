@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 namespace Apos.Gui {
     public class FloatingWindow(long id) : Vertical(id) {
         public override bool IsFocusable { get; set; } = true;
+        public override bool IsFocusScope { get; set; } = true;
         public override bool IsFloatable { get; set; } = true;
 
         public Interaction Interaction { get; } = new() { UsesFocusButton = false };

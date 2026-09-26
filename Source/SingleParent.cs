@@ -88,5 +88,8 @@ namespace Apos.Gui {
             LastFocus = Root.CurrentFrame;
             Parent?.SendToTop(this);
         }
+
+        public virtual bool IsFocusScope { get; set; } = false;
+        public virtual IComponent? Navigate(IComponent from, Direction direction) => null;
     }
 }
