@@ -2,6 +2,7 @@ using Apos.Input;
 using Apos.Tweens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input.Touch;
+using MonoGame.Extended;
 using Track = Apos.Input.Track;
 
 namespace Apos.Gui {
@@ -62,16 +63,22 @@ namespace Apos.Gui {
         public bool GrabsFocus { get; set; } = true;
         /// <summary>Whether the focus button presses the component while it has focus. A textbox turns this off so that space and enter stay text.</summary>
         public bool UsesFocusButton { get; set; } = true;
+        /// <summary>Whether the mouse can hover and press the component.</summary>
+        public bool UsesMouse { get; set; } = true;
+        /// <summary>Whether touch contacts can press the component.</summary>
+        public bool UsesTouch { get; set; } = true;
 
         /// <summary>
         /// Processes this frame's input for a component. Parents call their children's UpdateInput from the top of the draw order down,
         /// so the first component under the pointer gets it.
         /// </summary>
         /// <param name="owner">The component this interaction belongs to.</param>
-        public void UpdateInput(IComponent owner) {
+        /// <param name="area">Where the pointer can press, in UI coordinates. Defaults to the owner's clip. A scrollbar uses it for its thumb.</param>
+        public void UpdateInput(IComponent owner, RectangleF? area = null) {
             _owner = owner;
+            RectangleF hit = area is RectangleF a ? a.Intersect(owner.Clip) : owner.Clip;
             Vector2 mouse = GuiHelper.Mouse;
-            bool mouseInside = Apos.Input.Pointer.Source == PointerSource.Mouse && InputHelper.IsActive && owner.Clip.Contains(mouse);
+            bool mouseInside = UsesMouse && Apos.Input.Pointer.Source == PointerSource.Mouse && InputHelper.IsActive && hit.Contains(mouse);
 
             IComponent? capture = owner.Root.MouseCapture;
             Hovered = mouseInside && (capture == null || capture == owner) && owner.Root.TryClaimHover(owner);
@@ -80,7 +87,7 @@ namespace Apos.Gui {
             if (Source == InteractionSource.None) {
                 if (Hovered && Default.MouseInteraction.Pressed()) {
                     Start(InteractionSource.Mouse, mouse);
-                } else if (TryClaimTouch(owner, out TouchLocation touch)) {
+                } else if (UsesTouch && TryClaimTouch(hit, out TouchLocation touch)) {
                     _touchId = touch.Id;
                     Start(InteractionSource.Touch, GuiHelper.ToUI(touch.Position));
                 } else if (UsesFocusButton && owner.IsFocused && Default.ButtonInteraction.Pressed()) {
@@ -92,7 +99,7 @@ namespace Apos.Gui {
             } else if (Source == InteractionSource.Mouse) {
                 Position = mouse;
                 if (Default.MouseInteraction.Released()) {
-                    End(owner.Clip.Contains(Position));
+                    End(hit.Contains(Position));
                 } else {
                     Default.MouseInteraction.Consume();
                 }
@@ -102,7 +109,7 @@ namespace Apos.Gui {
                 } else {
                     Position = GuiHelper.ToUI(touch.Position);
                     if (Input.TouchCondition.Released(touch)) {
-                        End(owner.Clip.Contains(Position));
+                        End(hit.Contains(Position));
                     } else {
                         Track.TouchCondition.Consume(_touchId);
                     }
@@ -117,7 +124,7 @@ namespace Apos.Gui {
             }
 
             Delta = Position - old;
-            Inside = Source == InteractionSource.Button || Pressed && owner.Clip.Contains(Position);
+            Inside = Source == InteractionSource.Button || Pressed && hit.Contains(Position);
 
             Animate(_hover, Hovered ? 1f : 0f, HoverDuration);
             Animate(_press, Pressed && Inside ? 1f : 0f, PressDuration);
@@ -157,9 +164,9 @@ namespace Apos.Gui {
             _grabbedFocus = false;
         }
 
-        private static bool TryClaimTouch(IComponent owner, out TouchLocation touch) {
+        private static bool TryClaimTouch(RectangleF hit, out TouchLocation touch) {
             foreach (TouchLocation t in InputHelper.NewTouch) {
-                if (Input.TouchCondition.Pressed(t) && Track.TouchCondition.IsUnique(t.Id) && owner.Clip.Contains(GuiHelper.ToUI(t.Position))) {
+                if (Input.TouchCondition.Pressed(t) && Track.TouchCondition.IsUnique(t.Id) && hit.Contains(GuiHelper.ToUI(t.Position))) {
                     Track.TouchCondition.Consume(t.Id);
                     touch = t;
                     return true;

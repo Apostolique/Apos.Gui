@@ -3,67 +3,44 @@ using Apos.Tweens;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
-    public class MenuPanel(int id) : Vertical(id) {
+    /// <summary>
+    /// Fills the window and centers its children in it. Scrolls when they're taller than the window.
+    /// </summary>
+    public class MenuPanel : Vertical {
+        public MenuPanel(int id) : base(id) {
+            Align = CrossAlign.Center;
+        }
+
         public override void UpdatePrefSize(GameTime gameTime) {
             base.UpdatePrefSize(gameTime);
 
-            FullWidth = PrefWidth;
-            FullHeight = PrefHeight;
-
-            if (PrefWidth != GuiHelper.WindowWidth) {
-                PrefWidth = GuiHelper.WindowWidth;
-                _snap = true;
-            }
-            if (PrefHeight != GuiHelper.WindowHeight) {
-                PrefHeight = GuiHelper.WindowHeight;
-                _snap = true;
-            }
+            PrefWidth = GuiHelper.WindowWidth;
+            PrefHeight = GuiHelper.WindowHeight;
         }
         public override void UpdateLayout(GameTime gameTime) {
             // MenuPanel is a root component so it can set its own position.
             X = 0f;
             Y = 0f;
 
-            if (_offsetYTween.B != ClampOffsetY(_offsetYTween.B)) {
-                if (!_snap) {
-                    SetOffset(_offsetYTween, ClampOffsetY(_offsetYTween.B));
-                } else {
-                    _offsetYTween.A = ClampOffsetY(_offsetYTween.B);
-                    _offsetYTween.B = ClampOffsetY(_offsetYTween.B);
-                    _offsetYTween.StartTime = TweenHelper.TotalMS;
-                    _offsetYTween.Duration = 0;
-                    _snap = false;
-                }
+            // After a resize, jump to the new spot instead of easing there.
+            if (Height != _lastHeight) {
+                float offset = ClampOffsetY(_offsetYTween.B);
+                _offsetYTween.A = offset;
+                _offsetYTween.B = offset;
+                _offsetYTween.StartTime = TweenHelper.TotalMS;
+                _offsetYTween.Duration = 0;
+                _lastHeight = Height;
             }
 
-            _offsetX = _offsetXTween.Value;
-            _offsetY = _offsetYTween.Value;
-
-            float halfWidth = Width / 2f;
-
-            float currentY = 0f;
-            foreach (var c in _children) {
-                c.Width = MathHelper.Min(c.PrefWidth, Width);
-                c.Height = c.PrefHeight;
-
-                c.X = X + OffsetX + halfWidth - c.Width / 2f;
-                c.Y = currentY + Y + OffsetY;
-
-                c.Clip = c.Bounds.Intersect(Clip);
-
-                if (c is IParent p) {
-                    p.UpdateLayout(gameTime);
-                }
-
-                currentY += c.Height;
-            }
+            base.UpdateLayout(gameTime);
         }
 
         protected override float ClampOffsetY(float y) {
-            return MathHelper.Min(MathHelper.Max(y, Height - FullHeight), FullHeight < Height ? Height / 2f - FullHeight / 2f : 0f);
+            float content = ContentSize.Y;
+            return content < Height ? (Height - content) / 2f : MathHelper.Clamp(y, Height - content, 0f);
         }
 
-        protected bool _snap = false;
+        protected float _lastHeight = -1f;
 
         public static new MenuPanel Push([CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             return IMGUI.Push(id, isAbsoluteId, id => new MenuPanel(id));
