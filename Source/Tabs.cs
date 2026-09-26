@@ -7,17 +7,25 @@ namespace Apos.Gui {
     /// <summary>
     /// A button in a row of tabs. The selected one is marked.
     /// </summary>
-    public class TabButton(int id) : Button(id) {
+    public class TabButton(int id) : SingleParent(id) {
+        public Interaction Interaction { get; } = new();
+        public bool Clicked => Interaction.Clicked;
+        public override bool IsFocusable { get; set; } = true;
         public bool IsSelected { get; set; }
 
-        /// <summary>Draws this tab under its child. Null uses <see cref="DefaultTabLook"/>.</summary>
-        public Action<TabButton>? TabLook { get; set; }
-        /// <summary>Draws every tab that doesn't have its own <see cref="TabLook"/>.</summary>
-        public static Action<TabButton> DefaultTabLook { get; set; } = DrawDefault;
+        /// <summary>Draws this tab under its child. Null uses <see cref="DefaultLook"/>.</summary>
+        public Action<TabButton>? Look { get; set; }
+        /// <summary>Draws every tab that doesn't have its own <see cref="Look"/>.</summary>
+        public static Action<TabButton> DefaultLook { get; set; } = DrawDefault;
+
+        public override void UpdateInput(GameTime gameTime) {
+            base.UpdateInput(gameTime);
+            Interaction.UpdateInput(this);
+        }
 
         public override void Draw(GameTime gameTime) {
-            (TabLook ?? DefaultTabLook)(this);
-            Child?.Draw(gameTime);
+            (Look ?? DefaultLook)(this);
+            base.Draw(gameTime);
         }
 
         /// <summary>A button's look, with a filled background and a line under it when selected.</summary>
@@ -26,10 +34,10 @@ namespace Apos.Gui {
                 GuiHelper.ShapeBatch.FillRectangle(t.XY, t.Size, new Color(Theme.Highlight, 0.15f), Theme.Rounding);
                 GuiHelper.ShapeBatch.FillRectangle(new Vector2(t.Left, t.Bottom - 3f), new Vector2(t.Width, 3f), Theme.Focus);
             }
-            DrawPressable(t, t.Interaction);
+            Button.DrawPressable(t, t.Interaction);
         }
 
-        public static new TabButton Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
+        public static TabButton Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false) {
             TabButton t = IMGUI.Push(id, isAbsoluteId, id => new TabButton(id), 1);
             Label.Put(text, fontSize: fontSize, color: color, id: id, isAbsoluteId: isAbsoluteId);
 
