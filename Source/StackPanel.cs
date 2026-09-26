@@ -62,6 +62,13 @@ namespace Apos.Gui {
 
         public bool ShowScrollbar { get; set; } = true;
         public float ScrollbarThickness { get; set; } = 6f;
+        /// <summary>Space between the children and the scrollbar, in UI units.</summary>
+        public float ScrollbarGap { get; set; } = 4f;
+        /// <summary>
+        /// Room kept beside the children for the scrollbar while the stack scrolls, so it doesn't cover them.
+        /// It's part of the preferred size too, so a parent with room to spare widens the stack instead.
+        /// </summary>
+        public float ScrollbarRoom => _showsScrollbar ? ScrollbarThickness + ScrollbarGap : 0f;
         /// <summary>Dragging the scrollbar thumb.</summary>
         public Interaction ScrollbarInteraction { get; } = new() { GrabsFocus = false, UsesFocusButton = false };
         /// <summary>A touch drag that starts on the stack and not on a child.</summary>
@@ -135,7 +142,7 @@ namespace Apos.Gui {
             cross += Padding * 2f;
 
             ContentSize = FromMainCross(main, cross);
-            PrefSize = ContentSize;
+            PrefSize = FromMainCross(main, cross + ScrollbarRoom);
         }
         public override void UpdateLayout(GameTime gameTime) {
             if (MainTween.B != ClampMain(MainTween.B)) {
@@ -145,7 +152,14 @@ namespace Apos.Gui {
             _offsetX = _offsetXTween.Value;
             _offsetY = _offsetYTween.Value;
 
-            float innerCross = MathF.Max(CrossOf(Size) - Padding * 2f, 0f);
+            // Whether it scrolls is only known now, and the room for the scrollbar changes the preferred size.
+            bool showsScrollbar = ShowScrollbar && CanScroll;
+            if (showsScrollbar != _showsScrollbar) {
+                _showsScrollbar = showsScrollbar;
+                Root?.InvalidateLayout();
+            }
+
+            float innerCross = MathF.Max(CrossOf(Size) - Padding * 2f - ScrollbarRoom, 0f);
             float current = Padding;
             foreach (var c in _children) {
                 float main = MainOf(c.PrefSize);
@@ -235,5 +249,6 @@ namespace Apos.Gui {
         protected float _offsetX = 0;
         protected float _offsetY = 0;
         protected float _scrollDragStart = 0;
+        protected bool _showsScrollbar = false;
     }
 }

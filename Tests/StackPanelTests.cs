@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
+using MonoGame.Extended;
 using Xunit;
 
 namespace Apos.Gui.Tests {
@@ -56,6 +57,30 @@ namespace Apos.Gui.Tests {
             Apos.Tweens.TweenHelper.TotalMS += 10000;
             Layout(v, new Vector2(110f, 50f));
             Assert.Equal(-50f, v.OffsetY, 3);
+        }
+
+        [Fact]
+        public void TheScrollbarDoesntCoverTheChildren() {
+            var ui = new IMGUI { Area = new RectangleF(0, 0, 800, 480) };
+            StackPanel v = null!;
+            var rows = new Block[5];
+            void Build() {
+                Block.Put(200f, 100f, id: 1);
+                v = Vertical.Push(id: 2);
+                for (int i = 0; i < rows.Length; i++) {
+                    rows[i] = Block.Put(200f, 40f, id: 3 + i);
+                    Block.Pop();
+                }
+                Vertical.Pop();
+            }
+
+            ui.UpdateSetup(_gameTime);
+            Build();
+            ui.Cleanup();
+            ui.UpdateLayout(_gameTime);
+
+            Assert.True(v.CanScroll);
+            Assert.All(rows, r => Assert.True(r.Right <= v.ScrollbarThumb.Left));
         }
 
         private static (StackPanel stack, Block a, Block b) Stack(Orientation orientation, CrossAlign align) {
