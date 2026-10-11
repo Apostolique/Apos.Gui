@@ -76,6 +76,7 @@ namespace Apos.Gui.Tests {
 
         [Fact]
         public void PressingTheEndsOfASliderReachesItsLimits() {
+            float rounding = Theme.Rounding;
             Theme.Rounding = 8f;
             try {
                 float value = 5f;
@@ -88,8 +89,26 @@ namespace Apos.Gui.Tests {
                 Click(Build, new Vector2(s.Left + 1f, s.Top + s.Height / 2f));
                 Assert.Equal(0f, value);
             } finally {
-                Theme.Rounding = 0f;
+                Theme.Rounding = rounding;
             }
+        }
+
+        [Fact]
+        public void DraggingASliderSnapsToItsStep() {
+            float value = 1f;
+            Slider s = null!;
+            void Build() => s = Slider.Put(ref value, 1f, 2f, 0.25f);
+
+            Frame(Build);
+            Vector2 thumb = new(s.ThumbX, s.Top + s.Height / 2f);
+            _input.Mouse = Mouse(thumb, ButtonState.Pressed);
+            Frame(Build);
+            _input.Mouse = Mouse(thumb + new Vector2(s.Width * 0.3f, 0f), ButtonState.Pressed);
+            Frame(Build);
+            _input.Mouse = Mouse(thumb + new Vector2(s.Width * 0.3f, 0f), ButtonState.Released);
+            Frame(Build);
+
+            Assert.Equal(1.25f, value, 3);
         }
 
         [Fact]

@@ -206,7 +206,7 @@ namespace GameProject {
         private void SplitScreenBar() {
             Horizontal.Push().Align = CrossAlign.Center;
             BackButton();
-            Label.Put("Each half listens to its own gamepad, and B comes back here. The mouse doesn't reach them.", 20);
+            Label.Put("Each half has its own gamepad. B comes back here.", 20);
             Horizontal.Pop();
 
             foreach (IMGUI p in _players) {

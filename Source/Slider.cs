@@ -17,6 +17,10 @@ namespace Apos.Gui {
         public float Percent => Max == Min ? 0f : (Value - Min) / (Max - Min);
         public float Min { get; set; }
         public float Max { get; set; }
+        /// <summary>
+        /// How far the arrows move the value. Dragging snaps to it too when you set one.
+        /// Without one, the arrows move by 1% of the range and dragging is smooth.
+        /// </summary>
         public float? Step {
             get => _step ?? (Max - Min) / 100f;
             set {
@@ -41,7 +45,11 @@ namespace Apos.Gui {
 
             if (Interaction.Pressed && Interaction.Source != InteractionSource.Button) {
                 float percent = Travel > 0f ? (Interaction.Position.X - TravelStart) / Travel : 0f;
-                Value = MathHelper.Clamp(percent * (Max - Min) + Min, Min, Max);
+                float value = percent * (Max - Min) + Min;
+                if (_step is float step && step > 0f) {
+                    value = Min + MathF.Round((value - Min) / step) * step;
+                }
+                Value = MathHelper.Clamp(value, Min, Max);
             }
             if (IsFocused) {
                 if (Root.Bindings.MoveLeft.Pressed()) Slide(-1);
