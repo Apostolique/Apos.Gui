@@ -80,7 +80,7 @@ namespace Apos.Gui {
             IMGUI ui = owner.Root;
             Bindings bindings = ui.Bindings;
             Vector2 mouse = ui.Mouse;
-            bool mouseInside = UsesMouse && bindings.UsesPointer && Apos.Input.Pointer.Source == PointerSource.Mouse && InputHelper.IsActive && hit.Contains(mouse);
+            bool mouseInside = UsesMouse && bindings.UsesPointer && Pointer.Source == PointerSource.Mouse && InputHelper.IsActive && hit.Contains(mouse);
 
             // Components check from the top of the draw order down, so the first one under the mouse takes the pointer.
             IComponent? capture = ui.MouseCapture;
@@ -114,7 +114,7 @@ namespace Apos.Gui {
                     End(false);
                 } else {
                     Position = ui.ToUI(touch.Position);
-                    if (Input.TouchCondition.Released(touch)) {
+                    if (TouchCondition.Released(touch)) {
                         End(hit.Contains(Position));
                     } else {
                         Track.TouchCondition.Consume(_touchId);
@@ -172,7 +172,7 @@ namespace Apos.Gui {
 
         private static bool TryClaimTouch(IMGUI ui, RectangleF hit, out TouchLocation touch) {
             foreach (TouchLocation t in InputHelper.NewTouch) {
-                if (Input.TouchCondition.Pressed(t) && Track.TouchCondition.IsUnique(t.Id) && hit.Contains(ui.ToUI(t.Position))) {
+                if (TouchCondition.Pressed(t) && Track.TouchCondition.IsUnique(t.Id) && hit.Contains(ui.ToUI(t.Position))) {
                     Track.TouchCondition.Consume(t.Id);
                     touch = t;
                     return true;
