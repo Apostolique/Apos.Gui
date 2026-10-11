@@ -70,7 +70,9 @@ bool _showFun = false;
 
 `MenuPanel` fills the window and centers what's in it. Clicking "Show fun" puts a label between the two buttons, and clicking it again takes it away.
 
-The components remember their state from one frame to the next even though you call `Put` every frame. [Identity](./identity.md) explains how.
+![A "Show fun" button, the text "This is fun!" and a "Quit" button, centered on a black background](menu.png)
+
+The components remember their state from one frame to the next even though you call `Put` every frame. [Identity](../identity/README.md) explains how.
 
 ## The draw loop
 
@@ -94,11 +96,11 @@ Without any setup:
 * Space, Enter and the gamepad's A button press the focused component.
 * Escape and the gamepad's B button close popups.
 
-[Focus](./focus.md) and [Input](./input.md) show how to change all of that.
+[Focus](../focus/README.md) and [Input](../input/README.md) show how to change all of that.
 
 ## Read more
 
-* [Components](./components.md) lists what comes with the library.
-* [Layout](./layout.md) shows how to arrange them.
-* [Custom components](./custom-components.md) shows how to make your own.
+* [Components](../components/README.md) lists what comes with the library.
+* [Layout](../layout/README.md) shows how to arrange them.
+* [Custom components](../custom-components/README.md) shows how to make your own.
 * The [example](https://github.com/Apostolique/Apos.Gui/tree/main/Example) uses everything in these guides.

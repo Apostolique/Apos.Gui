@@ -14,6 +14,8 @@ if (_justOpened) {
 }
 ```
 
+![A menu with Play, Settings and Quit buttons, where Play has the focus border](focus.png)
+
 `_ui.GrabFocus(null)` clears it.
 
 ## Tab
@@ -64,4 +66,4 @@ The focused component's parents get asked from the closest one up to its focus s
 
 ## Changing the keys
 
-The keys and buttons are in the UI's `Bindings`. [Input](./input.md) shows how to change them.
+The keys and buttons are in the UI's `Bindings`. [Input](../input/README.md) shows how to change them.

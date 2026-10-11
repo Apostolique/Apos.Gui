@@ -35,7 +35,7 @@ _ui.Bindings.Back = ...;
 
 `GuiHelper.Mouse` still works. It's the mouse in the current UI's coordinates.
 
-Up and down used to go to the previous and next component. The arrows and the d-pad now move the focus in their direction, and Tab and Shift+Tab go through the components in order. [Focus](./focus.md) has the details.
+Up and down used to go to the previous and next component. The arrows and the d-pad now move the focus in their direction, and Tab and Shift+Tab go through the components in order. [Focus](../focus/README.md) has the details.
 
 The defaults listen to every gamepad instead of only the first one.
 
@@ -65,7 +65,7 @@ public static MyThing Put([CallerLineNumber] int id = 0, bool isAbsoluteId = fal
 
 ## Layout
 
-`Vertical` and `Horizontal` are both a `StackPanel` now, with `Spacing`, `Padding`, `Align` and scrollbars. [Layout](./layout.md) shows them.
+`Vertical` and `Horizontal` are both a `StackPanel` now, with `Spacing`, `Padding`, `Align` and scrollbars. [Layout](../layout/README.md) shows them.
 
 `MenuPanel` puts 8 units of space between its children.
 

@@ -11,7 +11,7 @@ Textbox.Put(ref _name);
 Vertical.Pop();
 ```
 
-Each component asks for a preferred size, then its parent gives it a spot. Positions and sizes are in UI units, which are pixels at a [scale](./input.md#scale-and-area) of 1.
+Each component asks for a preferred size, then its parent gives it a spot. Positions and sizes are in UI units, which are pixels at a [scale](../input/README.md#scale-and-area) of 1.
 
 ## Vertical and Horizontal
 
@@ -26,6 +26,8 @@ v.Align = CrossAlign.Center;
 
 `Spacing` goes between children and `Padding` around all of them. `Align` places the children across the stack: `Start`, `Center`, `End`, or `Stretch` to give them the full width of a vertical or the full height of a horizontal.
 
+![Four verticals with the same three buttons, aligned to the start, the center, the end, and stretched](align.png)
+
 A row of components with different heights usually wants `CrossAlign.Center` so they line up:
 
 ```csharp
@@ -35,11 +37,13 @@ Label.Put($"{_coins}");
 Horizontal.Pop();
 ```
 
+![A coin icon and the number 250, lined up on their centers](row.png)
+
 ## Scrolling
 
 A stack scrolls when its parent gives it less room than its children need. The mouse wheel, dragging the scrollbar and dragging with a finger all scroll it. A component that gets focus inside it scrolls into view.
 
-A `Block` is a simple way to give it a fixed size:
+A `Block` is a simple way to limit its size:
 
 ```csharp
 Block.Put(400f, 300f);
@@ -49,6 +53,10 @@ foreach (Item item in _inventory) {
 }
 Vertical.Pop();
 ```
+
+The stack gets at most 400 by 300. With enough items, it's 300 tall and scrolls, while its width stays the width of its widest item.
+
+![A list of items cut off at the top and the bottom, with a scrollbar on its right](scrolling.png)
 
 The scrollbar sits inside the stack's padding. While the stack scrolls, it keeps room for it beside the children, with `ScrollbarGap` between them.
 
@@ -66,11 +74,19 @@ MenuPanel.Pop();
 
 ## Block
 
-Gives its one child a fixed size, or the child's own size plus some padding. It pops itself after that child.
+Takes a fixed size and centers its one child in it. The child keeps its own size, up to the block's. A side you leave out is the child's size plus `padding`. It pops itself after that child.
 
 ```csharp
 Block.Put(width: 200f, height: 50f);
-Label.Put("Fits in 200 by 50");
+Label.Put("Centered in 200 by 50");
+```
+
+With only a padding, it puts room around its child, like an icon in a button:
+
+```csharp
+Button.Put();
+Block.Put(padding: 10f);
+Icon.Put(_playIcon);
 ```
 
 ## Dock
@@ -103,6 +119,8 @@ if (_inventoryOpen) {
 }
 ```
 
+![A window titled "Inventory" with a close button and three items in it](floating-window.png)
+
 Its components go in `Content`, a vertical stack, so you can change its spacing and padding there. It scrolls when the window is taller than the UI.
 
 `StartAlign` picks where it opens, from 0 to 1 on each axis, and `StartOffset` moves it from there. This one opens in the top right corner, 20 units from the edges:
@@ -115,10 +133,10 @@ w.StartOffset = new Vector2(-20f, 20f);
 
 They're only read when the window opens. After that it stays where the player drags it.
 
-The arrow keys and the d-pad stay inside a floating window once the focus is in it. [Focus](./focus.md) explains why.
+The arrow keys and the d-pad stay inside a floating window once the focus is in it. [Focus](../focus/README.md) explains why.
 
 ## Clipping
 
-Every component has a `Clip`, the part of it that its parents leave visible. Stacks cut what their children draw to that rectangle. Labels, icons and paragraphs also cut themselves when their text or texture is bigger than they are. A [custom component](./custom-components.md) that draws past its bounds can do the same with `GuiHelper.PushClip(Clip)` and `GuiHelper.PopClip()`. A clip you push stays inside the clips that are already there, so a component in a stack that scrolls can't draw outside of it. Floating windows and popups keep their content inside their border.
+Every component has a `Clip`, the part of it that its parents leave visible. Stacks cut what their children draw to that rectangle. Labels, icons and paragraphs also cut themselves when their text or texture is bigger than they are. A [custom component](../custom-components/README.md) that draws past its bounds can do the same with `GuiHelper.PushClip(Clip)` and `GuiHelper.PopClip()`. A clip you push stays inside the clips that are already there, so a component in a stack that scrolls can't draw outside of it. Floating windows and popups keep their content inside their border.
 
 `ClipRounding` on a stack rounds the corners of that cut. It only applies while the stack is fully visible, since a stack that's cut by its own parent has straight edges where it was cut. Only one rounded clip is active at a time though, so a stack inside a rounded one cuts with square corners. Padding at least as big as the rounding keeps the inner stacks away from the corners.

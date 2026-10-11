@@ -40,6 +40,8 @@ _ui.Scale = 1.5f;
 _ui.Area = new RectangleF(0, 0, 400, GraphicsDevice.Viewport.Height);
 ```
 
+![The same label and checkbox at a scale of 1 and at a scale of 1.5](scale.png)
+
 ## More than one UI
 
 Each UI has its own components, focus, bindings, scale and area. Components go to the UI that's between `UpdateStart` and `UpdateEnd`:
@@ -73,6 +75,8 @@ float half = GraphicsDevice.Viewport.Width / 2f;
 _players[0].Area = new RectangleF(0, 0, half, GraphicsDevice.Viewport.Height);
 _players[1].Area = new RectangleF(half, 0, half, GraphicsDevice.Viewport.Height);
 ```
+
+![Two menus side by side, one per player, each with the focus on a different button](split-screen.png)
 
 Draw each one after the other.
 

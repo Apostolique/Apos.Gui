@@ -11,6 +11,8 @@ Theme.UseFilled();  // Filled surfaces, rounded corners and a blue accent. This 
 Theme.UseOutline(); // Thin borders on black.
 ```
 
+![Buttons, checkboxes, radio buttons, a slider and a dropdown with the filled theme](filled.png) ![The same components with the outline theme](outline.png)
+
 You can start from one and change what you want:
 
 ```csharp
@@ -18,6 +20,8 @@ Theme.UseOutline();
 Theme.Accent = new Color(230, 160, 40);
 Theme.Rounding = 10f;
 ```
+
+![The same components with the outline theme, an orange accent and rounder corners](custom-theme.png)
 
 `Surface` fills buttons, boxes, tracks and title bars, and transparent leaves only their borders. `Panel` is behind popups, windows and tooltips. `Accent` is what's on or picked: checkmarks, the filled part of bars, slider thumbs, the selected tab and selected text. `Focus` is the border of the focused component. `Highlight` fades in on hover and press, and `Backdrop` darkens the screen behind a modal popup. Changes show up on the next draw.
 
@@ -33,6 +37,8 @@ danger.Look = b => {
     GuiHelper.ShapeBatch.BorderRectangle(b.XY, b.Size, b.IsFocused ? Theme.Focus : Color.Red, Theme.BorderThickness, Theme.Rounding);
 };
 ```
+
+![A regular "Cancel" button next to a red "Delete" button](look.png)
 
 Or for every component of that type:
 

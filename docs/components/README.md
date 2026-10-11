@@ -1,6 +1,6 @@
 # Components
 
-This guide lists the components that come with Apos.Gui. Containers that arrange other components are in [Layout](./layout.md).
+This guide lists the components that come with Apos.Gui. Containers that arrange other components are in [Layout](../layout/README.md).
 
 Components that edit a value take it by `ref`. While the component has focus it owns the value and writes it back to your variable. The rest of the time it copies your variable, so you can change it from your own code whenever you want.
 
@@ -13,6 +13,8 @@ Label.Put("Score: 100");
 Label.Put("Game over", fontSize: 50, color: Color.Red);
 ```
 
+![The text "Score: 100" above a bigger, red "Game over"](label.png)
+
 Font sizes are em sizes, the same as `ShapeFont`.
 
 ## Paragraph
@@ -24,6 +26,8 @@ Paragraph p = Paragraph.Put(_story, align: TextAlign.Center);
 p.MaxWidth = 500f;
 ```
 
+![Two sentences wrapped into six centered lines](paragraph.png)
+
 `TextLayout` does the wrapping, and you can use it for your own components. It also has `Ellipsize` to cut a line short with "...".
 
 ## Button
@@ -31,6 +35,8 @@ p.MaxWidth = 500f;
 ```csharp
 if (Button.Put("Play").Clicked) StartGame();
 ```
+
+![A button that says "Play"](button.png)
 
 A button holds one child. `Button.Put("Play")` is a shortcut for a button with a label in it. To put something else in it, push the button yourself:
 
@@ -48,6 +54,8 @@ The button pops itself after its child.
 Checkbox.Put(ref _music, "Music");
 ```
 
+![A checked "Music" checkbox above an unchecked "Subtitles" checkbox](checkbox.png)
+
 The text is part of the checkbox, so pressing it toggles the checkbox too. Leave it out for a box on its own.
 
 ## RadioButton
@@ -60,6 +68,8 @@ RadioButton.Put(ref _difficulty, 1, "Normal");
 RadioButton.Put(ref _difficulty, 2, "Hard");
 ```
 
+![Three radio buttons, Easy, Normal and Hard, with Normal picked](radio.png)
+
 Like the checkbox, the text is optional and pressing it picks the radio button.
 
 ## Slider
@@ -68,6 +78,8 @@ Like the checkbox, the text is optional and pressing it picks the radio button.
 Slider.Put(ref _volume, 0f, 1f, step: 0.05f);
 ```
 
+![A slider a bit past the middle](slider.png)
+
 Left and right move it while it has focus. `BarSize` sets how big it wants to be.
 
 ## ProgressBar
@@ -75,6 +87,8 @@ Left and right move it while it has focus. `BarSize` sets how big it wants to be
 ```csharp
 ProgressBar.Put(_loaded / (float)_total);
 ```
+
+![A progress bar filled to 40%](progress-bar.png)
 
 It goes from 0 to 1. `BarSize` sets how big it wants to be.
 
@@ -87,7 +101,9 @@ notes.Multiline = true;
 notes.MaxLength = 500;
 ```
 
-It has a caret, selection with the mouse or Shift, word jumps with Ctrl, select all, copy, cut and paste. It scrolls when the text doesn't fit. [Input](./input.md) shows how to connect the system clipboard and an on-screen keyboard.
+![A focused textbox with "Apos" typed in it and its caret at the end, above a multiline textbox with three lines of notes](textbox.png)
+
+It has a caret, selection with the mouse or Shift, word jumps with Ctrl, select all, copy, cut and paste. It scrolls when the text doesn't fit. [Input](../input/README.md) shows how to connect the system clipboard and an on-screen keyboard.
 
 ## Dropdown
 
@@ -97,12 +113,16 @@ Dropdown.Put(ref _resolution, ["1280x720", "1920x1080", "2560x1440"]);
 
 It opens a popup under itself with a button for each option.
 
+![An open dropdown showing 1280x720, 1920x1080 and 2560x1440, with 1920x1080 picked](dropdown.png)
+
 ## Tabs
 
 ```csharp
 Tabs.Put(ref _tab, ["Video", "Audio", "Controls"]);
 if (_tab == 0) VideoSettings();
 ```
+
+![Three tabs, Video, Audio and Controls, with Video picked and two video settings under them](tabs.png)
 
 ## Icon
 
@@ -122,6 +142,8 @@ if (Button.Put("Delete").Clicked) Delete();
 Label.Put("Deletes the save forever.");
 ```
 
+![The mouse over a "Delete" button, with the tip "Deletes the save forever." under it](tooltip.png)
+
 The tip shows up after a short `Delay` while the mouse is over the component or while it has focus, so it works with a gamepad too. It goes under the component, or over it when there isn't room, and it stays inside the UI. It draws on top of everything else.
 
 ## Popup
@@ -137,5 +159,7 @@ if (_confirmOpen) {
     Popup.Pop();
 }
 ```
+
+![A popup asking "Quit the game?" with "Yes" and "No" buttons, over a darkened menu](popup.png)
 
 Pressing outside of it or pressing back sets your variable to false. `modal: true` darkens the screen and blocks everything under it. You can pass an `anchor` rectangle to open it next to something, the way the dropdown does. A popup keeps the arrow keys and the d-pad inside itself, so when you open one with a keyboard or a gamepad, give focus to something in it with `_ui.GrabFocus`.
