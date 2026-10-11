@@ -36,6 +36,13 @@ namespace Apos.Gui {
         public float TitleHeight => GuiHelper.Font.LineHeight * TitleFontSize + TitlePadding * 2f;
         public RectangleF TitleBar => new(X, Y, Width, TitleHeight);
         public RectangleF CloseButton => HasCloseButton ? new(Right - TitleHeight, Y, TitleHeight, TitleHeight) : RectangleF.Empty;
+        /// <summary>Where the content goes: under the title bar and inside the border.</summary>
+        public RectangleF ContentArea {
+            get {
+                float b = Theme.BorderThickness;
+                return new(X + b, Y + TitleHeight, MathF.Max(Width - b * 2f, 0f), MathF.Max(Height - TitleHeight - b, 0f));
+            }
+        }
 
         /// <summary>Draws this window under its content. Null uses <see cref="DefaultLook"/>.</summary>
         public Action<FloatingWindow>? Look { get; set; }
@@ -71,8 +78,9 @@ namespace Apos.Gui {
             base.UpdatePrefSize(gameTime);
 
             float titleWidth = GuiHelper.MeasureString(Title, TitleFontSize).X + TitlePadding * 2f + (HasCloseButton ? TitleHeight : 0f);
-            PrefWidth = MathF.Max(Child != null ? PrefWidth : 0f, titleWidth);
-            PrefHeight = (Child != null ? PrefHeight : 0f) + TitleHeight;
+            float b = Theme.BorderThickness;
+            PrefWidth = MathF.Max(Child != null ? PrefWidth + b * 2f : 0f, titleWidth);
+            PrefHeight = (Child != null ? PrefHeight : 0f) + TitleHeight + b;
         }
         public override void UpdateLayout(GameTime gameTime) {
             // A window manages its own position. It isn't bigger than the UI, and scrolls its content when it doesn't fit.
@@ -89,14 +97,18 @@ namespace Apos.Gui {
             }
 
             if (Child != null) {
-                Child.Bounds = new RectangleF(X, Y + TitleHeight, Width, MathF.Max(Height - TitleHeight, 0f));
+                Child.Bounds = ContentArea;
                 LayoutChild(gameTime);
             }
         }
 
         public override void Draw(GameTime gameTime) {
             (Look ?? DefaultLook)(this);
+            // Rounds the bottom of the content to fit the window's corners. The top corners get rounded too,
+            // under the title bar, which only shows if the content's padding is smaller than the rounding.
+            GuiHelper.PushClip(ContentArea, MathF.Max(Theme.Rounding - Theme.BorderThickness, 0f));
             base.Draw(gameTime);
+            GuiHelper.PopClip();
         }
 
         /// <summary>A panel with a title bar, and a close button when it has one.</summary>
@@ -111,7 +123,7 @@ namespace Apos.Gui {
             if (drag > 0f) {
                 GuiHelper.ShapeBatch.FillRectangle(bar.Position, new Vector2(bar.Width, bar.Height), new Color(Theme.Highlight, drag), new CornerRadii(Theme.Rounding, Theme.Rounding, 0f, 0f));
             }
-            GuiHelper.ShapeBatch.FillRectangle(new Vector2(bar.Left, bar.Bottom - Theme.BorderThickness / 2f), new Vector2(bar.Width, Theme.BorderThickness), Theme.Border);
+            GuiHelper.ShapeBatch.FillRectangle(new Vector2(bar.Left, bar.Bottom - Theme.BorderThickness), new Vector2(bar.Width, Theme.BorderThickness), Theme.Border);
             GuiHelper.ShapeBatch.DrawString(GuiHelper.Font, w.Title, bar.Position + new Vector2(w.TitlePadding), w.TitleFontSize, Theme.Text);
 
             if (w.HasCloseButton) {

@@ -60,7 +60,8 @@ namespace Apos.Gui {
         public float ClipRounding { get; set; } = 0f;
 
         public override void Draw(GameTime gameTime) {
-            GuiHelper.PushClip(Clip, Clip == Bounds ? ClipRounding : 0f);
+            // The clip stack cuts the bounds down to what the parents leave visible.
+            GuiHelper.PushClip(Bounds, ClipRounding);
             foreach (var c in _childrenRenderOrder) {
                 if (Clip.Intersects(c.Clip)) {
                     c.Draw(gameTime);

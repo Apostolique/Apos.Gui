@@ -50,7 +50,7 @@ foreach (Item item in _inventory) {
 Vertical.Pop();
 ```
 
-The scrollbar draws inside the stack, over its children. Give the stack some `Padding` to leave room for it.
+The scrollbar sits inside the stack's padding. While the stack scrolls, it keeps room for it beside the children, with `ScrollbarGap` between them.
 
 `ScrollIncrement` sets how far a wheel notch goes, `ShowScrollbar` hides the scrollbar, and `OffsetX` and `OffsetY` let you scroll from your own code.
 
@@ -109,6 +109,6 @@ The arrow keys and the d-pad stay inside a floating window once the focus is in 
 
 ## Clipping
 
-Every component has a `Clip`, the part of it that its parents leave visible. Stacks cut what their children draw to that rectangle. Labels, icons and paragraphs also cut themselves when their text or texture is bigger than they are. A [custom component](./custom-components.md) that draws past its bounds can do the same with `GuiHelper.PushClip(Clip)` and `GuiHelper.PopClip()`.
+Every component has a `Clip`, the part of it that its parents leave visible. Stacks cut what their children draw to that rectangle. Labels, icons and paragraphs also cut themselves when their text or texture is bigger than they are. A [custom component](./custom-components.md) that draws past its bounds can do the same with `GuiHelper.PushClip(Clip)` and `GuiHelper.PopClip()`. A clip you push stays inside the clips that are already there, so a component in a stack that scrolls can't draw outside of it. Floating windows and popups keep their content inside their border.
 
-`ClipRounding` on a stack rounds the corners of that cut. It only applies while the stack is fully visible, since a stack that's cut by its own parent has straight edges where it was cut.
+`ClipRounding` on a stack rounds the corners of that cut. It only applies while the stack is fully visible, since a stack that's cut by its own parent has straight edges where it was cut. Only one rounded clip is active at a time though, so a stack inside a rounded one cuts with square corners. Padding at least as big as the rounding keeps the inner stacks away from the corners.

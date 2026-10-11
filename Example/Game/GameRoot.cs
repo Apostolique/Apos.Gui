@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Apos.Gui;
-using Apos.Input;
 using Apos.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -124,6 +124,8 @@ namespace GameProject {
             ProgressBar.Put(_volume);
 
             Dropdown.Put(ref _resolution, _resolutions);
+            // Taller than the screen, so the list scrolls.
+            Dropdown.Put(ref _level, _levels);
 
             Tooltip.Put();
             Button.Put("Hover me");
@@ -227,6 +229,13 @@ namespace GameProject {
             FloatingWindow.Push(ref _showWindow, "Window");
             Label.Put("Drag me by the title.", 20);
             Button.Put("A button");
+            Checkbox.Put(ref _longWindow, "Long content");
+            if (_longWindow) {
+                // Taller than the screen, so the window scrolls.
+                for (int i = 1; i <= 30; i++) {
+                    Label.Put($"Line {i}", 20, id: i);
+                }
+            }
             FloatingWindow.Pop();
         }
 
@@ -297,6 +306,9 @@ namespace GameProject {
         private float _volume = 0.8f;
         private int _resolution;
         private readonly string[] _resolutions = ["1280x720", "1920x1080", "2560x1440"];
+        private int _level;
+        private readonly string[] _levels = [.. Enumerable.Range(1, 40).Select(i => $"Level {i}")];
+        private bool _longWindow;
         private string _name = "";
         private string _notes = "";
         private readonly List<Quest> _quests = [new(1), new(2), new(3), new(4), new(5), new(6), new(7), new(8)];

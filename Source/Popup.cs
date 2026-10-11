@@ -104,7 +104,12 @@ namespace Apos.Gui {
                 GuiHelper.ShapeBatch.FillRectangle(Root.XY, Root.Size, Theme.Backdrop);
             }
             (Look ?? DefaultLook)(this);
+            // Content that scrolls stays inside the border.
+            float b = Theme.BorderThickness;
+            RectangleF inside = new(Clip.X + b, Clip.Y + b, MathF.Max(Clip.Width - b * 2f, 0f), MathF.Max(Clip.Height - b * 2f, 0f));
+            GuiHelper.PushClip(inside, MathF.Max(Theme.Rounding - b, 0f));
             base.Draw(gameTime);
+            GuiHelper.PopClip();
         }
 
         /// <summary>A background with a border.</summary>

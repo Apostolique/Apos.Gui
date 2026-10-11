@@ -83,6 +83,20 @@ namespace Apos.Gui.Tests {
             Assert.All(rows, r => Assert.True(r.Right <= v.ScrollbarThumb.Left));
         }
 
+        [Fact]
+        public void TheScrollbarStaysInsideThePadding() {
+            var (v, _, _) = Stack(Orientation.Vertical, CrossAlign.Start);
+            var size = new Vector2(110f, 50f);
+
+            Layout(v, size);
+            Assert.Equal(new RectangleF(110f - 5f - v.ScrollbarThickness, 5f, v.ScrollbarThickness, 20f), v.ScrollbarThumb);
+
+            v.OffsetY = -1000f;
+            Apos.Tweens.TweenHelper.TotalMS += 10000;
+            Layout(v, size);
+            Assert.Equal(50f - 5f, v.ScrollbarThumb.Bottom, 3);
+        }
+
         private static (StackPanel stack, Block a, Block b) Stack(Orientation orientation, CrossAlign align) {
             var ui = new IMGUI();
             StackPanel stack = null!;

@@ -84,12 +84,13 @@ namespace Apos.Gui {
             get {
                 if (!CanScroll) return RectangleF.Empty;
 
-                float track = MainOf(Size);
-                float length = MathF.Max(track * track / MainOf(ContentSize), 20f);
-                float along = -MainOffset / (MainOf(ContentSize) - track) * (track - length);
+                // The thumb moves inside the padding, in the room kept for it beside the children.
+                float track = MathF.Max(MainOf(Size) - Padding * 2f, 0f);
+                float length = MathF.Min(MathF.Max(track * MainOf(Size) / MainOf(ContentSize), 20f), track);
+                float along = Padding + -MainOffset / (MainOf(ContentSize) - MainOf(Size)) * (track - length);
                 return IsVertical
-                    ? new RectangleF(Right - ScrollbarThickness, Top + along, ScrollbarThickness, length)
-                    : new RectangleF(Left + along, Bottom - ScrollbarThickness, length, ScrollbarThickness);
+                    ? new RectangleF(Right - Padding - ScrollbarThickness, Top + along, ScrollbarThickness, length)
+                    : new RectangleF(Left + along, Bottom - Padding - ScrollbarThickness, length, ScrollbarThickness);
             }
         }
 
@@ -109,9 +110,9 @@ namespace Apos.Gui {
                     _scrollDragStart = MainOffset;
                 }
                 if (ScrollbarInteraction.Pressed && CanScroll) {
-                    float track = MainOf(Size);
+                    float track = MainOf(Size) - Padding * 2f;
                     float moved = MainOf(ScrollbarInteraction.Position - ScrollbarInteraction.PressPosition);
-                    SnapOffset(_scrollDragStart - moved * (MainOf(ContentSize) - track) / MathF.Max(track - MainOf(thumb.Size), 1f));
+                    SnapOffset(_scrollDragStart - moved * (MainOf(ContentSize) - MainOf(Size)) / MathF.Max(track - MainOf(thumb.Size), 1f));
                 }
             }
 

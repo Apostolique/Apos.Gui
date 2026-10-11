@@ -37,6 +37,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="Apos.Gui.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="../Images/Icon.png" Pack="true" PackagePath="" />
   </ItemGroup>
 

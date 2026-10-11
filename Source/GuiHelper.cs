@@ -69,7 +69,9 @@ namespace Apos.Gui {
         /// Limits the area that the ShapeBatch is allowed to draw to using the built-in
         /// Apos.Shapes clip rect. Unlike a scissor rect, this is handled in the shader so it
         /// doesn't break the current batch.
-        /// Clips don't intersect; pushing a new clip replaces the active one until it's popped.
+        /// The new clip stays inside the active one: it's the part of the rectangle that the active clip covers.
+        /// It keeps its rounding while it's inside the active clip, and takes the active clip's rounding when it covers it.
+        /// When they cut each other, the corners are square. A rotated clip replaces the active one instead.
         /// </summary>
         /// <param name="r">The clip rectangle in UI coordinates.</param>
         /// <param name="rounding">Corner radius of the clip. A value equal to half the rectangle's smallest side makes it a circle.</param>
@@ -77,6 +79,9 @@ namespace Apos.Gui {
         /// <param name="aaSize">Anti-aliasing size of the clip edge in pixels. Set to 0f for hard scissor-like edges.</param>
         public static void PushClip(RectangleF r, float rounding = 0f, float rotation = 0f, float aaSize = 1.5f) {
             _clipStack.Push(_currentClip);
+            if (_currentClip is { } c && c.Rotation == 0f && rotation == 0f) {
+                (r, rounding) = IntersectClip(r, rounding, c.Rect, c.Rounding);
+            }
             _currentClip = (r, rounding, rotation, aaSize);
             ShapeBatch.SetClipRect(r, rounding, rotation, aaSize);
         }
@@ -103,6 +108,22 @@ namespace Apos.Gui {
         /// </summary>
         public static void End() {
             ShapeBatch.End();
+        }
+        internal static (RectangleF Rect, float Rounding) IntersectClip(RectangleF r, float rounding, RectangleF active, float activeRounding) {
+            // Layout math can be off by a float rounding error, which shouldn't count as a cut.
+            const float e = 0.01f;
+            bool inside = r.Left >= active.Left - e && r.Top >= active.Top - e && r.Right <= active.Right + e && r.Bottom <= active.Bottom + e;
+            bool covers = active.Left >= r.Left - e && active.Top >= r.Top - e && active.Right <= r.Right + e && active.Bottom <= r.Bottom + e;
+
+            if (inside && covers) return (r, MathF.Max(rounding, activeRounding));
+            if (inside) return (r, rounding);
+            if (covers) return (active, activeRounding);
+
+            float left = MathF.Max(r.Left, active.Left);
+            float top = MathF.Max(r.Top, active.Top);
+            float right = MathF.Min(r.Right, active.Right);
+            float bottom = MathF.Min(r.Bottom, active.Bottom);
+            return (new RectangleF(left, top, MathF.Max(right - left, 0f), MathF.Max(bottom - top, 0f)), 0f);
         }
         private static void ApplyClip((RectangleF Rect, float Rounding, float Rotation, float AaSize)? clip) {
             if (clip is { } c) {
