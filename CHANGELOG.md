@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+Nothing yet!
+
+## [3.0.0] - 2026-10-10
+
 ### Added
 
 - Touch input for every component
@@ -61,3 +65,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Floating windows losing their order every frame
 - Components getting another component's state when their ids collided
+
+[Unreleased]: https://github.com/Apostolique/Apos.Gui/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/Apostolique/Apos.Gui/compare/v2.3.2-alpha...v3.0.0
