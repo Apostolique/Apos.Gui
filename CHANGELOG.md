@@ -341,6 +341,184 @@ Nothing yet!
 
 - Uses newer SpriteFontPlus and MonoGame.Framework
 
+## [0.14.1] - 2020-05-25
+
+### Fixed
+
+- ComponentFocus setting the focus to null
+
+## [0.14.0] - 2020-05-25
+
+### Changed
+
+- GetPrevious is now GetPrev
+- Uses SpriteFontPlus 0.8.0.37
+
+## [0.13.0] - 2020-05-25
+
+### Changed
+
+- Uses Apos.Input 1.0.0
+
+## [0.12.2] - 2020-03-22
+
+### Changed
+
+- Uses Apos.Input 0.8.2
+
+## [0.12.1] - 2020-01-12
+
+### Added
+
+- GuiHelper.Setup, which sets up Apos.Input and the font
+
+### Changed
+
+- DrawString and MeasureString are back on GuiHelper
+- Uses Apos.Input 0.8.0
+
+## [0.11.5] - 2020-01-12
+
+### Changed
+
+- Uses Apos.Input 0.7.0
+
+## [0.11.4] - 2020-01-05
+
+### Fixed
+
+- Space, Enter and the gamepad's A each press a button on their own again
+
+## [0.11.3] - 2020-01-05 [YANKED]
+
+### Fixed
+
+- Space and Enter each press a button on their own, while the gamepad's A doesn't press it at all
+
+## [0.11.2] - 2020-01-05 [YANKED]
+
+### Changed
+
+- The defaults use Apos.Input's conditions, and a button needs Space, Enter and A held together
+- Uses SpriteFontPlus 0.7.1.25 and Apos.Input 0.6.2
+
+## [0.11.1] - 2019-11-24
+
+### Changed
+
+- MonoGame.Extended is a regular dependency
+- Uses MonoGame.Framework.DesktopGL.Core 3.7.0.7 and Apos.Input 0.6.1
+
+## [0.10.1] - 2019-09-25
+
+### Changed
+
+- Uses Apos.Input 0.5.1
+
+## [0.10.0] - 2019-09-18
+
+### Changed
+
+- Uses MonoGame.Extended 3.7.0, SpriteFontPlus 0.7.0.22 and Apos.Input 0.4.0
+
+### Removed
+
+- The .NET Framework 4.5 target
+
+## [0.9.14] - 2019-03-07
+
+### Fixed
+
+- Centering in LayoutVerticalCenter
+
+## [0.9.13] - 2019-03-05
+
+### Changed
+
+- Uses Apos.Input 0.2.2
+
+## [0.9.12] - 2019-03-05
+
+### Changed
+
+- Uses Apos.Input 0.2.1
+
+## [0.9.11] - 2019-02-23
+
+### Fixed
+
+- LayoutVertical
+- ClippingRect's get and set calling each other
+- Border's ClippingRect
+
+## [0.9.10] - 2019-02-21
+
+### Added
+
+- XML docs on GuiHelper, Default and the components
+
+### Fixed
+
+- Icon not being public
+
+## [0.9.8] - 2019-02-19
+
+### Added
+
+- Icon
+- An example project
+
+### Changed
+
+- Uses SpriteFontPlus 0.6.2.14 and Apos.Input 0.1.4
+
+### Removed
+
+- The Newtonsoft.Json dependency
+
+## [0.9.7] - 2019-02-18
+
+### Added
+
+- ScreenToUI and UIToScreen on a single axis
+- Scrolling over panels in the defaults
+- XML documentation in the package
+
+### Changed
+
+- Input is ignored while the game isn't active
+- Uses SpriteFontPlus 0.6.1.14
+
+## [0.9.5] - 2019-02-06
+
+### Changed
+
+- DefaultInput is now Default
+
+## [0.9.2] - 2019-02-06 [YANKED]
+
+### Changed
+
+- DefaultInput is now Defaults, with more defaults
+- Uses Apos.Input 0.1.1
+
+## [0.9.1] - 2019-02-04
+
+### Added
+
+- Documentation
+
+### Changed
+
+- Input goes through Apos.Input 0.1.0
+
+## [0.9.0] - 2019-02-01
+
+### Added
+
+- Button, Label, LabelDynamic, Border, Panel, PanelVerticalScroll, ScreenPanel, LayoutVertical, LayoutVerticalCenter and Switcher
+- Focus that moves with the keyboard and a gamepad, and mouse input
+
 [Unreleased]: https://github.com/Apostolique/Apos.Gui/compare/v3.0.0...HEAD
 [3.0.0]: https://github.com/Apostolique/Apos.Gui/compare/v2.3.2-alpha...v3.0.0
 [2.3.2-alpha]: https://github.com/Apostolique/Apos.Gui/compare/v2.3.1-alpha...v2.3.2-alpha
@@ -371,3 +549,26 @@ Nothing yet!
 [0.15.0]: https://github.com/Apostolique/Apos.Gui/compare/v0.14.3...v0.15.0
 [0.14.3]: https://github.com/Apostolique/Apos.Gui/compare/v0.14.2...v0.14.3
 [0.14.2]: https://github.com/Apostolique/Apos.Gui/releases/tag/v0.14.2
+[0.14.1]: https://www.nuget.org/packages/Apos.Gui/0.14.1
+[0.14.0]: https://www.nuget.org/packages/Apos.Gui/0.14.0
+[0.13.0]: https://www.nuget.org/packages/Apos.Gui/0.13.0
+[0.12.2]: https://www.nuget.org/packages/Apos.Gui/0.12.2
+[0.12.1]: https://www.nuget.org/packages/Apos.Gui/0.12.1
+[0.11.5]: https://www.nuget.org/packages/Apos.Gui/0.11.5
+[0.11.4]: https://www.nuget.org/packages/Apos.Gui/0.11.4
+[0.11.3]: https://www.nuget.org/packages/Apos.Gui/0.11.3
+[0.11.2]: https://www.nuget.org/packages/Apos.Gui/0.11.2
+[0.11.1]: https://www.nuget.org/packages/Apos.Gui/0.11.1
+[0.10.1]: https://www.nuget.org/packages/Apos.Gui/0.10.1
+[0.10.0]: https://www.nuget.org/packages/Apos.Gui/0.10.0
+[0.9.14]: https://www.nuget.org/packages/Apos.Gui/0.9.14
+[0.9.13]: https://www.nuget.org/packages/Apos.Gui/0.9.13
+[0.9.12]: https://www.nuget.org/packages/Apos.Gui/0.9.12
+[0.9.11]: https://www.nuget.org/packages/Apos.Gui/0.9.11
+[0.9.10]: https://www.nuget.org/packages/Apos.Gui/0.9.10
+[0.9.8]: https://www.nuget.org/packages/Apos.Gui/0.9.8
+[0.9.7]: https://www.nuget.org/packages/Apos.Gui/0.9.7
+[0.9.5]: https://www.nuget.org/packages/Apos.Gui/0.9.5
+[0.9.2]: https://www.nuget.org/packages/Apos.Gui/0.9.2
+[0.9.1]: https://www.nuget.org/packages/Apos.Gui/0.9.1
+[0.9.0]: https://www.nuget.org/packages/Apos.Gui/0.9.0
