@@ -21,6 +21,14 @@ _ui.Bindings.MoveDown = new RepeatCondition(new Track.KeyboardCondition(Keys.S),
 
 `Bindings.UsesPointer` turns the mouse and touch off for the whole UI. A single component can turn them off with its `Interaction.UsesMouse` and `Interaction.UsesTouch`.
 
+Anything that reacts to the mouse, like a button, a floating window or a popup, consumes Apos.Input's pointer while the mouse is over it. A label doesn't, so plain text doesn't block the game. The game can check the pointer after the UI's `UpdateEnd`, the same way it checks whether a click was used:
+
+```csharp
+if (Track.MouseCondition.IsUnique(MouseSensor.Pointer)) {
+    // The mouse isn't over anything in the UI that reacts to it.
+}
+```
+
 ## Scale and area
 
 `Scale` makes the whole UI bigger or smaller. At 2, a 100 unit wide button takes 200 pixels.
