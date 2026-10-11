@@ -217,6 +217,24 @@ namespace Apos.Gui.Tests {
         }
 
         [Fact]
+        public void WindowOpensWhereItsStartPutsIt() {
+            FloatingWindow w = null!;
+            void Build() {
+                w = FloatingWindow.Push("Map");
+                w.StartAlign = new Vector2(1f, 0f);
+                w.StartOffset = new Vector2(-10f, 10f);
+                Label.Put("North");
+                FloatingWindow.Pop();
+            }
+
+            Frame(Build);
+            Frame(Build);
+
+            Assert.Equal(800f - 10f, w.Right, 1);
+            Assert.Equal(10f, w.Top, 1);
+        }
+
+        [Fact]
         public void WindowCloseButtonClosesIt() {
             bool open = true;
             FloatingWindow w = null!;
@@ -232,6 +250,38 @@ namespace Apos.Gui.Tests {
             Click(Build, w.CloseButton.Center);
 
             Assert.False(open);
+        }
+
+        [Fact]
+        public void APlayerUIGetsItsGamePadNextToAUIWithoutGamePads() {
+            _ui.Bindings = Bindings.ForKeyboardAndMouse();
+            var player = new IMGUI { Area = new RectangleF(0, 240, 800, 240), Bindings = Bindings.ForGamePad(0) };
+            bool ready = false;
+            Button back = null!;
+            Checkbox c = null!;
+            void TwoUIs() {
+                _time += TimeSpan.FromMilliseconds(16);
+                var gameTime = new GameTime(_time, TimeSpan.FromMilliseconds(16));
+                GuiHelper.UpdateSetup(gameTime);
+                _ui.UpdateStart(gameTime);
+                back = Button.Put("Back");
+                _ui.UpdateEnd(gameTime);
+                player.UpdateStart(gameTime);
+                c = Checkbox.Put(ref ready, "Ready");
+                player.UpdateEnd(gameTime);
+                GuiHelper.UpdateCleanup();
+            }
+
+            TwoUIs();
+            _ui.GrabFocus(back);
+            player.GrabFocus(c);
+            _input.GamePads[0] = new GamePadState(new GamePadThumbSticks(), new GamePadTriggers(), new GamePadButtons(Buttons.A), new GamePadDPad());
+            TwoUIs();
+            _input.GamePads[0] = new GamePadState();
+            TwoUIs();
+
+            Assert.True(ready);
+            Assert.False(back.Clicked);
         }
 
         /// <summary>Presses the left mouse button at a spot for one frame, then lets it go.</summary>

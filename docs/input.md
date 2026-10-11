@@ -68,6 +68,12 @@ _players[1].Area = new RectangleF(half, 0, half, GraphicsDevice.Viewport.Height)
 
 Draw each one after the other.
 
+A UI with the default bindings listens to every gamepad, so it would take the players' presses before their own UIs get them. A UI that stays on screen next to the players, like a bar with a back button, can use `Bindings.ForKeyboardAndMouse` instead:
+
+```csharp
+_ui.Bindings = Bindings.ForKeyboardAndMouse();
+```
+
 ## UI in a render target
 
 A UI can draw to a render target that you then show somewhere else, like on a screen inside your game world. Set the area to the render target's size and draw it while the render target is set:

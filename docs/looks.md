@@ -7,14 +7,14 @@ This guide will show you how to change the way the built-in components draw.
 `Theme` holds the colors and sizes that every built-in look reads. It comes with two presets:
 
 ```csharp
-Theme.UseOutline(); // Thin borders on black. This is the default.
-Theme.UseFilled();  // Filled surfaces, rounded corners and a blue accent.
+Theme.UseFilled();  // Filled surfaces, rounded corners and a blue accent. This is the default.
+Theme.UseOutline(); // Thin borders on black.
 ```
 
 You can start from one and change what you want:
 
 ```csharp
-Theme.UseFilled();
+Theme.UseOutline();
 Theme.Accent = new Color(230, 160, 40);
 Theme.Rounding = 10f;
 ```

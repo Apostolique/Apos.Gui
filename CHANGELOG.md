@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Touch input for every component
 - Interaction, the hover, press, click, drag and focus handling that components share
 - Directional focus with the arrow keys and the d-pad, with IParent.Navigate for custom layouts and focus scopes for popups and windows
-- Bindings, the inputs of one UI, with Bindings.ForGamePad for split screen
+- Bindings, the inputs of one UI, with Bindings.ForGamePad and Bindings.ForKeyboardAndMouse for split screen
 - Scale, Area, PointerTransform and Matrix on IMGUI for scaled, split screen and render target UIs
 - IMGUI.Put and IMGUI.Push to write custom components, with SingleParent and ListParent as bases
 - Theme, and a Look on every component to restyle it
@@ -29,7 +29,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - IMGUI.DrawOnTop to draw over the whole UI, and IMGUI.Focused
 - Room for the scrollbar beside the children of a stack that scrolls
 - Theme.UseOutline and Theme.UseFilled, and Surface, Panel and Accent colors
-- A title bar, a close button and Content on FloatingWindow
+- A title bar, a close button, Content, StartAlign and StartOffset on FloatingWindow
 - Delay, Gap, Padding and Bubble on Tooltip
 
 ### Changed

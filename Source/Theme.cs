@@ -28,10 +28,10 @@ namespace Apos.Gui {
         public static float Rounding { get; set; }
 
         static Theme() {
-            UseOutline();
+            UseFilled();
         }
 
-        /// <summary>Thin borders on black, with white for focus and what's picked. This is the default.</summary>
+        /// <summary>Thin borders on black, with white for focus and what's picked.</summary>
         public static void UseOutline() {
             Text = new Color(200, 200, 200);
             Border = new Color(76, 76, 76);
@@ -44,7 +44,7 @@ namespace Apos.Gui {
             BorderThickness = 2f;
             Rounding = 0f;
         }
-        /// <summary>Filled surfaces a bit lighter than their panels, rounded corners, and a blue accent.</summary>
+        /// <summary>Filled surfaces a bit lighter than their panels, rounded corners, and a blue accent. This is the default.</summary>
         public static void UseFilled() {
             Text = new Color(228, 231, 237);
             Border = new Color(58, 63, 75);

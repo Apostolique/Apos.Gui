@@ -7,7 +7,7 @@ using MonoGame.Extended;
 namespace Apos.Gui {
     /// <summary>
     /// A window you drag by its title bar. The components put after it go in its <see cref="Content"/>, a vertical stack.
-    /// It opens in the middle of the UI, stays inside it, and comes to the front when it's pressed or gets focus.
+    /// It opens where <see cref="StartAlign"/> and <see cref="StartOffset"/> put it, stays inside the UI, and comes to the front when it's pressed or gets focus.
     /// </summary>
     public class FloatingWindow(long id) : SingleParent(id) {
         public override bool IsFocusable { get; set; } = true;
@@ -21,6 +21,13 @@ namespace Apos.Gui {
         public int TitleFontSize { get; set; } = 24;
         /// <summary>Space around the title, in UI units.</summary>
         public float TitlePadding { get; set; } = 8f;
+        /// <summary>
+        /// Where the window opens in the UI, from 0 to 1 on each axis. 0 is the left or the top, 1 is the right or the bottom.
+        /// The default, 0.5, centers it. Only read when the window opens.
+        /// </summary>
+        public Vector2 StartAlign { get; set; } = new(0.5f, 0.5f);
+        /// <summary>Moves the window from where <see cref="StartAlign"/> puts it when it opens, in UI units.</summary>
+        public Vector2 StartOffset { get; set; } = Vector2.Zero;
         /// <summary>Shows a close button in the title bar, and lets <see cref="Bindings.Back"/> close the window while the focus is in it.</summary>
         public bool HasCloseButton { get; set; }
         /// <summary>True on the frame something asked the window to close.</summary>
@@ -87,7 +94,7 @@ namespace Apos.Gui {
             Width = MathF.Min(PrefWidth, Root.Width);
             Height = MathF.Min(PrefHeight, Root.Height);
             if (!_placed) {
-                XY = new Vector2(Root.Width - Width, Root.Height - Height) / 2f;
+                XY = new Vector2(Root.Width - Width, Root.Height - Height) * StartAlign + StartOffset;
                 _placed = true;
             }
             X = MathHelper.Clamp(X, 0f, MathF.Max(Root.Width - Width, 0f));

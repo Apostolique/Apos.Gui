@@ -10,9 +10,10 @@ namespace Apos.Gui {
     /// </summary>
     public class Bindings {
         /// <summary>Keyboard, mouse, touch and every gamepad.</summary>
-        public Bindings() : this(null) { }
-        private Bindings(int? gamePad) {
+        public Bindings() : this(null, true) { }
+        private Bindings(int? gamePad, bool usesGamePads) {
             _gamePad = gamePad;
+            _usesGamePads = usesGamePads;
             bool desktop = gamePad == null;
 
             MouseInteraction = new Track.MouseCondition(MouseButton.LeftButton);
@@ -41,7 +42,12 @@ namespace Apos.Gui {
         /// For split screen, where each player has a UI.
         /// </summary>
         /// <param name="index">The gamepad's index, from 0.</param>
-        public static Bindings ForGamePad(int index) => new(index) { UsesPointer = false };
+        public static Bindings ForGamePad(int index) => new(index, true) { UsesPointer = false };
+        /// <summary>
+        /// Keyboard, mouse and touch, without gamepads.
+        /// For a UI that shares the screen with split screen UIs, so it doesn't take their gamepads' presses.
+        /// </summary>
+        public static Bindings ForKeyboardAndMouse() => new(null, false);
 
         /// <summary>Whether the mouse and touch can hover and press components in this UI.</summary>
         public bool UsesPointer { get; set; } = true;
@@ -79,7 +85,10 @@ namespace Apos.Gui {
         public ICondition Paste { get; set; }
 
         private ICondition? Key(Keys key) => _gamePad == null ? new Track.KeyboardCondition(key) : null;
-        private ICondition Pad(GamePadButton button) {
+        private ICondition? Pad(GamePadButton button) {
+            if (!_usesGamePads) {
+                return null;
+            }
             if (_gamePad is int index) {
                 return new Track.GamePadCondition(button, index);
             }
@@ -108,5 +117,6 @@ namespace Apos.Gui {
             );
 
         private readonly int? _gamePad;
+        private readonly bool _usesGamePads;
     }
 }

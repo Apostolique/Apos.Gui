@@ -49,6 +49,8 @@ namespace GameProject {
         protected override void Update(GameTime gameTime) {
             GuiHelper.UpdateSetup(gameTime);
 
+            // The players' gamepads belong to their own UIs while the screen is split.
+            _ui.Bindings = _screen == Screen.SplitScreen ? _withoutGamePads : _allInputs;
             _ui.UpdateStart(gameTime);
             switch (_screen) {
                 case Screen.Main: MainMenu(); break;
@@ -204,8 +206,12 @@ namespace GameProject {
         private void SplitScreenBar() {
             Horizontal.Push().Align = CrossAlign.Center;
             BackButton();
-            Label.Put("Each half listens to its own gamepad. The mouse doesn't reach them.", 20);
+            Label.Put("Each half listens to its own gamepad, and B comes back here. The mouse doesn't reach them.", 20);
             Horizontal.Pop();
+
+            foreach (IMGUI p in _players) {
+                if (p.Bindings.Back.Pressed()) _screen = Screen.Main;
+            }
         }
 
         private void Player(GameTime gameTime, int index) {
@@ -226,7 +232,10 @@ namespace GameProject {
         }
 
         private void FloatingWindowDemo() {
-            FloatingWindow.Push(ref _showWindow, "Window");
+            FloatingWindow w = FloatingWindow.Push(ref _showWindow, "Window");
+            // Opens in the top right corner, away from the settings.
+            w.StartAlign = new Vector2(1f, 0f);
+            w.StartOffset = new Vector2(-20f, 20f);
             Label.Put("Drag me by the title.", 20);
             Button.Put("A button");
             Checkbox.Put(ref _longWindow, "Long content");
@@ -291,6 +300,8 @@ namespace GameProject {
         private readonly GraphicsDeviceManager _graphics;
         private IMGUI _ui = null!;
         private IMGUI[] _players = [];
+        private readonly Bindings _allInputs = new();
+        private readonly Bindings _withoutGamePads = Bindings.ForKeyboardAndMouse();
         private Texture2DRegion _apos = null!;
 
         private Screen _screen = Screen.Main;
@@ -298,7 +309,7 @@ namespace GameProject {
         private bool _focusQuit;
         private bool _showWindow;
         private float _scale = 1f;
-        private int _style;
+        private int _style = 1;
 
         private int _tab;
         private bool _music = true;

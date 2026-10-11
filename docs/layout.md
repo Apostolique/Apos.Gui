@@ -84,7 +84,7 @@ Label.Put("Top left corner");
 
 ## FloatingWindow
 
-A window with a title bar you drag it by. It opens in the middle of the UI, stays inside it, and comes to the front when it's pressed or gets focus.
+A window with a title bar you drag it by. It opens in the middle of the UI unless you pick another spot, stays inside it, and comes to the front when it's pressed or gets focus.
 
 ```csharp
 FloatingWindow.Push("Inventory");
@@ -104,6 +104,16 @@ if (_inventoryOpen) {
 ```
 
 Its components go in `Content`, a vertical stack, so you can change its spacing and padding there. It scrolls when the window is taller than the UI.
+
+`StartAlign` picks where it opens, from 0 to 1 on each axis, and `StartOffset` moves it from there. This one opens in the top right corner, 20 units from the edges:
+
+```csharp
+FloatingWindow w = FloatingWindow.Push("Map");
+w.StartAlign = new Vector2(1f, 0f);
+w.StartOffset = new Vector2(-20f, 20f);
+```
+
+They're only read when the window opens. After that it stays where the player drags it.
 
 The arrow keys and the d-pad stay inside a floating window once the focus is in it. [Focus](./focus.md) explains why.
 
