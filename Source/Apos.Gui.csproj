@@ -31,7 +31,7 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.DesktopGL" PrivateAssets="All" Version="3.8.2.1105" />
     <PackageReference Include="MonoGame.Extended" Version="5.3.1" />
-    <PackageReference Include="Apos.Input" Version="3.1.0" />
+    <PackageReference Include="Apos.Input" Version="3.2.0" />
     <PackageReference Include="Apos.Shapes" Version="0.8.5" />
     <PackageReference Include="Apos.Tweens" Version="0.2.0" />
   </ItemGroup>

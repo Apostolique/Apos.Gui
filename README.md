@@ -26,7 +26,7 @@ This library is designed to allow the creation of custom user facing UIs. You us
 
 ## Features
 
-* Mouse, touch, keyboard and gamepad, with arrow and d-pad navigation that works on any layout
+* Mouse, touch, keyboard and gamepad, with arrow, d-pad and stick navigation that works on any layout
 * Buttons, checkboxes, radio buttons, sliders, progress bars, textboxes, dropdowns, tabs, tooltips, popups
 * Stacks with spacing, padding, alignment and scrolling
 * Text wrapping, and textboxes with selection, copy and paste

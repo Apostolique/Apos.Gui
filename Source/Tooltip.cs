@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Apos.Input;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using Track = Apos.Input.Track;
 
 namespace Apos.Gui {
     /// <summary>
@@ -42,7 +43,7 @@ namespace Apos.Gui {
             bool wanted = false;
             if (Main != null && Tip != null) {
                 // Checked before the component takes the hover, so something drawn over it still blocks the tip.
-                bool mouseOver = Root.Bindings.UsesPointer && Pointer.Source == PointerSource.Mouse && Root.Hover == null && Main.Clip.Contains(Root.Mouse);
+                bool mouseOver = Root.Bindings.UsesPointer && Pointer.Source == PointerSource.Mouse && Track.MouseCondition.IsUnique(MouseSensor.Pointer) && Main.Clip.Contains(Root.Mouse);
                 wanted = mouseOver || HasFocus(Main);
             }
 

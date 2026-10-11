@@ -64,7 +64,7 @@ namespace Apos.Gui {
             // Whatever is under the popup shouldn't react to it. A modal popup covers the whole screen.
             bool covers = Modal || Clip.Contains(mouse);
             if (covers) {
-                ui.TryClaimHover(this);
+                Track.MouseCondition.Consume(MouseSensor.Pointer);
                 bindings.MouseInteraction.Pressed();
                 Track.MouseCondition.Scrolled();
             }

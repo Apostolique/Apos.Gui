@@ -89,7 +89,7 @@ protected override void Draw(GameTime gameTime) {
 Without any setup:
 
 * The mouse and touch press whatever is under them.
-* The arrow keys and the d-pad move the focus to the closest component in that direction.
+* The arrow keys, the d-pad and the left stick move the focus to the closest component in that direction.
 * Tab and Shift+Tab go through the components in the order you put them.
 * Space, Enter and the gamepad's A button press the focused component.
 * Escape and the gamepad's B button close popups.

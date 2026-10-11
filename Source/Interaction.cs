@@ -82,8 +82,12 @@ namespace Apos.Gui {
             Vector2 mouse = ui.Mouse;
             bool mouseInside = UsesMouse && bindings.UsesPointer && Apos.Input.Pointer.Source == PointerSource.Mouse && InputHelper.IsActive && hit.Contains(mouse);
 
+            // Components check from the top of the draw order down, so the first one under the mouse takes the pointer.
             IComponent? capture = ui.MouseCapture;
-            Hovered = mouseInside && (capture == null || capture == owner) && ui.TryClaimHover(owner);
+            Hovered = mouseInside && (capture == owner || capture == null && Track.MouseCondition.IsUnique(MouseSensor.Pointer));
+            if (Hovered) {
+                Track.MouseCondition.Consume(MouseSensor.Pointer);
+            }
 
             Vector2 old = Position;
             if (Source == InteractionSource.None) {

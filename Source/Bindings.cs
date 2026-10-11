@@ -20,10 +20,10 @@ namespace Apos.Gui {
             ButtonInteraction = Any(Key(Keys.Space), Key(Keys.Enter), Pad(GamePadButton.A));
             FocusPrev = Any(desktop ? new AllCondition(Shift(), new Track.KeyboardCondition(Keys.Tab)) : null);
             FocusNext = Any(Key(Keys.Tab));
-            MoveLeft = Repeat(Any(Key(Keys.Left), Pad(GamePadButton.Left)));
-            MoveRight = Repeat(Any(Key(Keys.Right), Pad(GamePadButton.Right)));
-            MoveUp = Repeat(Any(Key(Keys.Up), Pad(GamePadButton.Up)));
-            MoveDown = Repeat(Any(Key(Keys.Down), Pad(GamePadButton.Down)));
+            MoveLeft = Repeat(Any(Key(Keys.Left), Pad(GamePadButton.Left), Pad(GamePadButton.LeftThumbstickLeft)));
+            MoveRight = Repeat(Any(Key(Keys.Right), Pad(GamePadButton.Right), Pad(GamePadButton.LeftThumbstickRight)));
+            MoveUp = Repeat(Any(Key(Keys.Up), Pad(GamePadButton.Up), Pad(GamePadButton.LeftThumbstickUp)));
+            MoveDown = Repeat(Any(Key(Keys.Down), Pad(GamePadButton.Down), Pad(GamePadButton.LeftThumbstickDown)));
             OpenKeyboard = Any(Pad(GamePadButton.A));
             Back = Any(Key(Keys.Escape), Pad(GamePadButton.B), Pad(GamePadButton.Back), desktop ? new Track.MouseCondition(MouseButton.XButton2) : null);
 

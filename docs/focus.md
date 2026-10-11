@@ -20,9 +20,9 @@ if (_justOpened) {
 
 Tab goes to the next focusable component in the order you put them, and Shift+Tab to the previous one. It goes through everything in the UI.
 
-## Arrows and the d-pad
+## Arrows, the d-pad and the left stick
 
-The arrow keys and the d-pad move the focus in a direction. Only components that start past the focused one's edge count.
+The arrow keys, the d-pad and the left stick move the focus in a direction. Only components that start past the focused one's edge count.
 
 Up and down go to the next row, then to the component in that row that's the most in line with the focused one. So moving down a menu stops at every row, even when a row is off center.
 

@@ -54,6 +54,26 @@ namespace Apos.Gui.Tests {
         }
 
         [Fact]
+        public void TheLeftStickMovesTheFocus() {
+            Button play = null!, quit = null!;
+            void Build() {
+                Vertical.Push();
+                play = Button.Put("Play");
+                quit = Button.Put("Quit");
+                Vertical.Pop();
+            }
+
+            Frame(Build);
+            _ui.GrabFocus(play);
+            _input.GamePads[0] = new GamePadState(new GamePadThumbSticks(new Vector2(0.1f, -0.9f), Vector2.Zero), new GamePadTriggers(), new GamePadButtons(), new GamePadDPad());
+            Frame(Build);
+            _input.GamePads[0] = new GamePadState();
+            Frame(Build);
+
+            Assert.True(quit.IsFocused);
+        }
+
+        [Fact]
         public void AFocusedSliderTakesTheArrowBeforeNavigation() {
             float value = 0f;
             Slider s = null!;

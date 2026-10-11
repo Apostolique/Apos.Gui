@@ -4,6 +4,7 @@ using System.Linq;
 using Apos.Input;
 using Microsoft.Xna.Framework;
 using MonoGame.Extended;
+using Track = Apos.Input.Track;
 
 namespace Apos.Gui {
     // NOTE: IMGUI is NOT recursive. It should always be the top level component.
@@ -84,6 +85,10 @@ namespace Apos.Gui {
         /// </summary>
         /// <param name="gameTime">Current gametime.</param>
         public override void UpdateInput(GameTime gameTime) {
+            // A drag keeps the pointer, so what it moves over doesn't light up.
+            if (MouseCapture != null) {
+                Track.MouseCondition.Consume(MouseSensor.Pointer);
+            }
             base.UpdateInput(gameTime);
 
             if (!_nextPressed && Bindings.FocusPrev.Pressed()) {
@@ -331,21 +336,6 @@ namespace Apos.Gui {
         }
         /// <summary>The component that has focus, or null.</summary>
         public IComponent? Focused => _focus is long id && _activeComponents.TryGetValue(id, out IComponent? c) ? c : null;
-        /// <summary>
-        /// Claims the mouse hover for this frame. Components check from the top of the draw order down,
-        /// so the first one under the mouse gets it and the ones below it don't.
-        /// </summary>
-        /// <returns>True if the component got the hover or already had it this frame.</returns>
-        public bool TryClaimHover(IComponent c) {
-            if (_hoverFrame == CurrentFrame) {
-                return _hover == c;
-            }
-            _hover = c;
-            _hoverFrame = CurrentFrame;
-            return true;
-        }
-        /// <summary>The component under the mouse this frame, if one claimed it.</summary>
-        public IComponent? Hover => _hoverFrame == CurrentFrame ? _hover : null;
         /// <summary>The component holding a mouse press. While it's set, other components don't get hovered.</summary>
         public IComponent? MouseCapture { get; set; }
 
@@ -533,8 +523,6 @@ namespace Apos.Gui {
             }
         }
         private long? _focus;
-        private IComponent? _hover;
-        private uint _hoverFrame;
         private IParent _currentParent;
         private int _maxChildren = 0;
         private int _childrenCount = 0;

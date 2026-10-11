@@ -35,7 +35,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 
 - Targets .NET 10
-- Uses Apos.Shapes 0.8.5 and Apos.Input 3.1.0
+- Uses Apos.Shapes 0.8.5 and Apos.Input 3.2.0
 - GuiHelper.Setup takes a ShapeFont instead of a FontSystem
 - Font sizes are em sizes
 - Ids are 64 bit and include the caller's file, so every Put and Push has a file parameter
