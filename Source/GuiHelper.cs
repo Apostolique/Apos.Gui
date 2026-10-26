@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Apos.Input;
 using Apos.Shapes;
 using Apos.Tweens;
@@ -69,28 +68,22 @@ namespace Apos.Gui {
         /// Limits the area that the ShapeBatch is allowed to draw to using the built-in
         /// Apos.Shapes clip rect. Unlike a scissor rect, this is handled in the shader so it
         /// doesn't break the current batch.
-        /// The new clip stays inside the active one: it's the part of the rectangle that the active clip covers.
-        /// It keeps its rounding while it's inside the active clip, and takes the active clip's rounding when it covers it.
-        /// When they cut each other, the corners are square. A rotated clip replaces the active one instead.
+        /// The new clip stays inside the active ones, so draws only land where all of them overlap.
+        /// Each clip keeps its own rounding and rotation. Up to four clips that cut across each other
+        /// apply at once, while a clip that sits whole inside another doesn't count toward that.
         /// </summary>
         /// <param name="r">The clip rectangle in UI coordinates.</param>
         /// <param name="rounding">Corner radius of the clip. A value equal to half the rectangle's smallest side makes it a circle.</param>
         /// <param name="rotation">Rotation of the clip around its center, in radians.</param>
         /// <param name="aaSize">Anti-aliasing size of the clip edge in pixels. Set to 0f for hard scissor-like edges.</param>
         public static void PushClip(RectangleF r, float rounding = 0f, float rotation = 0f, float aaSize = 1.5f) {
-            _clipStack.Push(_currentClip);
-            if (_currentClip is { } c && c.Rotation == 0f && rotation == 0f) {
-                (r, rounding) = IntersectClip(r, rounding, c.Rect, c.Rounding);
-            }
-            _currentClip = (r, rounding, rotation, aaSize);
-            ShapeBatch.SetClipRect(r, rounding, rotation, aaSize);
+            ShapeBatch.PushClip(r, rounding, rotation, aaSize);
         }
         /// <summary>
-        /// Restores the clip rectangle that was active before the matching <see cref="PushClip"/>.
+        /// Takes off the clip the matching <see cref="PushClip"/> added.
         /// </summary>
         public static void PopClip() {
-            _currentClip = _clipStack.Pop();
-            ApplyClip(_currentClip);
+            ShapeBatch.PopClip();
         }
 
         /// <summary>
@@ -98,8 +91,6 @@ namespace Apos.Gui {
         /// IMGUI.Draw calls this for you. Only call it if you draw the UI yourself.
         /// </summary>
         public static void Begin() {
-            _currentClip = null;
-            _clipStack.Clear();
             ShapeBatch.Begin(CurrentIMGUI.Matrix, samplerState: GuiSampler);
             ShapeBatch.SetClipRect(null);
         }
@@ -109,31 +100,5 @@ namespace Apos.Gui {
         public static void End() {
             ShapeBatch.End();
         }
-        internal static (RectangleF Rect, float Rounding) IntersectClip(RectangleF r, float rounding, RectangleF active, float activeRounding) {
-            // Layout math can be off by a float rounding error, which shouldn't count as a cut.
-            const float e = 0.01f;
-            bool inside = r.Left >= active.Left - e && r.Top >= active.Top - e && r.Right <= active.Right + e && r.Bottom <= active.Bottom + e;
-            bool covers = active.Left >= r.Left - e && active.Top >= r.Top - e && active.Right <= r.Right + e && active.Bottom <= r.Bottom + e;
-
-            if (inside && covers) return (r, MathF.Max(rounding, activeRounding));
-            if (inside) return (r, rounding);
-            if (covers) return (active, activeRounding);
-
-            float left = MathF.Max(r.Left, active.Left);
-            float top = MathF.Max(r.Top, active.Top);
-            float right = MathF.Min(r.Right, active.Right);
-            float bottom = MathF.Min(r.Bottom, active.Bottom);
-            return (new RectangleF(left, top, MathF.Max(right - left, 0f), MathF.Max(bottom - top, 0f)), 0f);
-        }
-        private static void ApplyClip((RectangleF Rect, float Rounding, float Rotation, float AaSize)? clip) {
-            if (clip is { } c) {
-                ShapeBatch.SetClipRect(c.Rect, c.Rounding, c.Rotation, c.AaSize);
-            } else {
-                ShapeBatch.SetClipRect(null);
-            }
-        }
-
-        private static (RectangleF Rect, float Rounding, float Rotation, float AaSize)? _currentClip = null;
-        private static Stack<(RectangleF Rect, float Rounding, float Rotation, float AaSize)?> _clipStack = new Stack<(RectangleF Rect, float Rounding, float Rotation, float AaSize)?>();
     }
 }

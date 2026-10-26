@@ -111,10 +111,12 @@ namespace Apos.Gui {
 
         public override void Draw(GameTime gameTime) {
             (Look ?? DefaultLook)(this);
-            // Rounds the bottom of the content to fit the window's corners. The top corners get rounded too,
-            // under the title bar, which only shows if the content's padding is smaller than the rounding.
-            GuiHelper.PushClip(ContentArea, MathF.Max(Theme.Rounding - Theme.BorderThickness, 0f));
+            // The window's rounded inside cuts the bottom corners while the title bar's edge stays straight.
+            float b = Theme.BorderThickness;
+            GuiHelper.PushClip(new RectangleF(X + b, Y + b, MathF.Max(Width - b * 2f, 0f), MathF.Max(Height - b * 2f, 0f)), MathF.Max(Theme.Rounding - b, 0f));
+            GuiHelper.PushClip(ContentArea);
             base.Draw(gameTime);
+            GuiHelper.PopClip();
             GuiHelper.PopClip();
         }
 

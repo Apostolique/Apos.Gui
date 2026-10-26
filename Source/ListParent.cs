@@ -53,10 +53,7 @@ namespace Apos.Gui {
             }
         }
 
-        /// <summary>
-        /// Corner radius of the clip the children draw in. Only used while this parent is fully visible,
-        /// since a clip that was cut by a parent has straight corners where it was cut.
-        /// </summary>
+        /// <summary>Corner radius of the clip the children draw in.</summary>
         public float ClipRounding { get; set; } = 0f;
 
         public override void Draw(GameTime gameTime) {

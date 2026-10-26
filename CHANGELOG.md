@@ -6,7 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
-Nothing yet!
+### Changed
+
+- Uses Apos.Shapes 0.9.3
+- Nested clips keep their own rounding and rotation, so a rounded stack inside another rounded stack is cut by both
+
+### Fixed
+
+- Floating window content getting rounded corners under the title bar
 
 ## [3.0.0] - 2026-10-10
 

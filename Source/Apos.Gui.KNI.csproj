@@ -32,7 +32,7 @@
     <PackageReference Include="nkast.Xna.Framework" Version="4.2.9001" />
     <PackageReference Include="KNI.Extended" Version="5.3.1" />
     <PackageReference Include="Apos.Input.KNI" Version="3.2.0" />
-    <PackageReference Include="Apos.Shapes.KNI" Version="0.8.5" />
+    <PackageReference Include="Apos.Shapes.KNI" Version="0.9.3" />
     <PackageReference Include="Apos.Tweens.KNI" Version="0.2.0" />
   </ItemGroup>
 

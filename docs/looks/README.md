@@ -63,4 +63,4 @@ danger.Look = b => {
 };
 ```
 
-Don't end the batch to draw with a `SpriteBatch` in the middle of a look. The UI keeps a stack of clips while it draws, and restarting the batch clears it.
+Don't end the batch to draw with a `SpriteBatch` in the middle of a look. The clips only apply to the `ShapeBatch`, so what the `SpriteBatch` draws would spill out of a stack that scrolls.
