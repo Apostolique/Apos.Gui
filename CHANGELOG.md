@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+Nothing yet!
+
+## [3.1.0] - 2026-10-26
+
 ### Added
 
 - GuiHelper.Clock, the clock that UI animations and delays run on, separate from TweenHelper.Clock
@@ -538,7 +542,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Button, Label, LabelDynamic, Border, Panel, PanelVerticalScroll, ScreenPanel, LayoutVertical, LayoutVerticalCenter and Switcher
 - Focus that moves with the keyboard and a gamepad, and mouse input
 
-[Unreleased]: https://github.com/Apostolique/Apos.Gui/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/Apostolique/Apos.Gui/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/Apostolique/Apos.Gui/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/Apostolique/Apos.Gui/compare/v2.3.2-alpha...v3.0.0
 [2.3.2-alpha]: https://github.com/Apostolique/Apos.Gui/compare/v2.3.1-alpha...v2.3.2-alpha
 [2.3.1-alpha]: https://github.com/Apostolique/Apos.Gui/compare/v2.3.0-alpha...v2.3.1-alpha
