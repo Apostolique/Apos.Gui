@@ -50,9 +50,9 @@ namespace Apos.Gui {
             if (!wanted) {
                 _since = -1;
             } else if (_since < 0) {
-                _since = InputHelper.TotalMS;
+                _since = GuiHelper.Clock.TotalMS;
             }
-            IsOpen = wanted && InputHelper.TotalMS - _since >= Delay;
+            IsOpen = wanted && GuiHelper.Clock.TotalMS - _since >= Delay;
 
             Main?.UpdateInput(gameTime);
         }

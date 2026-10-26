@@ -33,7 +33,7 @@
     <PackageReference Include="MonoGame.Extended" Version="5.3.1" />
     <PackageReference Include="Apos.Input" Version="3.2.0" />
     <PackageReference Include="Apos.Shapes" Version="0.9.3" />
-    <PackageReference Include="Apos.Tweens" Version="0.2.0" />
+    <PackageReference Include="Apos.Tweens" Version="0.3.0" />
   </ItemGroup>
 
   <ItemGroup>

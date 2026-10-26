@@ -24,8 +24,15 @@ namespace Apos.Gui {
     /// Lines up its children one after the other, with spacing between them and padding around them.
     /// When they don't fit it scrolls with the mouse wheel, a scrollbar, or a touch drag that starts on the stack itself.
     /// </summary>
-    public class StackPanel(long id, Orientation orientation) : ListParent(id) {
-        public Orientation Orientation { get; set; } = orientation;
+    public class StackPanel : ListParent {
+        public StackPanel(long id, Orientation orientation) : base(id) {
+            Orientation = orientation;
+            // Smooth keeps the speed of a scroll that's still going, so quick wheel notches flow into each other.
+            _easedOffsetX = new(0f, (from, to) => GetDuration(from, to, ScrollSpeed, ScrollMaxDuration), Easing.ExpoOut, GuiHelper.Clock) { Smooth = true };
+            _easedOffsetY = new(0f, (from, to) => GetDuration(from, to, ScrollSpeed, ScrollMaxDuration), Easing.ExpoOut, GuiHelper.Clock) { Smooth = true };
+        }
+
+        public Orientation Orientation { get; set; }
         /// <summary>Space between two children, in UI units.</summary>
         public float Spacing { get; set; } = 0f;
         /// <summary>Space around the children, in UI units.</summary>
@@ -34,11 +41,11 @@ namespace Apos.Gui {
 
         public float OffsetX {
             get => _offsetX;
-            set => SetOffset(_offsetXTween, ClampOffsetX(value));
+            set => _easedOffsetX.Target = ClampOffsetX(value);
         }
         public float OffsetY {
             get => _offsetY;
-            set => SetOffset(_offsetYTween, ClampOffsetY(value));
+            set => _easedOffsetY.Target = ClampOffsetY(value);
         }
         public Vector2 OffsetXY {
             get => new(OffsetX, OffsetY);
@@ -58,7 +65,7 @@ namespace Apos.Gui {
         /// <summary>How far one wheel notch scrolls, in UI units.</summary>
         public float ScrollIncrement { get; set; } = 50f;
         public float ScrollSpeed { get; set; } = 0.25f;
-        public long ScrollMaxDuration { get; set; } = 1000;
+        public double ScrollMaxDuration { get; set; } = 1000;
 
         public bool ShowScrollbar { get; set; } = true;
         public float ScrollbarThickness { get; set; } = 6f;
@@ -100,7 +107,7 @@ namespace Apos.Gui {
             // Only a stack that can scroll takes the wheel, so an outer stack still gets it.
             if (CanScroll && Root.Bindings.UsesPointer && Clip.Contains(Root.Mouse) && Track.MouseCondition.Scrolled()) {
                 // A wheel notch is 120. Touchpads send smaller steps, which scroll smoothly.
-                SetOffset(MainTween, ClampMain(MainTween.B + MouseCondition.ScrollDelta / 120f * ScrollIncrement));
+                MainEasedOffset.Target = ClampMain(MainEasedOffset.Target + MouseCondition.ScrollDelta / 120f * ScrollIncrement);
             }
 
             if (ShowScrollbar && CanScroll || ScrollbarInteraction.Pressed) {
@@ -146,12 +153,11 @@ namespace Apos.Gui {
             PrefSize = FromMainCross(main, cross + ScrollbarRoom);
         }
         public override void UpdateLayout(GameTime gameTime) {
-            if (MainTween.B != ClampMain(MainTween.B)) {
-                SetOffset(MainTween, ClampMain(MainTween.B));
-            }
+            MainEasedOffset.Target = ClampMain(MainEasedOffset.Target);
 
-            _offsetX = _offsetXTween.Value;
-            _offsetY = _offsetYTween.Value;
+            // That speed can carry a scroll a bit past its target, which shouldn't show past the ends of the content.
+            _offsetX = ClampOffsetX(_easedOffsetX.Value);
+            _offsetY = ClampOffsetY(_easedOffsetY.Value);
 
             // Whether it scrolls is only known now, and the room for the scrollbar changes the preferred size.
             bool showsScrollbar = ShowScrollbar && CanScroll;
@@ -198,11 +204,10 @@ namespace Apos.Gui {
         public override void SendToTop(IComponent c) {
             float start = MainOf(c.XY) - MainOf(XY);
             float end = start + MainOf(c.Size);
-            float pending = MainTween.B - MainOffset;
             if (start < 0f) {
-                SetOffset(MainTween, ClampMain(MainTween.B - start - pending));
+                MainEasedOffset.Target = ClampMain(MainOffset - start);
             } else if (end > MainOf(Size)) {
-                SetOffset(MainTween, ClampMain(MainTween.B - (end - MainOf(Size)) - pending));
+                MainEasedOffset.Target = ClampMain(MainOffset - (end - MainOf(Size)));
             }
 
             base.SendToTop(c);
@@ -212,7 +217,7 @@ namespace Apos.Gui {
         protected float MainOf(Vector2 v) => IsVertical ? v.Y : v.X;
         protected float CrossOf(Vector2 v) => IsVertical ? v.X : v.Y;
         protected Vector2 FromMainCross(float main, float cross) => IsVertical ? new Vector2(cross, main) : new Vector2(main, cross);
-        protected FloatTween MainTween => IsVertical ? _offsetYTween : _offsetXTween;
+        protected EasedValue<float> MainEasedOffset => IsVertical ? _easedOffsetY : _easedOffsetX;
         protected float MainOffset => IsVertical ? _offsetY : _offsetX;
         protected float ClampMain(float offset) => IsVertical ? ClampOffsetY(offset) : ClampOffsetX(offset);
 
@@ -223,29 +228,17 @@ namespace Apos.Gui {
             return MathF.Min(MathF.Max(y, Height - ContentSize.Y), 0f);
         }
 
-        /// <summary>Eases the offset to b.</summary>
-        protected void SetOffset(FloatTween ft, float b) {
-            var a = ft.Value;
-            ft.StartTime = TweenHelper.TotalMS;
-            ft.A = a;
-            ft.B = b;
-            ft.Duration = GetDuration(a, b, ScrollSpeed, ScrollMaxDuration);
-        }
         /// <summary>Jumps the offset along the stack's direction, for drags that should follow the pointer exactly.</summary>
         protected void SnapOffset(float offset) {
-            FloatTween ft = MainTween;
-            ft.A = ClampMain(offset);
-            ft.B = ft.A;
-            ft.StartTime = TweenHelper.TotalMS;
-            ft.Duration = 0;
+            MainEasedOffset.Snap(ClampMain(offset));
         }
 
-        protected static long GetDuration(float a, float b, float speed, long maxDuration) {
-            return (long)Math.Min(Math.Abs((b - a) / speed), maxDuration);
+        protected static double GetDuration(float a, float b, float speed, double maxDuration) {
+            return Math.Min(Math.Abs((b - a) / speed), maxDuration);
         }
 
-        protected FloatTween _offsetXTween = new(0f, 0f, 0, Easing.ExpoOut);
-        protected FloatTween _offsetYTween = new(0f, 0f, 0, Easing.ExpoOut);
+        protected EasedValue<float> _easedOffsetX;
+        protected EasedValue<float> _easedOffsetY;
 
         protected float _offsetX = 0;
         protected float _offsetY = 0;

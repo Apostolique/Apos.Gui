@@ -54,8 +54,29 @@ namespace Apos.Gui.Tests {
             Assert.True(v.ScrollbarThumb.Height > 0f);
 
             v.OffsetY = -1000f;
-            Apos.Tweens.TweenHelper.TotalMS += 10000;
+            GuiHelper.Clock.TotalMS += 10000;
             Layout(v, new Vector2(110f, 50f));
+            Assert.Equal(-50f, v.OffsetY, 3);
+        }
+
+        [Fact]
+        public void AScrollThatKeepsItsSpeedStaysInsideTheContent() {
+            var (v, _, _) = Stack(Orientation.Vertical, CrossAlign.Start);
+            var size = new Vector2(110f, 50f);
+            Layout(v, size);
+
+            // Each target is set while the last scroll is still going.
+            foreach (float target in new[] { -20f, -40f, -50f }) {
+                v.OffsetY = target;
+                for (int i = 0; i < 6; i++) {
+                    GuiHelper.Clock.TotalMS += 5;
+                    Layout(v, size);
+                    Assert.InRange(v.OffsetY, -50f, 0f);
+                }
+            }
+
+            GuiHelper.Clock.TotalMS += 10000;
+            Layout(v, size);
             Assert.Equal(-50f, v.OffsetY, 3);
         }
 
@@ -92,7 +113,7 @@ namespace Apos.Gui.Tests {
             Assert.Equal(new RectangleF(110f - 5f - v.ScrollbarThickness, 5f, v.ScrollbarThickness, 20f), v.ScrollbarThumb);
 
             v.OffsetY = -1000f;
-            Apos.Tweens.TweenHelper.TotalMS += 10000;
+            GuiHelper.Clock.TotalMS += 10000;
             Layout(v, size);
             Assert.Equal(50f - 5f, v.ScrollbarThumb.Bottom, 3);
         }

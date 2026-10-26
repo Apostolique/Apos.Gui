@@ -33,7 +33,7 @@
     <PackageReference Include="KNI.Extended" Version="5.3.1" />
     <PackageReference Include="Apos.Input.KNI" Version="3.2.0" />
     <PackageReference Include="Apos.Shapes.KNI" Version="0.9.3" />
-    <PackageReference Include="Apos.Tweens.KNI" Version="0.2.0" />
+    <PackageReference Include="Apos.Tweens.KNI" Version="0.3.0" />
   </ItemGroup>
 
   <ItemGroup>

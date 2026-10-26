@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Apos.Input;
 using Apos.Shapes;
+using Apos.Tweens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
@@ -161,6 +162,23 @@ namespace Apos.Gui.Tests {
             Frame(Build);
 
             Assert.False(b.Clicked);
+        }
+
+        [Fact]
+        public void TheUIAnimatesWhileTheGamesTweensArePaused() {
+            Button b = null!;
+            void Build() => b = Button.Put("Play");
+
+            Frame(Build);
+            TweenHelper.Clock.Scale = 0f;
+            try {
+                _input.Mouse = Mouse(b.Bounds.Center, ButtonState.Released);
+                for (int i = 0; i < 20; i++) Frame(Build);
+
+                Assert.Equal(1f, b.Interaction.Hover);
+            } finally {
+                TweenHelper.Clock.Scale = 1f;
+            }
         }
 
         [Fact]

@@ -50,6 +50,12 @@ A button's look draws under its child, so the label still draws on top.
 
 `Interaction.Hover` and `Interaction.Press` go from 0 to 1 and back over a short time. They're there so that a look can animate without keeping its own timers. `Clicked`, `IsFocused` and `Interaction.Pressed` are there for everything else.
 
+Every UI animation and delay runs on `GuiHelper.Clock`, which `GuiHelper.UpdateSetup` moves forward. It's not the clock that [Apos.Tweens](https://github.com/Apostolique/Apos.Tweens) uses by default, so a game that pauses its own tweens with `TweenHelper.Clock.Scale = 0f` still has a pause menu that moves. Its `Scale` slows down or speeds up the whole UI:
+
+```csharp
+GuiHelper.Clock.Scale = 0.5f;
+```
+
 `Button.DrawPressable` is the highlight and border that the built-in clickable components share. It's a good start for a look that only adds something.
 
 ## Textures

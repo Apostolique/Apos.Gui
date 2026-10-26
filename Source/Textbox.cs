@@ -85,7 +85,7 @@ namespace Apos.Gui {
             get => base.IsFocused;
             set {
                 base.IsFocused = value;
-                _blink.StartTime = TweenHelper.TotalMS;
+                _blink.Restart();
             }
         }
         public override bool IsFocusable { get; set; } = true;
@@ -101,7 +101,7 @@ namespace Apos.Gui {
             if (!extend) {
                 _anchor = _cursor;
             }
-            _blink.StartTime = TweenHelper.TotalMS;
+            _blink.Restart();
         }
         public void Select(int start, int end) {
             _anchor = Math.Clamp(start, 0, _text.Length);
@@ -237,12 +237,6 @@ namespace Apos.Gui {
             return true;
         }
 
-        public override void Update(GameTime gameTime) {
-            if (IsFocused && TweenHelper.TotalMS > _blink.StartTime + _blink.Duration) {
-                _blink.StartTime = TweenHelper.TotalMS;
-            }
-        }
-
         public override void UpdatePrefSize(GameTime gameTime) {
             Relayout();
             PrefWidth = BoxWidth;
@@ -354,7 +348,7 @@ namespace Apos.Gui {
         protected int _cursor;
         protected int _anchor;
 
-        protected FloatTween _blink = new(0f, 1f, 1500, Easing.Linear);
+        protected TweenPlayer<float> _blink = new FloatTween(0f, 1f, 1500, Easing.Linear).Loop().Play(GuiHelper.Clock);
         protected Task<string?>? _keyboard;
         protected bool _touchPress;
 

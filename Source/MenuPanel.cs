@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using Apos.Tweens;
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
@@ -25,11 +24,7 @@ namespace Apos.Gui {
 
             // After a resize, jump to the new spot instead of easing there.
             if (Height != _lastHeight) {
-                float offset = ClampOffsetY(_offsetYTween.B);
-                _offsetYTween.A = offset;
-                _offsetYTween.B = offset;
-                _offsetYTween.StartTime = TweenHelper.TotalMS;
-                _offsetYTween.Duration = 0;
+                _easedOffsetY.Snap(ClampOffsetY(_easedOffsetY.Target));
                 _lastHeight = Height;
             }
 

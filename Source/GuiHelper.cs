@@ -26,7 +26,7 @@ namespace Apos.Gui {
         /// </summary>
         public static void UpdateSetup(GameTime gameTime) {
             InputHelper.UpdateSetup(gameTime);
-            TweenHelper.UpdateSetup(gameTime);
+            Clock.Update(gameTime);
         }
         /// <summary>
         /// Called at the end of an update loop.
@@ -56,6 +56,12 @@ namespace Apos.Gui {
         public static IClipboard Clipboard { get; set; } = new GameClipboard();
         /// <summary>Types into textboxes when there's no physical keyboard. Null turns it off, which is the default.</summary>
         public static IOnScreenKeyboard? OnScreenKeyboard { get; set; }
+        /// <summary>
+        /// The clock that UI animations and delays run on. It's separate from TweenHelper.Clock, so a game can pause
+        /// its own tweens while its menus keep moving. Its Scale speeds up or slows down the whole UI.
+        /// </summary>
+        public static TweenClock Clock { get; } = new TweenClock();
+
         /// <summary>Defaults to LinearClamp.</summary>
         public static SamplerState GuiSampler { get; set; } = SamplerState.LinearClamp;
 

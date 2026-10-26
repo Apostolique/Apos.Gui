@@ -27,6 +27,12 @@ namespace Apos.Gui {
     /// Each touch contact is captured on its own, so two components can be pressed by two fingers at the same time.
     /// </remarks>
     public class Interaction {
+        public Interaction() {
+            // A move that only goes part of the way takes part of the duration.
+            _hover = new(0f, (from, to) => HoverDuration * MathHelper.Distance(from, to), Easing.QuadOut, GuiHelper.Clock);
+            _press = new(0f, (from, to) => PressDuration * MathHelper.Distance(from, to), Easing.QuadOut, GuiHelper.Clock);
+        }
+
         /// <summary>The mouse is over the component and nothing drawn above it claimed the mouse first. Touch never hovers.</summary>
         public bool Hovered { get; private set; }
         /// <summary>A press is in progress, even if the pointer moved outside.</summary>
@@ -55,9 +61,9 @@ namespace Apos.Gui {
         /// <summary>Goes from 0 to 1 while pressed inside and back to 0 after. Useful for animating a look.</summary>
         public float Press => _press.Value;
         /// <summary>Milliseconds for <see cref="Hover"/> to go all the way from 0 to 1.</summary>
-        public long HoverDuration { get; set; } = 150;
+        public double HoverDuration { get; set; } = 150;
         /// <summary>Milliseconds for <see cref="Press"/> to go all the way from 0 to 1.</summary>
-        public long PressDuration { get; set; } = 80;
+        public double PressDuration { get; set; } = 80;
 
         /// <summary>Whether a mouse or touch press gives focus to the component. Only applies when the component is focusable.</summary>
         public bool GrabsFocus { get; set; } = true;
@@ -132,8 +138,8 @@ namespace Apos.Gui {
             Delta = Position - old;
             Inside = Source == InteractionSource.Button || Pressed && hit.Contains(Position);
 
-            Animate(_hover, Hovered ? 1f : 0f, HoverDuration);
-            Animate(_press, Pressed && Inside ? 1f : 0f, PressDuration);
+            _hover.Target = Hovered ? 1f : 0f;
+            _press.Target = Pressed && Inside ? 1f : 0f;
         }
 
         /// <summary>Drops the current press without clicking.</summary>
@@ -182,16 +188,6 @@ namespace Apos.Gui {
             return false;
         }
 
-        private static void Animate(FloatTween tween, float target, long duration) {
-            if (tween.B == target) return;
-
-            float current = tween.Value;
-            tween.A = current;
-            tween.B = target;
-            tween.StartTime = TweenHelper.TotalMS;
-            tween.Duration = (long)(duration * MathHelper.Distance(current, target));
-        }
-
         private bool IsThisFrame(uint frame) => frame != 0 && _owner != null && frame == _owner.Root.CurrentFrame;
 
         private IComponent? _owner;
@@ -201,7 +197,7 @@ namespace Apos.Gui {
         private uint _releaseFrame;
         private uint _clickFrame;
 
-        private readonly FloatTween _hover = new(0f, 0f, 0, Easing.QuadOut);
-        private readonly FloatTween _press = new(0f, 0f, 0, Easing.QuadOut);
+        private readonly EasedValue<float> _hover;
+        private readonly EasedValue<float> _press;
     }
 }

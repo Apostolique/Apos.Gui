@@ -6,10 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+### Added
+
+- GuiHelper.Clock, the clock that UI animations and delays run on, separate from TweenHelper.Clock
+
 ### Changed
 
-- Uses Apos.Shapes 0.9.3
+- Uses Apos.Shapes 0.9.3 and Apos.Tweens 0.3.0
+- GuiHelper.UpdateSetup no longer moves TweenHelper.Clock
 - Nested clips keep their own rounding and rotation, so a rounded stack inside another rounded stack is cut by both
+- Scrolling again before a scroll ends keeps its speed
+- HoverDuration, PressDuration and ScrollMaxDuration are doubles
+- StackPanel's protected offset tweens are EasedValues, and Textbox's caret blink is a TweenPlayer
+
+### Removed
+
+- StackPanel.SetOffset
 
 ### Fixed
 
