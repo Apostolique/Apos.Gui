@@ -8,9 +8,13 @@ namespace Apos.Gui {
     /// A button in a row of tabs. The selected one is marked.
     /// </summary>
     public class TabButton(long id) : SingleParent(id) {
+        /// <summary>Hover, press and click for this tab.</summary>
         public Interaction Interaction { get; } = new();
+        /// <summary>True on the frame the tab is clicked.</summary>
         public bool Clicked => Interaction.Clicked;
+        /// <inheritdoc/>
         public override bool IsFocusable { get; set; } = true;
+        /// <summary>Whether this is the selected tab. <see cref="Tabs.Put"/> sets it.</summary>
         public bool IsSelected { get; set; }
 
         /// <summary>Draws this tab under its child. Null uses <see cref="DefaultLook"/>.</summary>
@@ -18,11 +22,13 @@ namespace Apos.Gui {
         /// <summary>Draws every tab that doesn't have its own <see cref="Look"/>.</summary>
         public static Action<TabButton> DefaultLook { get; set; } = DrawDefault;
 
+        /// <inheritdoc/>
         public override void UpdateInput(GameTime gameTime) {
             base.UpdateInput(gameTime);
             Interaction.UpdateInput(this);
         }
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime) {
             (Look ?? DefaultLook)(this);
             base.Draw(gameTime);
@@ -38,6 +44,13 @@ namespace Apos.Gui {
             }
         }
 
+        /// <summary>A tab with a label in it. <see cref="Tabs.Put"/> puts a whole row of them.</summary>
+        /// <param name="text">Drawn in the tab.</param>
+        /// <param name="fontSize">Size of the text.</param>
+        /// <param name="color">Color of the text. Null uses <see cref="Theme.Text"/>.</param>
+        /// <param name="id">Usually the caller's line number.</param>
+        /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the current parent's.</param>
+        /// <param name="file">The caller's file. The same line in two files gives two different ids.</param>
         public static TabButton Put(string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
             TabButton t = IMGUI.Push(id, isAbsoluteId, file, id => new TabButton(id), 1);
             Label.Put(text, fontSize: fontSize, color: color);

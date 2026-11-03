@@ -15,8 +15,11 @@ namespace Apos.Gui {
         public IComponent? Main { get; set; }
         /// <summary>Shown next to <see cref="Main"/>.</summary>
         public IComponent? Tip { get; set; }
+        /// <inheritdoc/>
         public override bool IsFocusable { get; set; } = false;
+        /// <inheritdoc/>
         public virtual bool IsFocusScope { get; set; } = false;
+        /// <inheritdoc/>
         public virtual IComponent? Navigate(IComponent from, Direction direction) => null;
 
         /// <summary>How long the mouse has to stay over the component, or the component has to have focus, before the tip shows. In milliseconds.</summary>
@@ -35,10 +38,12 @@ namespace Apos.Gui {
         /// <summary>Draws every tooltip's background that doesn't have its own <see cref="Look"/>.</summary>
         public static Action<Tooltip> DefaultLook { get; set; } = DrawDefault;
 
+        /// <inheritdoc/>
         public override void UpdateSetup(GameTime gameTime) {
             Main?.UpdateSetup(gameTime);
             Tip?.UpdateSetup(gameTime);
         }
+        /// <inheritdoc/>
         public override void UpdateInput(GameTime gameTime) {
             bool wanted = false;
             if (Main != null && Tip != null) {
@@ -56,6 +61,7 @@ namespace Apos.Gui {
 
             Main?.UpdateInput(gameTime);
         }
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime) {
             Main?.Update(gameTime);
             if (Tip != null && IsOpen) {
@@ -63,6 +69,7 @@ namespace Apos.Gui {
             }
         }
 
+        /// <inheritdoc/>
         public override void UpdatePrefSize(GameTime gameTime) {
             if (Main != null) {
                 Main.UpdatePrefSize(gameTime);
@@ -74,6 +81,7 @@ namespace Apos.Gui {
                 Tip.UpdatePrefSize(gameTime);
             }
         }
+        /// <inheritdoc/>
         public virtual void UpdateLayout(GameTime gameTime) {
             if (Main != null) {
                 Main.Bounds = Bounds;
@@ -106,6 +114,7 @@ namespace Apos.Gui {
             }
         }
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime) {
             Main?.Draw(gameTime);
 
@@ -114,6 +123,7 @@ namespace Apos.Gui {
                 Root.DrawOnTop(DrawTip);
             }
         }
+        /// <summary>Draws the tip and its background over the whole UI. <see cref="Draw"/> queues it with <see cref="IMGUI.DrawOnTop"/>.</summary>
         protected virtual void DrawTip(GameTime gameTime) {
             if (Tip == null) return;
 
@@ -128,6 +138,7 @@ namespace Apos.Gui {
             GuiHelper.ShapeBatch.DrawRectangle(t.Bubble.Position, new Vector2(t.Bubble.Width, t.Bubble.Height), Theme.Panel, Theme.Border, Theme.BorderThickness, Theme.Rounding);
         }
 
+        /// <inheritdoc/>
         public void Add(IComponent c) {
             if (c.Index == 0) {
                 if (Main != null) {
@@ -143,6 +154,7 @@ namespace Apos.Gui {
                 Tip.Parent = this;
             }
         }
+        /// <inheritdoc/>
         public void Remove(IComponent c) {
             if (Tip == c) {
                 Tip.Parent = null;
@@ -152,28 +164,37 @@ namespace Apos.Gui {
                 Main = null;
             }
         }
+        /// <inheritdoc/>
         public virtual void Reset() {
             _nextChildIndex = 0;
         }
+        /// <inheritdoc/>
         public virtual int PeekNextIndex() => _nextChildIndex;
+        /// <inheritdoc/>
         public virtual int NextIndex() => _nextChildIndex++;
 
+        /// <inheritdoc/>
         public override IComponent GetPrev() {
             return Parent?.GetPrev(this) ?? Tip?.GetLast() ?? Main?.GetLast() ?? this;
         }
+        /// <inheritdoc/>
         public override IComponent GetNext() {
             return Main ?? Tip ?? Parent?.GetNext(this) ?? this;
         }
+        /// <inheritdoc/>
         public virtual IComponent GetPrev(IComponent c) {
             return c == Tip && Main != null ? Main.GetLast() : this;
         }
+        /// <inheritdoc/>
         public virtual IComponent GetNext(IComponent c) {
             return c == Main && Tip != null ? Tip : Parent?.GetNext(this) ?? this;
         }
+        /// <inheritdoc/>
         public override IComponent GetLast() {
             return Tip ?? Main ?? this;
         }
 
+        /// <inheritdoc/>
         public virtual void SendToTop(IComponent c) {
             LastFocus = Root.CurrentFrame;
             Parent?.SendToTop(this);
@@ -187,7 +208,9 @@ namespace Apos.Gui {
             return false;
         }
 
+        /// <summary>The index the next child gets. 0 is the component and 1 is the tip.</summary>
         protected int _nextChildIndex = 0;
+        /// <summary>When the mouse started hovering or the component got focus, in <see cref="GuiHelper.Clock"/> milliseconds. -1 when neither is happening.</summary>
         protected double _since = -1;
 
         /// <param name="id">Usually the caller's line number.</param>

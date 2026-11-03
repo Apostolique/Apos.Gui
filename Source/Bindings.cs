@@ -52,7 +52,9 @@ namespace Apos.Gui {
         /// <summary>Whether the mouse and touch can hover and press components in this UI.</summary>
         public bool UsesPointer { get; set; } = true;
 
+        /// <summary>Presses components with the mouse. Defaults to the left button.</summary>
         public ICondition MouseInteraction { get; set; }
+        /// <summary>Presses the focused component. Defaults to space, enter, and A on a gamepad.</summary>
         public ICondition ButtonInteraction { get; set; }
         /// <summary>Moves the focus to the previous component in the order they were put.</summary>
         public ICondition FocusPrev { get; set; }
@@ -69,6 +71,7 @@ namespace Apos.Gui {
         public ICondition MoveUp { get; set; }
         /// <summary>Repeats while held. Wrap your own condition in a <see cref="RepeatCondition"/> to keep that.</summary>
         public ICondition MoveDown { get; set; }
+        /// <summary>Closes popups, and floating windows that have a close button. Defaults to escape, B or back on a gamepad, and a side mouse button.</summary>
         public ICondition Back { get; set; }
         /// <summary>Opens <see cref="GuiHelper.OnScreenKeyboard"/> on the focused textbox.</summary>
         public ICondition OpenKeyboard { get; set; }
@@ -77,11 +80,17 @@ namespace Apos.Gui {
         public ICondition ExtendSelection { get; set; }
         /// <summary>Held to move or delete a word at a time in a textbox.</summary>
         public ICondition ByWord { get; set; }
+        /// <summary>Moves a textbox's cursor to the start of the line, or to the start of the text while <see cref="ByWord"/> is held. Defaults to home.</summary>
         public ICondition LineStart { get; set; }
+        /// <summary>Moves a textbox's cursor to the end of the line, or to the end of the text while <see cref="ByWord"/> is held. Defaults to end.</summary>
         public ICondition LineEnd { get; set; }
+        /// <summary>Selects all the text in the focused textbox. Defaults to ctrl+A.</summary>
         public ICondition SelectAll { get; set; }
+        /// <summary>Copies a textbox's selection to <see cref="GuiHelper.Clipboard"/>. Defaults to ctrl+C.</summary>
         public ICondition Copy { get; set; }
+        /// <summary>Copies a textbox's selection to <see cref="GuiHelper.Clipboard"/>, then deletes it. Defaults to ctrl+X.</summary>
         public ICondition Cut { get; set; }
+        /// <summary>Inserts the text from <see cref="GuiHelper.Clipboard"/> into the focused textbox. Defaults to ctrl+V.</summary>
         public ICondition Paste { get; set; }
 
         private ICondition? Key(Keys key) => _gamePad == null ? new Track.KeyboardCondition(key) : null;

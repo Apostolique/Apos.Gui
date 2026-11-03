@@ -4,13 +4,19 @@ using Microsoft.Xna.Framework;
 using MonoGame.Extended;
 
 namespace Apos.Gui {
+    /// <summary>A box that flips between checked and unchecked when it's clicked.</summary>
     public class Checkbox(long id, bool isChecked) : Component(id) {
+        /// <summary>Hover, press and click for this checkbox.</summary>
         public Interaction Interaction { get; } = new();
+        /// <summary>True on the frame the checkbox is clicked.</summary>
         public bool Clicked => Interaction.Clicked;
+        /// <summary>Whether the box is checked. Clicking flips it.</summary>
         public bool IsChecked { get; set; } = isChecked;
+        /// <inheritdoc/>
         public override bool IsFocusable { get; set; } = true;
         /// <summary>Drawn next to the box. Pressing it works the same as pressing the box. Empty shows only the box.</summary>
         public string Text { get; set; } = "";
+        /// <summary>Size of <see cref="Text"/>.</summary>
         public int FontSize { get; set; } = 30;
         /// <summary>Where the box is, in UI coordinates. The text goes to its right.</summary>
         public RectangleF Box => new(X, Y + (Height - BoxSize) / 2f, BoxSize, BoxSize);
@@ -21,6 +27,7 @@ namespace Apos.Gui {
         /// <summary>Draws every checkbox that doesn't have its own <see cref="Look"/>.</summary>
         public static Action<Checkbox> DefaultLook { get; set; } = DrawDefault;
 
+        /// <inheritdoc/>
         public override void UpdateInput(GameTime gameTime) {
             Interaction.UpdateInput(this);
             if (Clicked) {
@@ -28,6 +35,7 @@ namespace Apos.Gui {
             }
         }
 
+        /// <inheritdoc/>
         public override void UpdatePrefSize(GameTime gameTime) {
             if (Text.Length == 0) {
                 PrefWidth = BoxSize;
@@ -39,6 +47,7 @@ namespace Apos.Gui {
             }
         }
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime) {
             (Look ?? DefaultLook)(this);
         }
@@ -70,9 +79,16 @@ namespace Apos.Gui {
             }
         }
 
+        /// <summary>Width and height of the box, in UI units.</summary>
         protected const float BoxSize = 30f;
+        /// <summary>Space between the box and the text, in UI units.</summary>
         protected const float TextGap = 10f;
 
+        /// <summary>A checkbox without text.</summary>
+        /// <param name="isChecked">Your checked state. Changes when the checkbox is clicked.</param>
+        /// <param name="id">Usually the caller's line number.</param>
+        /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the current parent's.</param>
+        /// <param name="file">The caller's file. The same line in two files gives two different ids.</param>
         public static Checkbox Put(ref bool isChecked, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
             return Put(ref isChecked, "", 30, id, isAbsoluteId, file);
         }

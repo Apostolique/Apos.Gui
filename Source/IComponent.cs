@@ -15,7 +15,7 @@ namespace Apos.Gui {
         /// </summary>
         int Index { get; set; }
         /// <summary>
-        /// Used by IMGUI to track of a component was pinged and is kept for this frame.
+        /// Used by IMGUI to track if a component was pinged and is kept for this frame.
         /// </summary>
         uint LastPing { get; set; }
         /// <summary>

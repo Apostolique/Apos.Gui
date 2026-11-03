@@ -5,9 +5,13 @@ using MonoGame.Extended;
 namespace Apos.Gui {
     /// <summary>A direction to move the focus in, with the arrow keys or the d-pad.</summary>
     public enum Direction {
+        /// <summary>Toward the left.</summary>
         Left,
+        /// <summary>Toward the right.</summary>
         Right,
+        /// <summary>Toward the top.</summary>
         Up,
+        /// <summary>Toward the bottom.</summary>
         Down,
     }
 

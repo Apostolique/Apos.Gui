@@ -10,14 +10,18 @@ namespace Apos.Gui {
     /// It opens where <see cref="StartAlign"/> and <see cref="StartOffset"/> put it, stays inside the UI, and comes to the front when it's pressed or gets focus.
     /// </summary>
     public class FloatingWindow(long id) : SingleParent(id) {
+        /// <inheritdoc/>
         public override bool IsFocusable { get; set; } = true;
+        /// <inheritdoc/>
         public override bool IsFocusScope { get; set; } = true;
+        /// <inheritdoc/>
         public override bool IsFloatable { get; set; } = true;
 
         /// <summary>The stack that holds the window's components.</summary>
         public Vertical? Content => Child as Vertical;
         /// <summary>Drawn in the title bar.</summary>
         public string Title { get; set; } = "";
+        /// <summary>Size of the title's text.</summary>
         public int TitleFontSize { get; set; } = 24;
         /// <summary>Space around the title, in UI units.</summary>
         public float TitlePadding { get; set; } = 8f;
@@ -40,8 +44,11 @@ namespace Apos.Gui {
         /// <summary>Pressing anywhere else on the window. It brings the window to the front and keeps the press from reaching what's under it.</summary>
         public Interaction BodyInteraction { get; } = new() { UsesFocusButton = false };
 
+        /// <summary>Height of the title bar, in UI units. It's the title's line height plus the padding.</summary>
         public float TitleHeight => GuiHelper.Font.LineHeight * TitleFontSize + TitlePadding * 2f;
+        /// <summary>Where the title bar is, in UI coordinates.</summary>
         public RectangleF TitleBar => new(X, Y, Width, TitleHeight);
+        /// <summary>Where the close button is, in UI coordinates. Empty when there's no close button.</summary>
         public RectangleF CloseButton => HasCloseButton ? new(Right - TitleHeight, Y, TitleHeight, TitleHeight) : RectangleF.Empty;
         /// <summary>Where the content goes: under the title bar and inside the border.</summary>
         public RectangleF ContentArea {
@@ -56,6 +63,7 @@ namespace Apos.Gui {
         /// <summary>Draws every window that doesn't have its own <see cref="Look"/>.</summary>
         public static Action<FloatingWindow> DefaultLook { get; set; } = DrawDefault;
 
+        /// <inheritdoc/>
         public override void UpdateInput(GameTime gameTime) {
             base.UpdateInput(gameTime);
 
@@ -81,6 +89,7 @@ namespace Apos.Gui {
             BodyInteraction.UpdateInput(this);
         }
 
+        /// <inheritdoc/>
         public override void UpdatePrefSize(GameTime gameTime) {
             base.UpdatePrefSize(gameTime);
 
@@ -89,6 +98,7 @@ namespace Apos.Gui {
             PrefWidth = MathF.Max(Child != null ? PrefWidth + b * 2f : 0f, titleWidth);
             PrefHeight = (Child != null ? PrefHeight : 0f) + TitleHeight + b;
         }
+        /// <inheritdoc/>
         public override void UpdateLayout(GameTime gameTime) {
             // A window manages its own position. It isn't bigger than the UI, and scrolls its content when it doesn't fit.
             Width = MathF.Min(PrefWidth, Root.Width);
@@ -109,6 +119,7 @@ namespace Apos.Gui {
             }
         }
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime) {
             (Look ?? DefaultLook)(this);
             // The window's rounded inside cuts the bottom corners while the title bar's edge stays straight.
@@ -158,8 +169,11 @@ namespace Apos.Gui {
             return false;
         }
 
+        /// <summary>Where the window was when the current title bar drag started.</summary>
         protected Vector2 _dragStart = Vector2.Zero;
+        /// <summary>True once the window got its start position.</summary>
         protected bool _placed;
+        /// <summary>The frame something asked the window to close. 0 when nothing did.</summary>
         protected uint _closedFrame;
 
         /// <summary>A window without a close button.</summary>

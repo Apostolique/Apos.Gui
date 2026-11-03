@@ -8,12 +8,17 @@ namespace Apos.Gui {
     /// One choice out of a group. Every radio button in a group shares the same selected value, and the one holding its own value is checked.
     /// </summary>
     public class RadioButton(long id) : Component(id) {
+        /// <summary>Hover, press and click for this radio button.</summary>
         public Interaction Interaction { get; } = new();
+        /// <summary>True on the frame the radio button is clicked.</summary>
         public bool Clicked => Interaction.Clicked;
+        /// <summary>Whether this radio button holds its group's selected value.</summary>
         public bool IsChecked { get; set; }
+        /// <inheritdoc/>
         public override bool IsFocusable { get; set; } = true;
         /// <summary>Drawn next to the box. Pressing it works the same as pressing the box. Empty shows only the box.</summary>
         public string Text { get; set; } = "";
+        /// <summary>Size of <see cref="Text"/>.</summary>
         public int FontSize { get; set; } = 30;
         /// <summary>Where the box is, in UI coordinates. The text goes to its right.</summary>
         public RectangleF Box => new(X, Y + (Height - BoxSize) / 2f, BoxSize, BoxSize);
@@ -24,9 +29,11 @@ namespace Apos.Gui {
         /// <summary>Draws every radio button that doesn't have its own <see cref="Look"/>.</summary>
         public static Action<RadioButton> DefaultLook { get; set; } = DrawDefault;
 
+        /// <inheritdoc/>
         public override void UpdateInput(GameTime gameTime) {
             Interaction.UpdateInput(this);
         }
+        /// <inheritdoc/>
         public override void UpdatePrefSize(GameTime gameTime) {
             if (Text.Length == 0) {
                 PrefWidth = BoxSize;
@@ -37,6 +44,7 @@ namespace Apos.Gui {
                 PrefHeight = MathF.Max(BoxSize, text.Y);
             }
         }
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime) {
             (Look ?? DefaultLook)(this);
         }
@@ -63,7 +71,9 @@ namespace Apos.Gui {
             }
         }
 
+        /// <summary>Width and height of the ring, in UI units.</summary>
         protected const float BoxSize = 30f;
+        /// <summary>Space between the ring and the text, in UI units.</summary>
         protected const float TextGap = 10f;
 
         /// <param name="selected">The group's selected value. Becomes value when this radio button is clicked.</param>

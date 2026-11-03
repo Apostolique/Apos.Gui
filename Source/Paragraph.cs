@@ -8,14 +8,20 @@ namespace Apos.Gui {
     /// Text that wraps to the width its parent gives it.
     /// </summary>
     public class Paragraph(long id, string text, int fontSize, Color color) : Component(id) {
+        /// <summary>The text to wrap and draw.</summary>
         public string Text { get; set; } = text;
+        /// <summary>Size of the text.</summary>
         public int FontSize { get; set; } = fontSize;
+        /// <summary>Color of the text.</summary>
         public Color Color { get; set; } = color;
+        /// <summary>How each line lines up in the paragraph's width.</summary>
         public TextAlign Align { get; set; } = TextAlign.Left;
+        /// <summary>Space around the text on each side, in UI units.</summary>
         public int Padding { get; set; } = 10;
         /// <summary>Wraps at this width, padding included, or earlier when the parent gives it less. Null follows the parent.</summary>
         public float? MaxWidth { get; set; }
 
+        /// <inheritdoc/>
         public override float Width {
             get => base.Width;
             set {
@@ -34,6 +40,7 @@ namespace Apos.Gui {
         /// <summary>Draws every paragraph that doesn't have its own <see cref="Look"/>.</summary>
         public static Action<Paragraph> DefaultLook { get; set; } = DrawDefault;
 
+        /// <inheritdoc/>
         public override void UpdatePrefSize(GameTime gameTime) {
             float given = MathF.Min(MaxWidth ?? float.PositiveInfinity, _hasWidth ? Width : float.PositiveInfinity);
             _hasWidth = true;
@@ -52,6 +59,7 @@ namespace Apos.Gui {
             PrefHeight = _lines.Count * GuiHelper.Font.LineHeight * FontSize + Padding * 2;
         }
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime) {
             bool overflows = PrefHeight > Height;
             if (overflows) GuiHelper.PushClip(Clip);
@@ -73,13 +81,27 @@ namespace Apos.Gui {
             }
         }
 
+        /// <summary>Backs <see cref="Lines"/>.</summary>
         protected readonly List<TextLine> _lines = [];
+        /// <summary>Whether the parent gave it a width yet. Until then the text is measured without wrapping.</summary>
         protected bool _hasWidth = false;
+        /// <summary>The text from the last wrap.</summary>
         protected string? _cachedText;
+        /// <summary>The font size from the last wrap.</summary>
         protected int _cachedSize;
+        /// <summary>The width from the last wrap. -1 before the first one.</summary>
         protected float _cachedWrap = -1f;
+        /// <summary>How wide the text is without wrapping.</summary>
         protected float _natural;
 
+        /// <summary>Text that wraps to the width its parent gives it.</summary>
+        /// <param name="text">The text to wrap and draw.</param>
+        /// <param name="fontSize">Size of the text.</param>
+        /// <param name="color">Color of the text. Null uses <see cref="Theme.Text"/>.</param>
+        /// <param name="align">How each line lines up in the paragraph's width.</param>
+        /// <param name="id">Usually the caller's line number.</param>
+        /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the current parent's.</param>
+        /// <param name="file">The caller's file. The same line in two files gives two different ids.</param>
         public static Paragraph Put(string text, int fontSize = 30, Color? color = null, TextAlign align = TextAlign.Left, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
             Color c = color ?? Theme.Text;
 

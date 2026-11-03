@@ -23,6 +23,7 @@ namespace Apos.Gui {
         /// <summary>Shown under the title.</summary>
         public string Description { get; set; } = "";
 
+        /// <inheritdoc/>
         public async Task<string?> Show(Textbox textbox) {
             return await KeyboardInput.Show(Title, Description, textbox.Text);
         }

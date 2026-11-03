@@ -15,12 +15,14 @@ namespace Apos.Gui {
     /// Supports selection with the mouse, touch and shift, word jumps, and copy, cut and paste through <see cref="GuiHelper.Clipboard"/>.
     /// </summary>
     public class Textbox : Component {
+        /// <summary>Creates the textbox. <see cref="Put"/> calls this on the first frame it's put.</summary>
         public Textbox(long id, string text, int fontSize, Color c) : base(id) {
             Text = text;
             FontSize = fontSize;
             Color = c;
         }
 
+        /// <summary>The text being edited. Null becomes an empty string.</summary>
         public string Text {
             get => _text;
             set {
@@ -33,6 +35,7 @@ namespace Apos.Gui {
                 }
             }
         }
+        /// <summary>Size of the text.</summary>
         public int FontSize {
             get => _fontSize;
             set {
@@ -42,7 +45,9 @@ namespace Apos.Gui {
                 }
             }
         }
+        /// <summary>Color of the text.</summary>
         public Color Color { get; set; }
+        /// <summary>Space between the edges and the text on each side, in UI units.</summary>
         public int Padding { get; set; } = 10;
         /// <summary>Width the textbox asks its parent for, padding included. It doesn't grow with its text.</summary>
         public float BoxWidth { get; set; } = 300f;
@@ -65,9 +70,13 @@ namespace Apos.Gui {
         public int Cursor => _cursor;
         /// <summary>The other end of the selection. Same as <see cref="Cursor"/> when nothing is selected.</summary>
         public int Anchor => _anchor;
+        /// <summary>Where the selection starts, as a char index. Same as <see cref="Cursor"/> when nothing is selected.</summary>
         public int SelectionStart => Math.Min(_cursor, _anchor);
+        /// <summary>The index right after the selection's last char. Same as <see cref="Cursor"/> when nothing is selected.</summary>
         public int SelectionEnd => Math.Max(_cursor, _anchor);
+        /// <summary>Whether some text is selected.</summary>
         public bool HasSelection => _cursor != _anchor;
+        /// <summary>The selected text. Empty when nothing is selected.</summary>
         public string SelectedText => _text[SelectionStart..SelectionEnd];
         /// <summary>The lines from the last layout. A single line textbox has one.</summary>
         public IReadOnlyList<TextLine> Lines => _lines;
@@ -77,10 +86,12 @@ namespace Apos.Gui {
         public RectangleF ContentBounds => new(X + Padding, Y + Padding, MathF.Max(Width - Padding * 2, 0f), MathF.Max(Height - Padding * 2, 0f));
         /// <summary>Where the top left of the text draws once scrolled.</summary>
         public Vector2 TextOrigin => ContentBounds.Position - _scroll;
+        /// <summary>Height of a line of text, in UI units.</summary>
         public float LineHeight => GuiHelper.Font.LineHeight * FontSize;
         /// <summary>True while focused and the blinking cursor is in its visible half.</summary>
         public bool IsCursorVisible => IsFocused && _blink.Value <= 0.5f;
 
+        /// <inheritdoc/>
         public override bool IsFocused {
             get => base.IsFocused;
             set {
@@ -88,7 +99,9 @@ namespace Apos.Gui {
                 _blink.Restart();
             }
         }
+        /// <inheritdoc/>
         public override bool IsFocusable { get; set; } = true;
+        /// <summary>Hover, press and drag for this textbox. The focus button doesn't press it, so space and enter stay text.</summary>
         public Interaction Interaction { get; } = new() { UsesFocusButton = false };
         /// <summary>Draws this textbox. Null uses <see cref="DefaultLook"/>.</summary>
         public Action<Textbox>? Look { get; set; }
@@ -103,6 +116,7 @@ namespace Apos.Gui {
             }
             _blink.Restart();
         }
+        /// <summary>Selects from start to end and puts the caret at end. end can come before start.</summary>
         public void Select(int start, int end) {
             _anchor = Math.Clamp(start, 0, _text.Length);
             MoveCursor(end, true);
@@ -133,6 +147,7 @@ namespace Apos.Gui {
             return TextLayout.HitTest(GuiHelper.Font, _text, _lines[line], local.X, FontSize);
         }
 
+        /// <inheritdoc/>
         public override void UpdateInput(GameTime gameTime) {
             Interaction.UpdateInput(this);
 
@@ -237,12 +252,14 @@ namespace Apos.Gui {
             return true;
         }
 
+        /// <inheritdoc/>
         public override void UpdatePrefSize(GameTime gameTime) {
             Relayout();
             PrefWidth = BoxWidth;
             PrefHeight = (Multiline ? VisibleLines : 1) * LineHeight + Padding * 2f;
         }
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime) {
             ScrollToCursor();
             (Look ?? DefaultLook)(this);
@@ -291,8 +308,10 @@ namespace Apos.Gui {
             }
         }
 
+        /// <summary>The line the caret is on.</summary>
         protected int CurrentLine => TextLayout.LineAt(_lines, _cursor);
 
+        /// <summary>Wraps the text again if it, the font size, or the wrap width changed.</summary>
         protected void Relayout() {
             float wrap = _multiline ? MathF.Max(BoxWidth - Padding * 2f, 0f) : float.PositiveInfinity;
             if (_isDirty || wrap != _wrapWidth) {
@@ -326,32 +345,53 @@ namespace Apos.Gui {
             float x = TextLayout.CaretX(GuiHelper.Font, _text, _lines[CurrentLine], _cursor, FontSize);
             return TextLayout.HitTest(GuiHelper.Font, _text, _lines[line], x, FontSize);
         }
+        /// <summary>The start of the word before an index. Skips the spaces in between.</summary>
         protected int PrevWord(int i) {
             while (i > 0 && char.IsWhiteSpace(_text[i - 1])) i--;
             while (i > 0 && !char.IsWhiteSpace(_text[i - 1])) i--;
             return i;
         }
+        /// <summary>The start of the word after an index. Skips the spaces in between.</summary>
         protected int NextWord(int i) {
             while (i < _text.Length && !char.IsWhiteSpace(_text[i])) i++;
             while (i < _text.Length && char.IsWhiteSpace(_text[i])) i++;
             return i;
         }
 
+        /// <summary>Backs <see cref="Text"/>.</summary>
         protected string _text = "";
+        /// <summary>Backs <see cref="FontSize"/>.</summary>
         protected int _fontSize;
+        /// <summary>Backs <see cref="Multiline"/>.</summary>
         protected bool _multiline = false;
+        /// <summary>The text, the font size, or <see cref="Multiline"/> changed since the last <see cref="Relayout"/>.</summary>
         protected bool _isDirty = true;
+        /// <summary>The wrap width from the last <see cref="Relayout"/>. -1 before the first one.</summary>
         protected float _wrapWidth = -1f;
+        /// <summary>Backs <see cref="Lines"/>.</summary>
         protected readonly List<TextLine> _lines = [];
+        /// <summary>Backs <see cref="Scroll"/>.</summary>
         protected Vector2 _scroll = Vector2.Zero;
 
+        /// <summary>Backs <see cref="Cursor"/>.</summary>
         protected int _cursor;
+        /// <summary>Backs <see cref="Anchor"/>.</summary>
         protected int _anchor;
 
+        /// <summary>Loops from 0 to 1 every 1.5 seconds. The caret shows during the first half.</summary>
         protected TweenPlayer<float> _blink = new FloatTween(0f, 1f, 1500, Easing.Linear).Loop().Play(GuiHelper.Clock);
+        /// <summary>The on-screen keyboard's text, while it's open.</summary>
         protected Task<string?>? _keyboard;
+        /// <summary>Whether the current press came from touch. A tap opens the on-screen keyboard.</summary>
         protected bool _touchPress;
 
+        /// <summary>Editable text.</summary>
+        /// <param name="text">Your text. Changes while the textbox has focus, and when the on-screen keyboard gives text back.</param>
+        /// <param name="fontSize">Size of the text.</param>
+        /// <param name="color">Color of the text. Null uses <see cref="Theme.Text"/>.</param>
+        /// <param name="id">Usually the caller's line number.</param>
+        /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the current parent's.</param>
+        /// <param name="file">The caller's file. The same line in two files gives two different ids.</param>
         public static Textbox Put(ref string text, int fontSize = 30, Color? color = null, [CallerLineNumber] int id = 0, bool isAbsoluteId = false, [CallerFilePath] string file = "") {
             Color c = color ?? Theme.Text;
 

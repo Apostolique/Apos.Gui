@@ -7,8 +7,12 @@ using MonoGame.Extended;
 using Track = Apos.Input.Track;
 
 namespace Apos.Gui {
-    // NOTE: IMGUI is NOT recursive. It should always be the top level component.
+    /// <summary>
+    /// The root of a UI. Components are put into it every frame, and the ones that weren't put by the end of the frame are removed.
+    /// It's always the top component. It can't go inside another one.
+    /// </summary>
     public class IMGUI : ListParent {
+        /// <summary>Creates a UI and makes it <see cref="GuiHelper.CurrentIMGUI"/>.</summary>
         public IMGUI() : base(0) {
             Root = this;
             _currentParent = this;
@@ -365,6 +369,12 @@ namespace Apos.Gui {
             return result;
         }
 
+        /// <summary>Creates an id on <see cref="GuiHelper.CurrentIMGUI"/> with <see cref="CreateId"/>, and gets the component that had it last frame.</summary>
+        /// <param name="id">An id that should be part of the generation process.</param>
+        /// <param name="isAbsoluteId">Whether to use the id as is instead of combining it with the id stack and the file.</param>
+        /// <param name="file">The caller's file.</param>
+        /// <param name="c">The component that had the id last frame, or null.</param>
+        /// <returns>The id.</returns>
         public static long TryCreateId(int id, bool isAbsoluteId, string file, out IComponent? c) {
             long result = GuiHelper.CurrentIMGUI.CreateId(id, isAbsoluteId, file);
             GuiHelper.CurrentIMGUI.TryGetValue(result, out c);
@@ -409,6 +419,7 @@ namespace Apos.Gui {
             return a;
         }
 
+        /// <inheritdoc/>
         public override uint LastFocus { get; set; } = uint.MaxValue;
 
         /// <summary>

@@ -13,12 +13,15 @@ namespace Apos.Gui {
     /// Dropdowns and dialogs are made of it.
     /// </summary>
     public class Popup : Vertical {
+        /// <inheritdoc/>
         public override bool IsFocusScope { get; set; } = true;
+        /// <summary>Creates the popup. <see cref="Push"/> calls this on the first frame it's put.</summary>
         public Popup(long id) : base(id) {
             Padding = 4f;
             Align = CrossAlign.Stretch;
         }
 
+        /// <inheritdoc/>
         public override bool IsFloatable { get; set; } = true;
         /// <summary>The rectangle it opens next to, in UI coordinates. Null centers it on the screen.</summary>
         public RectangleF? Anchor { get; set; }
@@ -36,10 +39,12 @@ namespace Apos.Gui {
         /// <summary>Draws every popup that doesn't have its own <see cref="Look"/>.</summary>
         public static Action<Popup> DefaultLook { get; set; } = DrawDefault;
 
+        /// <inheritdoc/>
         public override void UpdateSetup(GameTime gameTime) {
             _dismissed = false;
             base.UpdateSetup(gameTime);
         }
+        /// <inheritdoc/>
         public override void UpdateInput(GameTime gameTime) {
             base.UpdateInput(gameTime);
 
@@ -75,10 +80,12 @@ namespace Apos.Gui {
             }
         }
 
+        /// <inheritdoc/>
         public override void UpdatePrefSize(GameTime gameTime) {
             base.UpdatePrefSize(gameTime);
             PrefWidth = MathF.Max(PrefWidth, MinWidth);
         }
+        /// <inheritdoc/>
         public override void UpdateLayout(GameTime gameTime) {
             RectangleF screen = Root.Bounds;
             Width = MathF.Min(Width, screen.Width);
@@ -99,6 +106,7 @@ namespace Apos.Gui {
             base.UpdateLayout(gameTime);
         }
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime) {
             if (Modal) {
                 GuiHelper.ShapeBatch.FillRectangle(Root.XY, Root.Size, Theme.Backdrop);
@@ -117,8 +125,10 @@ namespace Apos.Gui {
             GuiHelper.ShapeBatch.DrawRectangle(p.XY, p.Size, Theme.Panel, Theme.Border, Theme.BorderThickness, Theme.Rounding);
         }
 
+        /// <summary>Whether a position in UI coordinates is outside both the popup and its anchor.</summary>
         protected bool IsOutside(Vector2 p) => !Clip.Contains(p) && !(Anchor?.Contains(p) ?? false);
 
+        /// <summary>Backs <see cref="Dismissed"/>. Cleared at the start of every frame.</summary>
         protected bool _dismissed = false;
 
         /// <summary>

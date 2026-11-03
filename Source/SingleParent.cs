@@ -6,18 +6,23 @@ namespace Apos.Gui {
     /// Override UpdatePrefSize and UpdateLayout to place the child differently.
     /// </summary>
     public class SingleParent(long id) : Component(id), IParent {
+        /// <summary>The child, or null when there isn't one.</summary>
         public IComponent? Child { get; set; }
 
+        /// <inheritdoc/>
         public override void UpdateSetup(GameTime gameTime) {
             Child?.UpdateSetup(gameTime);
         }
+        /// <inheritdoc/>
         public override void UpdateInput(GameTime gameTime) {
             Child?.UpdateInput(gameTime);
         }
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime) {
             Child?.Update(gameTime);
         }
 
+        /// <inheritdoc/>
         public override void UpdatePrefSize(GameTime gameTime) {
             if (Child != null) {
                 Child.UpdatePrefSize(gameTime);
@@ -26,6 +31,7 @@ namespace Apos.Gui {
                 PrefHeight = Child.PrefHeight;
             }
         }
+        /// <inheritdoc/>
         public virtual void UpdateLayout(GameTime gameTime) {
             if (Child != null) {
                 Child.Bounds = Bounds;
@@ -45,10 +51,12 @@ namespace Apos.Gui {
             }
         }
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime) {
             Child?.Draw(gameTime);
         }
 
+        /// <inheritdoc/>
         public virtual void Add(IComponent c) {
             if (c != Child) {
                 if (Child != null) {
@@ -58,38 +66,50 @@ namespace Apos.Gui {
                 Child.Parent = this;
             }
         }
+        /// <inheritdoc/>
         public virtual void Remove(IComponent c) {
             if (Child == c) {
                 Child.Parent = null;
                 Child = null;
             }
         }
+        /// <inheritdoc/>
         public virtual void Reset() { }
+        /// <inheritdoc/>
         public virtual int PeekNextIndex() => 0;
+        /// <inheritdoc/>
         public virtual int NextIndex() => 0;
 
+        /// <inheritdoc/>
         public override IComponent GetPrev() {
             return Parent?.GetPrev(this) ?? Child?.GetLast() ?? this;
         }
+        /// <inheritdoc/>
         public override IComponent GetNext() {
             return Child ?? Parent?.GetNext(this) ?? this;
         }
+        /// <inheritdoc/>
         public virtual IComponent GetPrev(IComponent c) {
             return this;
         }
+        /// <inheritdoc/>
         public virtual IComponent GetNext(IComponent c) {
             return Parent?.GetNext(this) ?? this;
         }
+        /// <inheritdoc/>
         public override IComponent GetLast() {
             return Child?.GetLast() ?? this;
         }
 
+        /// <inheritdoc/>
         public virtual void SendToTop(IComponent c) {
             LastFocus = Root.CurrentFrame;
             Parent?.SendToTop(this);
         }
 
+        /// <inheritdoc/>
         public virtual bool IsFocusScope { get; set; } = false;
+        /// <inheritdoc/>
         public virtual IComponent? Navigate(IComponent from, Direction direction) => null;
     }
 }

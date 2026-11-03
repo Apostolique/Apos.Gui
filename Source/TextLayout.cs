@@ -6,8 +6,11 @@ using Apos.Shapes;
 namespace Apos.Gui {
     /// <summary>How lines of text line up in the width they're given.</summary>
     public enum TextAlign {
+        /// <summary>Lines start at the left edge.</summary>
         Left,
+        /// <summary>Lines are centered.</summary>
         Center,
+        /// <summary>Lines end at the right edge.</summary>
         Right
     }
 

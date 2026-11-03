@@ -8,9 +8,13 @@ namespace Apos.Gui {
     /// A button that shows the selected option and opens a <see cref="Popup"/> with every option when clicked.
     /// </summary>
     public class Dropdown(long id) : SingleParent(id) {
+        /// <summary>Hover, press and click for this dropdown.</summary>
         public Interaction Interaction { get; } = new();
+        /// <summary>True on the frame the dropdown is clicked.</summary>
         public bool Clicked => Interaction.Clicked;
+        /// <inheritdoc/>
         public override bool IsFocusable { get; set; } = true;
+        /// <summary>Whether the popup with the options is showing.</summary>
         public bool IsOpen { get; set; }
         /// <summary>Room on the right for the arrow, in UI units.</summary>
         public float ArrowWidth { get; set; } = 30f;
@@ -20,15 +24,18 @@ namespace Apos.Gui {
         /// <summary>Draws every dropdown that doesn't have its own <see cref="Look"/>.</summary>
         public static Action<Dropdown> DefaultLook { get; set; } = DrawDefault;
 
+        /// <inheritdoc/>
         public override void UpdateInput(GameTime gameTime) {
             base.UpdateInput(gameTime);
             Interaction.UpdateInput(this);
         }
 
+        /// <inheritdoc/>
         public override void UpdatePrefSize(GameTime gameTime) {
             base.UpdatePrefSize(gameTime);
             PrefWidth += ArrowWidth;
         }
+        /// <inheritdoc/>
         public override void UpdateLayout(GameTime gameTime) {
             if (Child != null) {
                 Child.XY = XY;
@@ -37,6 +44,7 @@ namespace Apos.Gui {
             }
         }
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime) {
             (Look ?? DefaultLook)(this);
             base.Draw(gameTime);
@@ -57,6 +65,7 @@ namespace Apos.Gui {
             );
         }
 
+        /// <summary>Gives focus to the selected option on the frame the popup opens.</summary>
         protected bool _focusSelected = false;
 
         /// <summary>Picks one option out of a list.</summary>

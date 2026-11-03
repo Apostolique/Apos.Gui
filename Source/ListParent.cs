@@ -8,20 +8,24 @@ namespace Apos.Gui {
     /// By default each child keeps its own position and gets its preferred size. Override UpdatePrefSize and UpdateLayout to arrange them.
     /// </summary>
     public class ListParent(long id) : Component(id), IParent {
+        /// <inheritdoc/>
         public override void UpdateSetup(GameTime gameTime) {
             foreach (var c in _children)
                 c.UpdateSetup(gameTime);
         }
+        /// <inheritdoc/>
         public override void UpdateInput(GameTime gameTime) {
             for (int i = _childrenRenderOrder.Count - 1; i >= 0; i--) {
                 _childrenRenderOrder[i].UpdateInput(gameTime);
             }
         }
+        /// <inheritdoc/>
         public override void Update(GameTime gameTime) {
             foreach (var c in _children)
                 c.Update(gameTime);
         }
 
+        /// <inheritdoc/>
         public override void UpdatePrefSize(GameTime gameTime) {
             float maxWidth = 0;
             float maxHeight = 0;
@@ -35,6 +39,7 @@ namespace Apos.Gui {
             PrefWidth = maxWidth;
             PrefHeight = maxHeight;
         }
+        /// <inheritdoc/>
         public virtual void UpdateLayout(GameTime gameTime) {
             foreach (var c in _children) {
                 c.Width = c.PrefWidth;
@@ -56,6 +61,7 @@ namespace Apos.Gui {
         /// <summary>Corner radius of the clip the children draw in.</summary>
         public float ClipRounding { get; set; } = 0f;
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime) {
             // The clip stack cuts the bounds down to what the parents leave visible.
             GuiHelper.PushClip(Bounds, ClipRounding);
@@ -67,18 +73,23 @@ namespace Apos.Gui {
             GuiHelper.PopClip();
         }
 
+        /// <inheritdoc/>
         public virtual void Add(IComponent c) {
             c.Parent = this;
             ChildList.Insert(_children, _childrenRenderOrder, c);
         }
+        /// <inheritdoc/>
         public virtual void Remove(IComponent c) {
             c.Parent = null;
             ChildList.Remove(_children, _childrenRenderOrder, c);
         }
+        /// <inheritdoc/>
         public virtual void Reset() {
             _nextChildIndex = 0;
         }
+        /// <inheritdoc/>
         public virtual int PeekNextIndex() => _nextChildIndex;
+        /// <inheritdoc/>
         public virtual int NextIndex() => _nextChildIndex++;
 
         /// <summary>
@@ -121,6 +132,7 @@ namespace Apos.Gui {
             return _children.Count > 0 ? _children[^1].GetLast() : this;
         }
 
+        /// <inheritdoc/>
         public virtual void SendToTop(IComponent c) {
             LastFocus = Root.CurrentFrame;
             if (c.IsFloatable) {
@@ -131,11 +143,16 @@ namespace Apos.Gui {
             Parent?.SendToTop(this);
         }
 
+        /// <inheritdoc/>
         public virtual bool IsFocusScope { get; set; } = false;
+        /// <inheritdoc/>
         public virtual IComponent? Navigate(IComponent from, Direction direction) => null;
 
+        /// <summary>The index the next child gets. <see cref="Reset"/> sets it back to 0 every frame.</summary>
         protected int _nextChildIndex = 0;
+        /// <summary>The children in the order they were put.</summary>
         protected List<IComponent> _children = [];
+        /// <summary>The children in the order they draw. A floatable moves to the end when it's sent to the top.</summary>
         protected List<IComponent> _childrenRenderOrder = [];
     }
 }

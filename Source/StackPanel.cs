@@ -6,15 +6,21 @@ using MonoGame.Extended;
 using Track = Apos.Input.Track;
 
 namespace Apos.Gui {
+    /// <summary>Which way a stack lines up its children.</summary>
     public enum Orientation {
+        /// <summary>From left to right.</summary>
         Horizontal,
+        /// <summary>From top to bottom.</summary>
         Vertical
     }
 
     /// <summary>How children line up across a stack. Across a vertical stack is left to right, across a horizontal one is top to bottom.</summary>
     public enum CrossAlign {
+        /// <summary>Left, or top for a horizontal stack.</summary>
         Start,
+        /// <summary>In the middle.</summary>
         Center,
+        /// <summary>Right, or bottom for a horizontal stack.</summary>
         End,
         /// <summary>Children take the stack's whole width, or its whole height for a horizontal stack.</summary>
         Stretch
@@ -25,6 +31,7 @@ namespace Apos.Gui {
     /// When they don't fit it scrolls with the mouse wheel, a scrollbar, or a touch drag that starts on the stack itself.
     /// </summary>
     public class StackPanel : ListParent {
+        /// <summary>Creates a stack. <see cref="Vertical.Push"/> and <see cref="Horizontal.Push"/> put one in the UI.</summary>
         public StackPanel(long id, Orientation orientation) : base(id) {
             Orientation = orientation;
             // Smooth keeps the speed of a scroll that's still going, so quick wheel notches flow into each other.
@@ -32,21 +39,26 @@ namespace Apos.Gui {
             _easedOffsetY = new(0f, (from, to) => GetDuration(from, to, ScrollSpeed, ScrollMaxDuration), Easing.ExpoOut, GuiHelper.Clock) { Smooth = true };
         }
 
+        /// <summary>Which way the children line up.</summary>
         public Orientation Orientation { get; set; }
         /// <summary>Space between two children, in UI units.</summary>
         public float Spacing { get; set; } = 0f;
         /// <summary>Space around the children, in UI units.</summary>
         public float Padding { get; set; } = 0f;
+        /// <summary>How the children line up across the stack.</summary>
         public CrossAlign Align { get; set; } = CrossAlign.Start;
 
+        /// <summary>How far the children are scrolled sideways, in UI units. It's 0 or less. Setting it eases there.</summary>
         public float OffsetX {
             get => _offsetX;
             set => _easedOffsetX.Target = ClampOffsetX(value);
         }
+        /// <summary>How far the children are scrolled up, in UI units. It's 0 or less. Setting it eases there.</summary>
         public float OffsetY {
             get => _offsetY;
             set => _easedOffsetY.Target = ClampOffsetY(value);
         }
+        /// <summary><see cref="OffsetX"/> and <see cref="OffsetY"/> together.</summary>
         public Vector2 OffsetXY {
             get => new(OffsetX, OffsetY);
             set {
@@ -56,18 +68,25 @@ namespace Apos.Gui {
         }
         /// <summary>How big the children are together, padding and spacing included. Can be bigger than the stack.</summary>
         public Vector2 ContentSize { get; protected set; }
+        /// <summary>The bigger of the stack's width and <see cref="ContentSize"/>'s.</summary>
         public float FullWidth => MathF.Max(ContentSize.X, Width);
+        /// <summary>The bigger of the stack's height and <see cref="ContentSize"/>'s.</summary>
         public float FullHeight => MathF.Max(ContentSize.Y, Height);
+        /// <summary><see cref="FullWidth"/> and <see cref="FullHeight"/> together.</summary>
         public Vector2 FullSize => new(FullWidth, FullHeight);
         /// <summary>The children don't fit along the stack's direction.</summary>
         public bool CanScroll => MainOf(ContentSize) > MainOf(Size) + 0.5f;
 
         /// <summary>How far one wheel notch scrolls, in UI units.</summary>
         public float ScrollIncrement { get; set; } = 50f;
+        /// <summary>How fast a scroll eases to where it's going, in UI units per millisecond.</summary>
         public float ScrollSpeed { get; set; } = 0.25f;
+        /// <summary>The longest a scroll takes to get where it's going, in milliseconds.</summary>
         public double ScrollMaxDuration { get; set; } = 1000;
 
+        /// <summary>Whether a scrollbar shows when the children don't fit.</summary>
         public bool ShowScrollbar { get; set; } = true;
+        /// <summary>How thick the scrollbar is, in UI units.</summary>
         public float ScrollbarThickness { get; set; } = 6f;
         /// <summary>Space between the children and the scrollbar, in UI units.</summary>
         public float ScrollbarGap { get; set; } = 4f;
@@ -101,6 +120,7 @@ namespace Apos.Gui {
             }
         }
 
+        /// <inheritdoc/>
         public override void UpdateInput(GameTime gameTime) {
             base.UpdateInput(gameTime);
 
@@ -134,6 +154,7 @@ namespace Apos.Gui {
             }
         }
 
+        /// <inheritdoc/>
         public override void UpdatePrefSize(GameTime gameTime) {
             float main = 0f;
             float cross = 0f;
@@ -152,6 +173,7 @@ namespace Apos.Gui {
             ContentSize = FromMainCross(main, cross);
             PrefSize = FromMainCross(main, cross + ScrollbarRoom);
         }
+        /// <inheritdoc/>
         public override void UpdateLayout(GameTime gameTime) {
             MainEasedOffset.Target = ClampMain(MainEasedOffset.Target);
 
@@ -185,6 +207,7 @@ namespace Apos.Gui {
             }
         }
 
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime) {
             base.Draw(gameTime);
 
@@ -213,17 +236,26 @@ namespace Apos.Gui {
             base.SendToTop(c);
         }
 
+        /// <summary>Whether the stack goes from top to bottom.</summary>
         protected bool IsVertical => Orientation == Orientation.Vertical;
+        /// <summary>The part of a vector along the stack: Y for a vertical stack, X for a horizontal one.</summary>
         protected float MainOf(Vector2 v) => IsVertical ? v.Y : v.X;
+        /// <summary>The part of a vector across the stack: X for a vertical stack, Y for a horizontal one.</summary>
         protected float CrossOf(Vector2 v) => IsVertical ? v.X : v.Y;
+        /// <summary>Builds a vector from a part along the stack and a part across it.</summary>
         protected Vector2 FromMainCross(float main, float cross) => IsVertical ? new Vector2(cross, main) : new Vector2(main, cross);
+        /// <summary>The eased offset along the stack.</summary>
         protected EasedValue<float> MainEasedOffset => IsVertical ? _easedOffsetY : _easedOffsetX;
+        /// <summary>The offset along the stack.</summary>
         protected float MainOffset => IsVertical ? _offsetY : _offsetX;
+        /// <summary>Keeps an offset along the stack inside the scrollable range.</summary>
         protected float ClampMain(float offset) => IsVertical ? ClampOffsetY(offset) : ClampOffsetX(offset);
 
+        /// <summary>Keeps a sideways offset inside the scrollable range, from 0 down to how far the children overflow.</summary>
         protected virtual float ClampOffsetX(float x) {
             return MathF.Min(MathF.Max(x, Width - ContentSize.X), 0f);
         }
+        /// <summary>Keeps a vertical offset inside the scrollable range, from 0 down to how far the children overflow.</summary>
         protected virtual float ClampOffsetY(float y) {
             return MathF.Min(MathF.Max(y, Height - ContentSize.Y), 0f);
         }
@@ -233,16 +265,23 @@ namespace Apos.Gui {
             MainEasedOffset.Snap(ClampMain(offset));
         }
 
+        /// <summary>How long a scroll from a to b takes at a speed, in milliseconds, capped at maxDuration.</summary>
         protected static double GetDuration(float a, float b, float speed, double maxDuration) {
             return Math.Min(Math.Abs((b - a) / speed), maxDuration);
         }
 
+        /// <summary>Eases <see cref="OffsetX"/>.</summary>
         protected EasedValue<float> _easedOffsetX;
+        /// <summary>Eases <see cref="OffsetY"/>.</summary>
         protected EasedValue<float> _easedOffsetY;
 
+        /// <summary>Backs <see cref="OffsetX"/>. The eased offset, clamped in the last layout.</summary>
         protected float _offsetX = 0;
+        /// <summary>Backs <see cref="OffsetY"/>. The eased offset, clamped in the last layout.</summary>
         protected float _offsetY = 0;
+        /// <summary>The offset along the stack when the current scrollbar or touch drag started.</summary>
         protected float _scrollDragStart = 0;
+        /// <summary>Whether the last layout kept room for the scrollbar.</summary>
         protected bool _showsScrollbar = false;
     }
 }

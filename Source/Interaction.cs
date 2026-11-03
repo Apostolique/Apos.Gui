@@ -27,6 +27,7 @@ namespace Apos.Gui {
     /// Each touch contact is captured on its own, so two components can be pressed by two fingers at the same time.
     /// </remarks>
     public class Interaction {
+        /// <summary>Creates an interaction. A component keeps one for as long as it lives.</summary>
         public Interaction() {
             // A move that only goes part of the way takes part of the duration.
             _hover = new(0f, (from, to) => HoverDuration * MathHelper.Distance(from, to), Easing.QuadOut, GuiHelper.Clock);

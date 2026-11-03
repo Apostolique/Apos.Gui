@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 
 namespace Apos.Gui {
+    /// <summary>A component that holds other components and lays them out. <see cref="SingleParent"/> and <see cref="ListParent"/> are ready-made bases for your own.</summary>
     public interface IParent : IComponent {
         /// <summary>
         /// Add a component to the parent.
@@ -42,7 +43,7 @@ namespace Apos.Gui {
         /// Otherwise it will return itself.
         /// </summary>
         /// <param name="c">The child to start from.</param>
-        /// <returns>A component that is before the child.</returns>
+        /// <returns>A component that is after the child.</returns>
         IComponent GetNext(IComponent c);
 
         /// <summary>

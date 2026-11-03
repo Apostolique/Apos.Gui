@@ -7,6 +7,7 @@ namespace Apos.Gui {
     /// Shows how far along something is, from 0 to 1.
     /// </summary>
     public class ProgressBar(long id) : Component(id) {
+        /// <summary>How far along it is, from 0 to 1. Values outside that range are clamped.</summary>
         public float Value {
             get => _value;
             set => _value = MathHelper.Clamp(value, 0f, 1f);
@@ -18,9 +19,11 @@ namespace Apos.Gui {
         /// <summary>Draws every progress bar that doesn't have its own <see cref="Look"/>.</summary>
         public static Action<ProgressBar> DefaultLook { get; set; } = DrawDefault;
 
+        /// <inheritdoc/>
         public override void UpdatePrefSize(GameTime gameTime) {
             PrefSize = BarSize;
         }
+        /// <inheritdoc/>
         public override void Draw(GameTime gameTime) {
             (Look ?? DefaultLook)(this);
         }
@@ -41,6 +44,7 @@ namespace Apos.Gui {
             GuiHelper.ShapeBatch.BorderRectangle(p.XY, p.Size, Theme.Border, Theme.BorderThickness, Theme.Rounding);
         }
 
+        /// <summary>Backs <see cref="Value"/>.</summary>
         protected float _value;
 
         /// <param name="value">From 0 to 1.</param>
